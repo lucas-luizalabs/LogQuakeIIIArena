@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
 
-namespace WebApplication1
+namespace WebApplication2
 {
     public class Startup
     {
@@ -26,9 +26,7 @@ namespace WebApplication1
         {
             services.AddMvc();
 
-            // Register the Swagger services
             services.AddSwagger();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,14 +45,14 @@ namespace WebApplication1
                 settings.PostProcess = document =>
                 {
                     document.Info.Version = "v1";
-                    document.Info.Title = "ToDo API";
-                    document.Info.Description = "A simple ASP.NET Core web API";
-                    document.Info.TermsOfService = "None";
+                    document.Info.Title = "Log ";
+                    document.Info.Description = "API para retornar os logs";
+                    document.Info.TermsOfService = "Nenhum termo de serviço";
                     document.Info.Contact = new NSwag.SwaggerContact
                     {
-                        Name = "Shayne Boyer",
+                        Name = "Márcio de Souza Teixeira",
                         Email = string.Empty,
-                        Url = "https://twitter.com/spboyer"
+                        Url = "http://marciodesouzateixeira.com"
                     };
                     document.Info.License = new NSwag.SwaggerLicense
                     {
@@ -63,7 +61,6 @@ namespace WebApplication1
                     };
                 };
             });
-
 
         }
     }

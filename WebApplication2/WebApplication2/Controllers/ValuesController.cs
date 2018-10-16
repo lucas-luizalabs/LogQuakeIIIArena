@@ -4,9 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication1.Controllers
+namespace WebApplication2.Controllers
 {
-    [Produces("application/json")]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
@@ -20,7 +19,7 @@ namespace WebApplication1.Controllers
         /// <operationId>
         /// Teste.
         /// </operationId>
-        /// [HttpGet]
+        [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
@@ -37,8 +36,6 @@ namespace WebApplication1.Controllers
             return "value";
         }
 
-
-        /*
         /// <summary>
         /// Cria um novo item.
         /// </summary>
@@ -68,24 +65,15 @@ namespace WebApplication1.Controllers
         }
 
         // PUT api/values/5
-        /// <summary>
-        /// Deletes a specific TodoItem.
-        /// </summary>
-        /// <param name="id"></param>
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
         }
 
         // DELETE api/values/5
-        /// <summary>
-        /// Deletes a specific TodoItem.
-        /// </summary>
-        /// <param name="id"></param>
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
         }
-        */
     }
 }
