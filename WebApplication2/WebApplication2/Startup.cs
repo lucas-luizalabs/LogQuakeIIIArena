@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LogQuake.Infra.Data.Contexto;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +29,9 @@ namespace WebApplication2
             services.AddMvc();
 
             services.AddSwagger();
+
+            services.AddDbContext<LogQuakeContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Web", "WebApplication2\LogQuake.Web.csproj", "{BBD139AC-D29C-4F10-827A-B3F680C192E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.API", "WebApplication2\LogQuake.API.csproj", "{BBD139AC-D29C-4F10-827A-B3F680C192E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Domain", "LogQuake.Domain\LogQuake.Domain.csproj", "{45A07FF9-AF2D-418B-B5A3-871F5AB8B705}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Domain.Service", "LogQuake.Domain.Service\LogQuake.Domain.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Application", "LogQuake.Application\LogQuake.Application.csproj", "{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Infra", "LogQuake.Infra\LogQuake.Infra.csproj", "{5B572BC4-13C1-48CE-8466-3BA65749065B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Domain", "LogQuake.Domain\LogQuake.Domain.csproj", "{728E0C07-5509-4EA7-9B2B-49140700764F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +23,22 @@ Global
 		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45A07FF9-AF2D-418B-B5A3-871F5AB8B705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45A07FF9-AF2D-418B-B5A3-871F5AB8B705}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45A07FF9-AF2D-418B-B5A3-871F5AB8B705}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45A07FF9-AF2D-418B-B5A3-871F5AB8B705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B572BC4-13C1-48CE-8466-3BA65749065B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B572BC4-13C1-48CE-8466-3BA65749065B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B572BC4-13C1-48CE-8466-3BA65749065B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B572BC4-13C1-48CE-8466-3BA65749065B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728E0C07-5509-4EA7-9B2B-49140700764F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728E0C07-5509-4EA7-9B2B-49140700764F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728E0C07-5509-4EA7-9B2B-49140700764F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728E0C07-5509-4EA7-9B2B-49140700764F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
