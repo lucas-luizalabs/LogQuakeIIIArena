@@ -12,7 +12,7 @@ namespace LogQuake.Domain.Entities
     public partial class Games
     {
         [JsonProperty("games")]
-        public Game[] GamesGames { get; set; }
+        public _Game[] GamesGames { get; set; }
     }
 
     public partial class Games

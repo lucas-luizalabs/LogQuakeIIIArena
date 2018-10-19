@@ -31,7 +31,7 @@ namespace WebApplication2
             services.AddSwagger();
 
             services.AddDbContext<LogQuakeContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase")));
+                options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase"),b => b.UseRowNumberForPaging()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
