@@ -9,7 +9,7 @@ namespace LogQuake.Infra.Migrations
         {
             migrationBuilder.AlterColumn<string>(
                 name: "PlayerName",
-                table: "Players",
+                table: "Player",
                 maxLength: 60,
                 nullable: false,
                 oldClrType: typeof(string),
@@ -17,13 +17,13 @@ namespace LogQuake.Infra.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "Sobrenome",
-                table: "Players",
+                table: "Player",
                 maxLength: 60,
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.CreateTable(
-                name: "Kills",
+                name: "Kill",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)

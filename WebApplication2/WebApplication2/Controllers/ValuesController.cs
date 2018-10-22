@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using LogQuake.API.ViewModels;
+using LogQuake.Domain.Entities;
+using LogQuake.Infra.Data.Repositories;
+using LogQuake.Service.Services;
+using LogQuake.Service.Validators;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication2.Controllers
@@ -9,6 +16,9 @@ namespace WebApplication2.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly PlayerRepository _playerRepository = new PlayerRepository();
+        private ServiceBase<Player> service = new ServiceBase<Player>();
+
         // GET api/values
         /// <summary>
         /// Seleciona todos os valores cadastrados.
@@ -19,10 +29,27 @@ namespace WebApplication2.Controllers
         /// <operationId>
         /// Teste.
         /// </operationId>
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    //var playerViewmodel = Mapper.Map<IEnumerable<Player>, IEnumerable<PlayerViewModel>>(_playerRepository.GetAll());
+        //    return new string[] { "value1", "value2" };
+        //}
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return new ObjectResult(service.Get());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            //var playerViewmodel = Mapper.Map<IEnumerable<Player>, IEnumerable<PlayerViewModel>>(_playerRepository.GetAll());
+            //return new string[] { "value1", "value2" };
         }
 
         // GET api/values/5
@@ -30,10 +57,36 @@ namespace WebApplication2.Controllers
         /// Deletes a specific TodoItem.
         /// </summary>
         /// <param name="id"></param>
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Player player = new Player();
+            player.PlayerName = "teste";
+            player.Sobrenome = "xxx";
+
+            //Player retorno = service.Post<UserValidator>(player);
+
+            try
+            {
+                string fileName = @"c:\LogQuake\games.log";
+                LogQuakeService log = new LogQuakeService();
+
+                log.CarregarLog(fileName);
+
+                service.Post<PlayerValidator>(player);
+                return new ObjectResult(player.Id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            //return "value";
         }
 
         /// <summary>

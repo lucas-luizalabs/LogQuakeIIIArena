@@ -30,7 +30,7 @@ namespace LogQuake.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Players");
+                    b.ToTable("Player");
                 });
 #pragma warning restore 612, 618
         }

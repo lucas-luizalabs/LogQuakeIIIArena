@@ -8,7 +8,7 @@ namespace LogQuake.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Players",
+                name: "Player",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -25,7 +25,7 @@ namespace LogQuake.Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Players");
+                name: "Player");
         }
     }
 }

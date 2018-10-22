@@ -7,5 +7,6 @@ namespace LogQuake.Domain.Interfaces
 {
     public interface IPlayerRepository : IRepositoryBase<Player>
     {
+        IEnumerable<Player> BuscarPorNome(string nome);
     }
 }

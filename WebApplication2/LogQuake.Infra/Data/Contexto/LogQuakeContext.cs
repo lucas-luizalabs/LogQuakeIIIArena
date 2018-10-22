@@ -9,11 +9,17 @@ namespace LogQuake.Infra.Data.Contexto
 {
     public class LogQuakeContext: DbContext
     {
-        //private const string V = "LogQuake";
+        //private const string V = "LogQuakeDatabase";
+        private const string V = "Server=(localdb)\\mssqllocaldb;Database=EFGetStarted.ConsoleApp.NewDb;Trusted_Connection=True;";
+        //private DbContextOptions<LogQuakeContext> options = new DbContextOptions<LogQuakeContext>();
 
         //public LogQuakeContext()
         //    : base(V)
         //{ }
+
+        public LogQuakeContext()
+        {
+        }
 
         public LogQuakeContext(DbContextOptions<LogQuakeContext> options)
           : base(options)
@@ -23,24 +29,18 @@ namespace LogQuake.Infra.Data.Contexto
 
         public DbSet<Kill> Kills { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(V);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Player>(b =>
-            //{
-            //    b.HasKey(u => u.Id);
-            //    b.HasIndex(u => u.PlayerName).HasName("PlayerName").IsUnique();
-            //    b.Property(u => u.PlayerName).HasColumnType("varchar");
-            //    b.Property(u => u.PlayerName).HasMaxLength(100);
-            //    b.ToTable("Players");
-            //});
+            base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Kill>()
-            //    .HasOne(p => p.IdPlayer);
-
-            //modelBuilder.Entity<Kill>()
-            //            .HasOne(c => c.IdPlayer)
-            //            .WithOne()
-            //            .HasForeignKey(c => c.MessageId);
+            //ou utiliza assim ou o jeito de baixo
+            //modelBuilder.Entity<Player>(new PlayerConfiguration().Configure);
 
             modelBuilder.ApplyConfiguration(new PlayerConfiguration());
 

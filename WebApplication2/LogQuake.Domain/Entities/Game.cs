@@ -13,7 +13,7 @@ namespace LogQuake.Domain.Entities
         public long TotalKills { get; set; }
 
         [JsonProperty("players")]
-        public virtual Player Player { get; set; }
+        public virtual List<Player> Player { get; set; }
 
         [JsonProperty("kills")]
         public virtual Kills Kills { get; set; }

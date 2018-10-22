@@ -12,15 +12,19 @@ namespace LogQuake.Infra.Data.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Player> builder)
         {
+            builder.ToTable("Player");
+
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.PlayerName)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(60)
+                .HasColumnName("PlayerName");
 
             builder.Property(c => c.Sobrenome)
                 .IsRequired()
-                .HasMaxLength(60);
+                .HasMaxLength(60)
+                .HasColumnName("Sobrenome");
 
         }
     }

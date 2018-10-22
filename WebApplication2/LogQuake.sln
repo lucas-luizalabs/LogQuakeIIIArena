@@ -3,15 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.API", "WebApplication2\LogQuake.API.csproj", "{BBD139AC-D29C-4F10-827A-B3F680C192E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.API", "WebApplication2\LogQuake.API.csproj", "{BBD139AC-D29C-4F10-827A-B3F680C192E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Domain.Service", "LogQuake.Domain.Service\LogQuake.Domain.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Service", "LogQuake.Domain.Service\LogQuake.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{728E0C07-5509-4EA7-9B2B-49140700764F} = {728E0C07-5509-4EA7-9B2B-49140700764F}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Application", "LogQuake.Application\LogQuake.Application.csproj", "{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Application", "LogQuake.Application\LogQuake.Application.csproj", "{45C6D9A7-7B24-4ADC-AD98-F7DD1D523EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Infra", "LogQuake.Infra\LogQuake.Infra.csproj", "{5B572BC4-13C1-48CE-8466-3BA65749065B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Infra", "LogQuake.Infra\LogQuake.Infra.csproj", "{5B572BC4-13C1-48CE-8466-3BA65749065B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Domain", "LogQuake.Domain\LogQuake.Domain.csproj", "{728E0C07-5509-4EA7-9B2B-49140700764F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Domain", "LogQuake.Domain\LogQuake.Domain.csproj", "{728E0C07-5509-4EA7-9B2B-49140700764F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

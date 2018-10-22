@@ -34,7 +34,7 @@ namespace LogQuake.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Kills");
+                    b.ToTable("Kill");
                 });
 
             modelBuilder.Entity("LogQuake.Domain.Entities.Player", b =>
@@ -53,7 +53,7 @@ namespace LogQuake.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Players");
+                    b.ToTable("Player");
                 });
 #pragma warning restore 612, 618
         }
