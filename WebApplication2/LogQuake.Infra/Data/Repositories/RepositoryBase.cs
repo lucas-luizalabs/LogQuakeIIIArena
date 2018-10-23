@@ -1,4 +1,5 @@
 ﻿using LogQuake.Domain.Interfaces;
+using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Contexto;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,10 +20,9 @@ namespace LogQuake.Infra.Data.Repositories
             context.SaveChanges();
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAll(PageRequestBase pageRequest)
         {
             return context.Set<TEntity>().AsNoTracking().ToList();
-            //return entities.AsNoTracking().ToList();
         }
 
         public TEntity GetById(int Id)

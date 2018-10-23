@@ -11,27 +11,19 @@ namespace LogQuake.Infra.Data.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Kill> builder)
         {
-            builder.ToTable("Kills");
+            builder.ToTable("Kill");
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.IdPlayer)
+            builder.Property(c => c.PlayerKiller)
                 .IsRequired();
 
             builder.Property(c => c.IdGame)
                 .IsRequired();
 
-            //// Message
-            //builder.HasOne(c => c.IdPlayer)
-            //       .WithOne(c => c)
-            //       .HasForeignKey<Player>(c => c.)
-            //       .OnDelete(DeleteBehavior.Restrict);
+            builder.Property(c => c.PlayerKilled)
+                .IsRequired();
 
-            //builder.HasOne<Player>(s => s.IdPlayer)
-            //.WithMany()
-            //.HasForeignKey(e => e.IdPlayer);
-
-            //builder.OwnsOne(c => c.IdPlayer);
         }
     }
 }

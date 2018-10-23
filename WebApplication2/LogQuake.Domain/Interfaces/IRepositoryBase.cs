@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogQuake.Infra.CrossCuting;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace LogQuake.Domain.Interfaces
 
         TEntity GetById(int Id);
 
-        IEnumerable<TEntity> GetAll();
+        IEnumerable<TEntity> GetAll(PageRequestBase pageRequest);
 
         void Update(TEntity obj);
 

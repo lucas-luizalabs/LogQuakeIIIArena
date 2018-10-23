@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using LogQuake.Infra.CrossCuting;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,14 +8,16 @@ namespace LogQuake.Domain.Interfaces
 {
     public interface IServiceBase<T> where T : class
     {
-        T Post<V>(T obj) where V : AbstractValidator<T>;
+        T Add<V>(T obj) where V : AbstractValidator<T>;
 
-        T Put<V>(T obj) where V : AbstractValidator<T>;
+        T GetById(int id);
 
-        void Delete(T obj);
+        IEnumerable<T> GetAll(PageRequestBase pageRequest);
 
-        T Get(int id);
+        T Update<V>(T obj) where V : AbstractValidator<T>;
 
-        IEnumerable<T> Get();
+        void Remove(T obj);
+
+        void Dispose();
     }
 }

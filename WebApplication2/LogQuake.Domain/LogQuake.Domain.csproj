@@ -14,4 +14,8 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LogQuake.CrossCutting\LogQuake.CrossCutting.csproj" />
+  </ItemGroup>
+
 </Project>

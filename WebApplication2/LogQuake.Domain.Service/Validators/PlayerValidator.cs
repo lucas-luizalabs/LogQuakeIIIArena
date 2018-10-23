@@ -21,9 +21,9 @@ namespace LogQuake.Service.Validators
                 .NotEmpty().WithMessage("Is necessary to inform the CPF.")
                 .NotNull().WithMessage("Is necessary to inform the CPF.");
 
-            RuleFor(c => c.Sobrenome)
-                .NotEmpty().WithMessage("Is necessary to inform the birth date.")
-                .NotNull().WithMessage("Is necessary to inform the birth date.");
+            //RuleFor(c => c.Sobrenome)
+            //    .NotEmpty().WithMessage("Is necessary to inform the birth date.")
+            //    .NotNull().WithMessage("Is necessary to inform the birth date.");
 
             //RuleFor(c => c.Name)
             //    .NotEmpty().WithMessage("Is necessary to inform the name.")

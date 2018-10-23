@@ -12,13 +12,8 @@ namespace LogQuake.Domain.Entities
     {
 
         [Key]
-        public int Id { get; set; }  // must be public!
+        public int Id { get; set; }  
 
-        //[JsonProperty("Jogador")]
         public string PlayerName { get; set; }
-
-        //[JsonProperty("Sobrenome")]
-        [MaxLength(30)]
-        public string Sobrenome { get; set; }
     }
 }

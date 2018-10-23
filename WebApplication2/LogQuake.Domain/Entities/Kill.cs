@@ -11,10 +11,10 @@ namespace LogQuake.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        public int IdPlayer { get; set; }
+        public string PlayerKiller { get; set; }
 
         public int IdGame { get; set; }
 
-        public int CountKill { get; set; }
+        public string PlayerKilled { get; set; }
     }
 }

@@ -20,12 +20,6 @@ namespace LogQuake.Infra.Data.EntityConfig
                 .IsRequired()
                 .HasMaxLength(60)
                 .HasColumnName("PlayerName");
-
-            builder.Property(c => c.Sobrenome)
-                .IsRequired()
-                .HasMaxLength(60)
-                .HasColumnName("Sobrenome");
-
         }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogQuake.Infra.Migrations
 {
     [DbContext(typeof(LogQuakeContext))]
-    [Migration("20181019033313_Versao_2")]
+    [Migration("20181023014706_Versao_2")]
     partial class Versao_2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,11 +26,13 @@ namespace LogQuake.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CountKill");
-
                     b.Property<int>("IdGame");
 
-                    b.Property<int>("IdPlayer");
+                    b.Property<string>("PlayerKilled")
+                        .IsRequired();
+
+                    b.Property<string>("PlayerKiller")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -45,10 +47,7 @@ namespace LogQuake.Infra.Migrations
 
                     b.Property<string>("PlayerName")
                         .IsRequired()
-                        .HasMaxLength(60);
-
-                    b.Property<string>("Sobrenome")
-                        .IsRequired()
+                        .HasColumnName("PlayerName")
                         .HasMaxLength(60);
 
                     b.HasKey("Id");

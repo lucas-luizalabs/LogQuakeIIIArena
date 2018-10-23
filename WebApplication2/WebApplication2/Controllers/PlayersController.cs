@@ -19,7 +19,7 @@ namespace LogQuake.API.Controllers
         // GET: Players
         public ActionResult Index()
         {
-            var playerViewmodel = Mapper.Map<IEnumerable<Player>, IEnumerable<PlayerViewModel>>(_playerRepository.GetAll());
+            var playerViewmodel = new object();// Mapper.Map<IEnumerable<Player>, IEnumerable<PlayerViewModel>>(_playerRepository.GetAll());
             return View(playerViewmodel);
         }
 

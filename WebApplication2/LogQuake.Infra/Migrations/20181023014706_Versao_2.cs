@@ -15,41 +15,30 @@ namespace LogQuake.Infra.Migrations
                 oldClrType: typeof(string),
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "Sobrenome",
-                table: "Player",
-                maxLength: 60,
-                nullable: false,
-                defaultValue: "");
-
             migrationBuilder.CreateTable(
                 name: "Kill",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    IdPlayer = table.Column<int>(nullable: false),
+                    PlayerKiller = table.Column<string>(nullable: false),
                     IdGame = table.Column<int>(nullable: false),
-                    CountKill = table.Column<int>(nullable: false)
+                    PlayerKilled = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Kills", x => x.Id);
+                    table.PrimaryKey("PK_Kill", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Kills");
-
-            migrationBuilder.DropColumn(
-                name: "Sobrenome",
-                table: "Players");
+                name: "Kill");
 
             migrationBuilder.AlterColumn<string>(
                 name: "PlayerName",
-                table: "Players",
+                table: "Player",
                 nullable: true,
                 oldClrType: typeof(string),
                 oldMaxLength: 60);

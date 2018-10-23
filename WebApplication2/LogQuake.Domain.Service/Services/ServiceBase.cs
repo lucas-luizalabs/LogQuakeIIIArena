@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LogQuake.Domain.Interfaces;
+using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace LogQuake.Service.Services
 
         private RepositoryBase<T> repository = new RepositoryBase<T>();
 
-        public void Delete(T obj)
+        public void Remove(T obj)
         {
             //if (id == 0)
             //    throw new ArgumentException("The id can't be zero.");
@@ -20,8 +21,8 @@ namespace LogQuake.Service.Services
             repository.Remove(obj);
         }
 
-        public IEnumerable<T> Get() => repository.GetAll();//.Select();
-        public T Get(int id)
+        public IEnumerable<T> GetAll(PageRequestBase pageRequest) => repository.GetAll(pageRequest);
+        public T GetById(int id)
         {
             if (id == 0)
                 throw new ArgumentException("The id can't be zero.");
@@ -35,7 +36,7 @@ namespace LogQuake.Service.Services
         //    throw new NotImplementedException();
         //}
 
-        public T Post<V>(T obj) where V : AbstractValidator<T>
+        public T Add<V>(T obj) where V : AbstractValidator<T>
         {
             Validate(obj, Activator.CreateInstance<V>());
 
@@ -43,7 +44,7 @@ namespace LogQuake.Service.Services
             return obj;
         }
 
-        public T Put<V>(T obj) where V : AbstractValidator<T>
+        public T Update<V>(T obj) where V : AbstractValidator<T>
         {
             Validate(obj, Activator.CreateInstance<V>());
 
@@ -56,6 +57,11 @@ namespace LogQuake.Service.Services
                 throw new Exception("Registros não detectados!");
 
             validator.ValidateAndThrow(obj);
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

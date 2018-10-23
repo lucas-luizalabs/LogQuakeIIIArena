@@ -41,7 +41,7 @@ namespace WebApplication2.Controllers
         {
             try
             {
-                return new ObjectResult(service.Get());
+                return new ObjectResult(1);// service.GetAll());
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace WebApplication2.Controllers
         {
             Player player = new Player();
             player.PlayerName = "teste";
-            player.Sobrenome = "xxx";
+            //player.Sobrenome = "xxx";
 
             //Player retorno = service.Post<UserValidator>(player);
 
@@ -76,10 +76,22 @@ namespace WebApplication2.Controllers
             {
                 string fileName = @"c:\LogQuake\games.log";
                 LogQuakeService log = new LogQuakeService();
+                ServiceBase<Kill> serviceKill = new ServiceBase<Kill>();
+                ServiceBase<Player> servicePlayer = new ServiceBase<Player>();
+                List<Game> Games;
+                List<Kill> Kills;
+                Kill kill;
 
-                log.CarregarLog(fileName);
+                Games = log.CarregarLog(fileName);
+                Kills = log.CarregarLogParaDB(fileName);
 
-                service.Post<PlayerValidator>(player);
+                foreach (Kill item in Kills)
+                {
+                    serviceKill.Add<KillValidator>(item);
+                }
+
+
+                service.Add<PlayerValidator>(player);
                 return new ObjectResult(player.Id);
             }
             catch (Exception ex)

@@ -24,11 +24,13 @@ namespace LogQuake.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CountKill");
-
                     b.Property<int>("IdGame");
 
-                    b.Property<int>("IdPlayer");
+                    b.Property<string>("PlayerKilled")
+                        .IsRequired();
+
+                    b.Property<string>("PlayerKiller")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -43,10 +45,7 @@ namespace LogQuake.Infra.Migrations
 
                     b.Property<string>("PlayerName")
                         .IsRequired()
-                        .HasMaxLength(60);
-
-                    b.Property<string>("Sobrenome")
-                        .IsRequired()
+                        .HasColumnName("PlayerName")
                         .HasMaxLength(60);
 
                     b.HasKey("Id");
