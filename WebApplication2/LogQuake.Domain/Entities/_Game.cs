@@ -16,6 +16,8 @@ namespace LogQuake.Domain.Entities
         public string[] Players { get; set; }
 
         [JsonProperty("kills")]
-        public Kills Kills { get; set; }
+        //public Kills Kills { get; set; }
+
+        public Dictionary<string, int> Kills = new Dictionary<string, int>();
     }
 }

@@ -162,7 +162,7 @@ namespace LogQuake.Service.Services
             }
         }
 
-        public IEnumerable<Kill> GetAll(PageRequestBase pageRequest)
+        public List<_Game> GetAll(PageRequestBase pageRequest)
         {
             List<Kill> lista = repository.GetAll(pageRequest).ToList();
 
@@ -174,7 +174,7 @@ namespace LogQuake.Service.Services
             {
 
                 try {
-                    idgame = lista[0].IdGame;// Convert.ToInt32(lista.ToDictionary(itemKeySelector => itemKeySelector.IdGame));
+                    idgame = lista[0].IdGame;
                     lista2 = lista.Where(x => x.IdGame == idgame).ToList();
                 }
                 catch (Exception ex)
@@ -192,7 +192,7 @@ namespace LogQuake.Service.Services
                 var listKills = listKillers.Union(listKilleds).ToList();
                 listKills.Remove("<world>");
                 game.Players = listKills.ToArray();
-                game.Kills = new Kills();
+                //game.Kills = new Kills();
                 //game.Id = games.Count() + 1;
 
                 foreach (var item in lista2)
@@ -202,25 +202,25 @@ namespace LogQuake.Service.Services
                     if (Assassino == "<world>")
                     {
                         //Assasinado deve perder -1 kill
-                        if (game.Kills.values.ContainsKey(Assassinado))
+                        if (game.Kills.ContainsKey(Assassinado))
                         {
-                            game.Kills.values[Assassinado] -= 1;
+                            game.Kills[Assassinado] -= 1;
                         }
                         else
                         {
-                            game.Kills.values.Add(Assassinado, -1);
+                            game.Kills.Add(Assassinado, -1);
                         }
                     }
                     else
                     {
                         //Assasino deve ganhar +1 kill
-                        if (game.Kills.values.ContainsKey(Assassino))
+                        if (game.Kills.ContainsKey(Assassino))
                         {
-                            game.Kills.values[Assassino] += 1;
+                            game.Kills[Assassino] += 1;
                         }
                         else
                         {
-                            game.Kills.values.Add(Assassino, 1);
+                            game.Kills.Add(Assassino, 1);
                         }
                     }
                 }
@@ -231,12 +231,8 @@ namespace LogQuake.Service.Services
                 lista.RemoveAll(x => x.IdGame == idgame);
             } while (lista.Count() > 0);
 
-            //foreach (var item in lista)
-            //{
 
-
-            return repository.GetAll(pageRequest);
-            //return _killRepository.GetAll(pageRequest);
+            return games;
         }
 
     }

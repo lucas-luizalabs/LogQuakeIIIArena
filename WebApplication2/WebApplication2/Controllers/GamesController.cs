@@ -33,19 +33,40 @@ namespace LogQuake.API.Controllers
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
-            IEnumerable<Kill> jogos;
+            List<_Game> jogos;
 
             if (pageRequest == null)
                 pageRequest = new PageRequestBase { PageNumber = 1, PageSize = 5 };
 
             try
             {
-                jogos = _GameService.GetAll(pageRequest);// (new BuscarTodosJogosCommand(pageRequest.pageSize, pageRequest.pageNumber));
+                jogos = _GameService.GetAll(pageRequest);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
+
+            List<object> retorno = new List<object>();
+            Dictionary<string, _Game> SomeKey = null;
+            SomeKey = new Dictionary<string, _Game>();
+            for (int i = 0; i < 2; i++)
+            {
+                //SomeKey = new Dictionary<string, _Game>();
+                _Game game = new _Game();
+                game.Players = new string[] { "one", "two", "three" };
+                //game.Kills = new Kills();
+                game.TotalKills = 10;
+                game.Kills.Add("one", 2 * i);
+                game.Kills.Add("two", 1 * i);
+
+
+                SomeKey["game_" + i] = game;
+                retorno.Add(SomeKey);
+
+            }
+
+            return new ObjectResult(SomeKey);
 
             return new ObjectResult(jogos);
         }
