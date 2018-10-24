@@ -14,9 +14,27 @@ namespace LogQuake.Infra.Data.Repositories
     {
         public IEnumerable<Kill> GetAll(PageRequestBase pageRequest)
         {
-            return context.Set<Kill>().AsNoTracking().OrderBy(x => x.IdGame)
+            var xxx = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
                 .Skip(pageRequest.PageNumber - 1)
-                .Take(pageRequest.PageSize).ToList();
+                .Take(pageRequest.PageSize)
+                .ToList();
+
+            List<int> ccc = new List<int>();
+            foreach (var item in xxx)
+            {
+                ccc.Add(item.Key);
+            }
+
+
+            return context.Set<Kill>().Where(x => ccc.Contains(x.IdGame)).ToList();
+
+            return context.Set<Kill>().AsNoTracking()
+                .GroupBy(i => i.IdGame)
+                .Select(g => g.First())
+                .OrderBy(x => x.IdGame)
+                .Skip(pageRequest.PageNumber - 1)
+                .Take(pageRequest.PageSize)
+                .ToList();
         }
 
     }
