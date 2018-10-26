@@ -14,7 +14,12 @@ namespace LogQuake.API.Controllers
 {
     public class PlayersController : Controller
     {
-        private readonly PlayerRepository _playerRepository = new PlayerRepository();
+        private readonly PlayerRepository _playerRepository;// = new PlayerRepository();
+
+        public PlayersController(PlayerRepository playerRepository)
+        {
+            _playerRepository = playerRepository;
+        }
 
         // GET: Players
         public ActionResult Index()

@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using LogQuake.Domain.Entities;
+using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.Data.Contexto;
+using LogQuake.Infra.Data.Repositories;
+using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -15,16 +19,28 @@ using NSwag.AspNetCore;
 
 namespace WebApplication2
 {
+    /// <summary>
+    /// Classe inicial do sistemma.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Construtor da classe recebendo Interface de Configuração.
+        /// </summary>
+        /// <param name="configuration">confguração a ser executado</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Método de configuração da classe Startup.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper();
@@ -35,9 +51,16 @@ namespace WebApplication2
 
             services.AddDbContext<LogQuakeContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase"),b => b.UseRowNumberForPaging()));
+
+            services.AddScoped<ILogQuakeService, LogQuakeService>();
+            services.AddScoped<IKillRepository, KillRepository>();
+            services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
+            //IServiceBase<Kill> serviceBase
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

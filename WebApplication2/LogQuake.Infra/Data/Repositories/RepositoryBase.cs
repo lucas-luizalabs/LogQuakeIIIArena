@@ -12,7 +12,12 @@ namespace LogQuake.Infra.Data.Repositories
 {
     public class RepositoryBase<TEntity> : IDisposable, IRepositoryBase<TEntity> where TEntity : class
     {
-        protected LogQuakeContext context = new LogQuakeContext();
+        protected LogQuakeContext context;
+
+        public RepositoryBase(LogQuakeContext context)
+        {
+            this.context = context;
+        }
 
         public void Add(TEntity obj)
         {
@@ -20,7 +25,7 @@ namespace LogQuake.Infra.Data.Repositories
             context.SaveChanges();
         }
 
-        public IEnumerable<TEntity> GetAll(PageRequestBase pageRequest)
+        public List<TEntity> GetAll(PageRequestBase pageRequest)
         {
             return context.Set<TEntity>().AsNoTracking().ToList();
         }
@@ -44,7 +49,7 @@ namespace LogQuake.Infra.Data.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

@@ -9,6 +9,7 @@ using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Service.Services;
+using LogQuake.Service.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
@@ -16,17 +17,26 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace LogQuake.API.Controllers
 {
+    /// <summary>
+    /// API controladora do jogo
+    /// </summary>
     [Route("api/[controller]")]
     public class GamesController : Controller
     {
 
-        //private readonly ILogQuakeService _GameService;
-        private readonly LogQuakeService _GameService = new LogQuakeService();
+        private readonly ILogQuakeService _logQuakeService;
+        private readonly IServiceBase<Kill> _serviceBase;
 
-        //public GamesController(ILogQuakeService GameService)
-        //{
-        //    _GameService = GameService;
-        //}
+        /// <summary>
+        /// Constrututor da classe
+        /// </summary>
+        /// <param name="logQuakeService">objeto de Serviço do Jogo</param>
+        /// <param name="serviceBase">objeto de Serviço Base</param>
+        public GamesController(ILogQuakeService logQuakeService, IServiceBase<Kill> serviceBase)
+        {
+            _logQuakeService = logQuakeService;
+            _serviceBase = serviceBase;
+        }
 
         // GET: api/<controller>
         [HttpGet]
@@ -40,7 +50,8 @@ namespace LogQuake.API.Controllers
 
             try
             {
-                jogos = _GameService.GetAll(pageRequest);
+                jogos = _logQuakeService.GetAll(pageRequest);
+                return new ObjectResult(jogos);
             }
             catch (Exception ex)
             {
@@ -82,6 +93,26 @@ namespace LogQuake.API.Controllers
         [HttpPost]
         public void Post([FromBody]string value)
         {
+            string fileName = @"c:\LogQuake\games.log";
+            //LogQuakeService log = new LogQuakeService();
+            //ServiceBase<Kill> serviceKill = new ServiceBase<Kill>();
+            //ServiceBase<Player> servicePlayer = new ServiceBase<Player>();
+            List<Game> Games;
+            List<Kill> Kills;
+            //Kill kill;
+
+
+            Games = _logQuakeService.CarregarLog(fileName);
+            Kills = _logQuakeService.CarregarLogParaDB(fileName);
+
+            foreach (Kill item in Kills)
+            {
+                _serviceBase.Add<KillValidator>(item);
+            }
+
+
+            //service.Add<PlayerValidator>(player);
+
         }
 
         // PUT api/<controller>/5

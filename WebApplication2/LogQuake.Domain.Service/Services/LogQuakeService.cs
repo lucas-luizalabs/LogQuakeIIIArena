@@ -10,18 +10,18 @@ using System.Text;
 
 namespace LogQuake.Service.Services
 {
-    public class LogQuakeService
+    public class LogQuakeService : ILogQuakeService
     {
-        private KillRepository repository = new KillRepository();
+        //private KillRepository repository = new KillRepository();
         //private readonly IUnitOfWork _unitOfWork;
         private readonly IKillRepository _killRepository;
         //private readonly IUploadRepository _uploadRepository;
         //private bool _disposed = false;
 
         //public LogQuakeService(IUnitOfWork unitOfWork, IJogoRepository jogoRepository, IUploadRepository uploadRepository)
-        public LogQuakeService()
-        {
-        }
+        //public LogQuakeService()
+        //{
+        //}
 
         public LogQuakeService(IKillRepository killRepository)
         {
@@ -164,9 +164,13 @@ namespace LogQuake.Service.Services
 
         public List<_Game> GetAll(PageRequestBase pageRequest)
         {
-            List<Kill> lista = repository.GetAll(pageRequest).ToList();
+            List<Kill> lista = _killRepository.GetAll(pageRequest).ToList();
 
             List<_Game> games = new List<_Game>();
+
+            if (lista.Count == 0)
+                return games;
+
             _Game game;
             int idgame = 0;
             List<Kill> lista2;
@@ -179,21 +183,20 @@ namespace LogQuake.Service.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception();
+                    throw ex;
                 }
 
-                game = new _Game();
-
-                game.TotalKills = lista2.Count();
-                //game.Players = lista.Distinct(x => x.
+                game = new _Game
+                {
+                    TotalKills = lista2.Count()
+                };
 
                 var listKillers = lista2.Select(x => x.PlayerKiller).ToList();
                 var listKilleds = lista2.Select(x => x.PlayerKilled).ToList();
                 var listKills = listKillers.Union(listKilleds).ToList();
                 listKills.Remove("<world>");
+                listKills.Remove(null);
                 game.Players = listKills.ToArray();
-                //game.Kills = new Kills();
-                //game.Id = games.Count() + 1;
 
                 foreach (var item in lista2)
                 {
@@ -202,32 +205,37 @@ namespace LogQuake.Service.Services
                     if (Assassino == "<world>")
                     {
                         //Assasinado deve perder -1 kill
-                        if (game.Kills.ContainsKey(Assassinado))
+                        if (!string.IsNullOrEmpty(Assassinado))
                         {
-                            game.Kills[Assassinado] -= 1;
-                        }
-                        else
-                        {
-                            game.Kills.Add(Assassinado, -1);
+                            if (!string.IsNullOrEmpty(Assassinado) && game.Kills.ContainsKey(Assassinado))
+                            {
+                                game.Kills[Assassinado] -= 1;
+                            }
+                            else
+                            {
+                                game.Kills.Add(Assassinado, -1);
+                            }
                         }
                     }
                     else
                     {
                         //Assasino deve ganhar +1 kill
-                        if (game.Kills.ContainsKey(Assassino))
+                        if (!string.IsNullOrEmpty(Assassino))
                         {
-                            game.Kills[Assassino] += 1;
-                        }
-                        else
-                        {
-                            game.Kills.Add(Assassino, 1);
+                            if (game.Kills.ContainsKey(Assassino))
+                            {
+                                game.Kills[Assassino] += 1;
+                            }
+                            else
+                            {
+                                game.Kills.Add(Assassino, 1);
+                            }
                         }
                     }
                 }
                 games.Add(game);
 
-
-
+                //remove os jogos da lista até zerar a lista
                 lista.RemoveAll(x => x.IdGame == idgame);
             } while (lista.Count() > 0);
 

@@ -1,16 +1,13 @@
-﻿using LogQuake.Domain.Entities;
+﻿using System.Collections.Generic;
+using LogQuake.Domain.Entities;
 using LogQuake.Infra.CrossCuting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace LogQuake.Domain.Interfaces
+namespace LogQuake.Service.Services
 {
     public interface ILogQuakeService
     {
         List<Game> CarregarLog(string fileName);
         List<Kill> CarregarLogParaDB(string fileName);
-
-        IEnumerable<Kill> GetAll(PageRequestBase pageRequest);
+        List<_Game> GetAll(PageRequestBase pageRequest);
     }
 }

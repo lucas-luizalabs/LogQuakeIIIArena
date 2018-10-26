@@ -16,8 +16,14 @@ namespace WebApplication2.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
-        private readonly PlayerRepository _playerRepository = new PlayerRepository();
-        private ServiceBase<Player> service = new ServiceBase<Player>();
+        private readonly PlayerRepository _playerRepository;// = new PlayerRepository();
+        private ServiceBase<Player> service;// = new ServiceBase<Player>();
+
+        public ValuesController(PlayerRepository playerRepository, ServiceBase<Player> service)
+        {
+            _playerRepository = playerRepository;
+            this.service = service;
+        }
 
         // GET api/values
         /// <summary>
@@ -68,6 +74,7 @@ namespace WebApplication2.Controllers
         {
             Player player = new Player();
             player.PlayerName = "teste";
+            player.Id = 0;
             //player.Sobrenome = "xxx";
 
             //Player retorno = service.Post<UserValidator>(player);
@@ -75,23 +82,24 @@ namespace WebApplication2.Controllers
             try
             {
                 string fileName = @"c:\LogQuake\games.log";
-                LogQuakeService log = new LogQuakeService();
-                ServiceBase<Kill> serviceKill = new ServiceBase<Kill>();
-                ServiceBase<Player> servicePlayer = new ServiceBase<Player>();
-                List<Game> Games;
-                List<Kill> Kills;
-                Kill kill;
+                //LogQuakeService log = new LogQuakeService();
+                //ServiceBase<Kill> serviceKill = new ServiceBase<Kill>();
+                //ServiceBase<Player> servicePlayer = new ServiceBase<Player>();
+                //List<Game> Games;
+                //List<Kill> Kills;
+                //Kill kill;
 
-                Games = log.CarregarLog(fileName);
-                Kills = log.CarregarLogParaDB(fileName);
+                //Games = log.CarregarLog(fileName);
+                //Kills = log.CarregarLogParaDB(fileName);
 
-                foreach (Kill item in Kills)
-                {
-                    serviceKill.Add<KillValidator>(item);
-                }
+                //foreach (Kill item in Kills)
+                //{
+                //    serviceKill.Add<KillValidator>(item);
+                //}
 
 
-                service.Add<PlayerValidator>(player);
+                //service.Add<PlayerValidator>(player);
+                //return new ObjectResult(player.Id);
                 return new ObjectResult(player.Id);
             }
             catch (Exception ex)

@@ -11,7 +11,12 @@ namespace LogQuake.Service.Services
     public class ServiceBase<T> : IServiceBase<T> where T : class
     {
 
-        private RepositoryBase<T> repository = new RepositoryBase<T>();
+        private RepositoryBase<T> repository;// = new RepositoryBase<T>();
+
+        public ServiceBase(RepositoryBase<T> repository)
+        {
+            this.repository = repository;
+        }
 
         public void Remove(T obj)
         {

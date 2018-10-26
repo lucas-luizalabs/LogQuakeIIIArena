@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace LogQuake.API.AutoMapper
 {
+    /// <summary>
+    /// Classe para efeutar a conversão de ViewModel para Domain
+    /// </summary>
     public class ViewModelToDomainMappingProfile : Profile
     {
         /// <summary>
-        /// Seleciona todos os valores cadastrados.
+        /// Define um nome para o conversor
         /// </summary>
         public override string ProfileName
         {

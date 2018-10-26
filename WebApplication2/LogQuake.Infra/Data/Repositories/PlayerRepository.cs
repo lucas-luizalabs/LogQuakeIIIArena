@@ -10,7 +10,11 @@ namespace LogQuake.Infra.Data.Repositories
 {
     public class PlayerRepository : RepositoryBase<Player>, IPlayerRepository
     {
-        public IEnumerable<Player> BuscarPorNome(string nome)
+        public PlayerRepository(LogQuakeContext context) : base(context)
+        {
+        }
+
+        public List<Player> BuscarPorNome(string nome)
         {
             return context.Set<Player>().Where(p => p.PlayerName == nome).ToList();
         }

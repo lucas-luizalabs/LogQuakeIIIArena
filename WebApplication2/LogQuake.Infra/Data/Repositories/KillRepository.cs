@@ -12,29 +12,47 @@ namespace LogQuake.Infra.Data.Repositories
 {
     public class KillRepository : RepositoryBase<Kill>, IKillRepository
     {
-        public IEnumerable<Kill> GetAll(PageRequestBase pageRequest)
+        public KillRepository(LogQuakeContext context) : base(context)
         {
-            var xxx = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
+        }
+
+        public new List<Kill> GetAll(PageRequestBase pageRequest)
+        {
+            if (pageRequest == null)
+            {
+                throw new ArgumentNullException("KillRepository");
+            }
+
+            List<Kill> result = new List<Kill>();
+
+            //Buscar jogos agrupados po IdGame
+            var resultGroupByIdGame = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
                 .Skip(pageRequest.PageNumber - 1)
                 .Take(pageRequest.PageSize)
                 .ToList();
 
-            List<int> ccc = new List<int>();
-            foreach (var item in xxx)
+            if (resultGroupByIdGame.Count == 0)
             {
-                ccc.Add(item.Key);
+                return result;
             }
 
 
-            return context.Set<Kill>().Where(x => ccc.Contains(x.IdGame)).ToList();
+            //filtrar somente o campo IdGame
+            List<int> temp = new List<int>();
+            foreach (var item in resultGroupByIdGame)
+            {
+                temp.Add(item.Key);
+            }
+            if (temp.Count == 0)
+            {
+                return result;
+            }
 
-            return context.Set<Kill>().AsNoTracking()
-                .GroupBy(i => i.IdGame)
-                .Select(g => g.First())
-                .OrderBy(x => x.IdGame)
-                .Skip(pageRequest.PageNumber - 1)
-                .Take(pageRequest.PageSize)
-                .ToList();
+
+            result = context.Set<Kill>().Where(x => temp.Contains(x.IdGame)).ToList();
+
+            return result;
+
         }
 
     }
