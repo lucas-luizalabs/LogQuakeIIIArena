@@ -30,7 +30,7 @@ namespace LogQuake.Infra.Data.Repositories
             return context.Set<TEntity>().AsNoTracking().ToList();
         }
 
-        public TEntity GetById(int Id)
+        public virtual TEntity GetById(int Id)
         {
             return context.Set<TEntity>().Find(Id);
         }

@@ -16,6 +16,11 @@ namespace LogQuake.Infra.Data.Repositories
         {
         }
 
+        public void RemoveAll()
+        {
+            context.Kills.RemoveRange(context.Kills);
+        }
+
         public new List<Kill> GetAll(PageRequestBase pageRequest)
         {
             if (pageRequest == null)
@@ -37,7 +42,7 @@ namespace LogQuake.Infra.Data.Repositories
             }
 
 
-            //filtrar somente o campo IdGame
+            //Criar uma lista com somente o campo IdGame
             List<int> temp = new List<int>();
             foreach (var item in resultGroupByIdGame)
             {
@@ -53,6 +58,12 @@ namespace LogQuake.Infra.Data.Repositories
 
             return result;
 
+        }
+
+
+        public List<Kill> GetByIdList(int Id)
+        {
+            return context.Set<Kill>().Where(x => x.IdGame == Id).ToList();
         }
 
     }

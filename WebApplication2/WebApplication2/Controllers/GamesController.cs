@@ -8,6 +8,7 @@ using LogQuake.API.ViewModels;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
+using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using LogQuake.Service.Validators;
 using Microsoft.AspNetCore.Mvc;
@@ -23,27 +24,39 @@ namespace LogQuake.API.Controllers
     [Route("api/[controller]")]
     public class GamesController : Controller
     {
-
+        private readonly IKillRepository _killRepository;// = new PlayerRepository();
         private readonly ILogQuakeService _logQuakeService;
         private readonly IServiceBase<Kill> _serviceBase;
 
         /// <summary>
         /// Constrututor da classe
         /// </summary>
+        /// <param name="killRepository">repositório do log</param>
         /// <param name="logQuakeService">objeto de Serviço do Jogo</param>
         /// <param name="serviceBase">objeto de Serviço Base</param>
-        public GamesController(ILogQuakeService logQuakeService, IServiceBase<Kill> serviceBase)
+        //public GamesController(IKillRepository killRepository, ILogQuakeService logQuakeService, IServiceBase<Kill> serviceBase)
+        //{
+        //    _logQuakeService = logQuakeService;
+        //    _serviceBase = serviceBase;
+        //    _killRepository = killRepository;
+        //}
+
+        public GamesController(ILogQuakeService logQuakeService)
         {
             _logQuakeService = logQuakeService;
-            _serviceBase = serviceBase;
         }
 
+
+        /// <summary>
+        /// Consultar log de todos os jogos, respeitando paginação
+        /// </summary>
+        /// <param name="pageRequest">controle de paginação</param>
         // GET: api/<controller>
         [HttpGet]
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
-            List<_Game> jogos;
+            Dictionary<string, _Game> jogos;
 
             if (pageRequest == null)
                 pageRequest = new PageRequestBase { PageNumber = 1, PageSize = 5 };
@@ -57,74 +70,63 @@ namespace LogQuake.API.Controllers
             {
                 return BadRequest(ex);
             }
-
-            List<object> retorno = new List<object>();
-            Dictionary<string, _Game> SomeKey = null;
-            SomeKey = new Dictionary<string, _Game>();
-            for (int i = 0; i < 2; i++)
-            {
-                //SomeKey = new Dictionary<string, _Game>();
-                _Game game = new _Game();
-                game.Players = new string[] { "one", "two", "three" };
-                //game.Kills = new Kills();
-                game.TotalKills = 10;
-                game.Kills.Add("one", 2 * i);
-                game.Kills.Add("two", 1 * i);
-
-
-                SomeKey["game_" + i] = game;
-                retorno.Add(SomeKey);
-
-            }
-
-            return new ObjectResult(SomeKey);
-
-            return new ObjectResult(jogos);
         }
 
+        /// <summary>
+        /// Consultar log de todos os jogos po IdGame
+        /// </summary>
+        /// <param name="IdGame">Código de identificação do jogo</param>
         // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{IdGame}")]
+        public IActionResult Get(int IdGame)
         {
-            return "value";
+            Dictionary<string, _Game> jogo;
+
+            try
+            {
+                jogo = _logQuakeService.GetById(IdGame);
+                return new ObjectResult(jogo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
+        /// <summary>
+        /// Método para gravar o log em Banco de Dados
+        /// </summary>
+        /// <param name="arquivo">nome do arquivo a ser processado</param>
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]string arquivo)
         {
             string fileName = @"c:\LogQuake\games.log";
-            //LogQuakeService log = new LogQuakeService();
-            //ServiceBase<Kill> serviceKill = new ServiceBase<Kill>();
-            //ServiceBase<Player> servicePlayer = new ServiceBase<Player>();
-            List<Game> Games;
             List<Kill> Kills;
-            //Kill kill;
 
+            List<string> linhas = _logQuakeService.LerArquivoDeLog(fileName);
 
-            Games = _logQuakeService.CarregarLog(fileName);
-            Kills = _logQuakeService.CarregarLogParaDB(fileName);
-
-            foreach (Kill item in Kills)
+            if (linhas.Count > 0)
             {
-                _serviceBase.Add<KillValidator>(item);
+                Kills = _logQuakeService.CarregarLogParaDB(linhas);
+
+                foreach (Kill item in Kills)
+                {
+                    _serviceBase.Add<KillValidator>(item);
+                }
             }
-
-
-            //service.Add<PlayerValidator>(player);
-
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT api/<controller>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<controller>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

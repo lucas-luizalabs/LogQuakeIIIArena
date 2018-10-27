@@ -115,14 +115,26 @@ namespace LogQuake.Service.Services
             }
         }
 
-        public List<Kill> CarregarLogParaDB(string fileName)
+
+        public List<string> LerArquivoDeLog(string fileName)
         {
             List<string> linhas;
-            //string fileName = @"c:\LogQuake\games.txt";
+
+
+            if (File.Exists(fileName))
+                linhas = File.ReadAllLines(fileName).ToList();
+            else
+                linhas = new List<string>();
+
+            return linhas;
+        }
+
+        public List<Kill> CarregarLogParaDB(List<string> linhas)
+        {
+            _killRepository.RemoveAll();
 
             try
             {
-                linhas = File.ReadAllLines(fileName).ToList();
                 List<Kill> kills = new List<Kill>();
                 Kill kill;
                 int IdGame = 0;
@@ -158,28 +170,50 @@ namespace LogQuake.Service.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao carregar arquivo de log " + fileName, ex);
+                throw new Exception("Erro ao carregar arquivo de log ", ex);
             }
         }
 
-        public List<_Game> GetAll(PageRequestBase pageRequest)
+        public Dictionary<string, _Game> GetById(int Id)
         {
-            List<Kill> lista = _killRepository.GetAll(pageRequest).ToList();
+            List<Kill> listaKill = _killRepository.GetByIdList(Id).ToList();
 
-            List<_Game> games = new List<_Game>();
+            Dictionary<string, _Game> games = new Dictionary<string, _Game>();
 
-            if (lista.Count == 0)
+            if (listaKill.Count == 0)
                 return games;
 
+            ProcessaListaKill(listaKill, games, Id);
+
+            return games;
+        }
+
+        public Dictionary<string, _Game> GetAll(PageRequestBase pageRequest)
+        {
+            List<Kill> listaKill = _killRepository.GetAll(pageRequest).ToList();
+
+            Dictionary<string, _Game> games = new Dictionary<string, _Game>();
+
+            if (listaKill.Count == 0)
+                return games;
+
+            ProcessaListaKill(listaKill, games, ((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1);
+
+            return games;
+        }
+
+        private static void ProcessaListaKill(List<Kill> listaKill, Dictionary<string, _Game> games, int ContadorGame)
+        {
             _Game game;
             int idgame = 0;
-            List<Kill> lista2;
+            List<Kill> listaKillFiltrada;
             do
             {
 
-                try {
-                    idgame = lista[0].IdGame;
-                    lista2 = lista.Where(x => x.IdGame == idgame).ToList();
+                try
+                {
+                    idgame = listaKill[0].IdGame;
+                    listaKillFiltrada = listaKill.Where(x => x.IdGame == idgame).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -188,59 +222,57 @@ namespace LogQuake.Service.Services
 
                 game = new _Game
                 {
-                    TotalKills = lista2.Count()
+                    TotalKills = listaKillFiltrada.Count()
                 };
 
-                var listKillers = lista2.Select(x => x.PlayerKiller).ToList();
-                var listKilleds = lista2.Select(x => x.PlayerKilled).ToList();
+                var listKillers = listaKillFiltrada.Select(x => x.PlayerKiller).ToList();
+                var listKilleds = listaKillFiltrada.Select(x => x.PlayerKilled).ToList();
                 var listKills = listKillers.Union(listKilleds).ToList();
                 listKills.Remove("<world>");
                 listKills.Remove(null);
                 game.Players = listKills.ToArray();
 
-                foreach (var item in lista2)
+                foreach (Kill item in listaKillFiltrada)
                 {
                     string Assassino = item.PlayerKiller;
                     string Assassinado = item.PlayerKilled;
-                    if (Assassino == "<world>")
+
+                    //Assasino deve ganhar +1 kill
+                    if (!string.IsNullOrEmpty(Assassino) && Assassino != "<world>")
                     {
-                        //Assasinado deve perder -1 kill
-                        if (!string.IsNullOrEmpty(Assassinado))
+                        if (game.Kills.ContainsKey(Assassino))
                         {
-                            if (!string.IsNullOrEmpty(Assassinado) && game.Kills.ContainsKey(Assassinado))
-                            {
-                                game.Kills[Assassinado] -= 1;
-                            }
+                            if (game.Kills[Assassino] + 1 == 0)
+                                game.Kills.Remove(Assassino);
                             else
-                            {
-                                game.Kills.Add(Assassinado, -1);
-                            }
+                                game.Kills[Assassino] += 1;
+                        }
+                        else
+                        {
+                            game.Kills.Add(Assassino, 1);
                         }
                     }
-                    else
+                    if (!string.IsNullOrEmpty(Assassinado))
                     {
-                        //Assasino deve ganhar +1 kill
-                        if (!string.IsNullOrEmpty(Assassino))
+                        if (!string.IsNullOrEmpty(Assassinado) && game.Kills.ContainsKey(Assassinado))
                         {
-                            if (game.Kills.ContainsKey(Assassino))
-                            {
-                                game.Kills[Assassino] += 1;
-                            }
+                            if (game.Kills[Assassinado] - 1 == 0)
+                                game.Kills.Remove(Assassinado);
                             else
-                            {
-                                game.Kills.Add(Assassino, 1);
-                            }
+                                game.Kills[Assassinado] -= 1;
+                        }
+                        else
+                        {
+                            game.Kills.Add(Assassinado, -1);
                         }
                     }
                 }
-                games.Add(game);
+                games.Add("game_" + (ContadorGame), game);
+                ContadorGame++;
 
                 //remove os jogos da lista até zerar a lista
-                lista.RemoveAll(x => x.IdGame == idgame);
-            } while (lista.Count() > 0);
-
-
-            return games;
+                listaKill.RemoveAll(x => x.IdGame == idgame);
+            } while (listaKill.Count() > 0);
         }
 
     }

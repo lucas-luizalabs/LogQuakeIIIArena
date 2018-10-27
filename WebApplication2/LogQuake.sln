@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.CrossCutting", "Lo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Service.Test", "LogQuake.Service.Test\LogQuake.Service.Test.csproj", "{194DE34B-CB5C-4CC8-B414-71651D4941A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogQuake.Infra.Test", "LogQuake.Infra.Test\LogQuake.Infra.Test.csproj", "{7625B6FC-64E0-4421-8D48-B4602B9ABA72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{194DE34B-CB5C-4CC8-B414-71651D4941A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{194DE34B-CB5C-4CC8-B414-71651D4941A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{194DE34B-CB5C-4CC8-B414-71651D4941A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7625B6FC-64E0-4421-8D48-B4602B9ABA72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7625B6FC-64E0-4421-8D48-B4602B9ABA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7625B6FC-64E0-4421-8D48-B4602B9ABA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7625B6FC-64E0-4421-8D48-B4602B9ABA72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

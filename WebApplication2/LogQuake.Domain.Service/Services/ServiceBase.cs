@@ -8,39 +8,52 @@ using System.Text;
 
 namespace LogQuake.Service.Services
 {
+    /// <summary>
+    /// Classe de Serviço Base para todas as outras que necessitem efetuar um CRUD.
+    /// </summary>
     public class ServiceBase<T> : IServiceBase<T> where T : class
     {
+        /// <summary>
+        /// Criação de repositório recebendo uma classe.
+        /// </summary>
+        private RepositoryBase<T> repository;
 
-        private RepositoryBase<T> repository;// = new RepositoryBase<T>();
-
+        /// <summary>
+        /// Construtor da classe de Serviço Base, recebendo o repositório que irá trabalhar.
+        /// </summary>
         public ServiceBase(RepositoryBase<T> repository)
         {
             this.repository = repository;
         }
 
+        /// <summary>
+        /// Método de Remover/Excluir um registro da tabela.
+        /// </summary>
         public void Remove(T obj)
         {
-            //if (id == 0)
-            //    throw new ArgumentException("The id can't be zero.");
-
             repository.Remove(obj);
         }
 
+        /// <summary>
+        /// Método para buscar todos os registros do repositório T de forma paginada.
+        /// </summary>
         public IEnumerable<T> GetAll(PageRequestBase pageRequest) => repository.GetAll(pageRequest);
+
+
+        /// <summary>
+        /// Método para buscar registros por id do repositório T.
+        /// </summary>
         public T GetById(int id)
         {
             if (id == 0)
-                throw new ArgumentException("The id can't be zero.");
+                throw new ArgumentException("id não pode ser zero.");
 
             return repository.GetById(id);
         }
 
-        //public IList<T> Get()
-        //{
-
-        //    throw new NotImplementedException();
-        //}
-
+        /// <summary>
+        /// Método para adicionar um registro ao repositório T.
+        /// </summary>
         public T Add<V>(T obj) where V : AbstractValidator<T>
         {
             Validate(obj, Activator.CreateInstance<V>());
@@ -49,6 +62,9 @@ namespace LogQuake.Service.Services
             return obj;
         }
 
+        /// <summary>
+        /// Método para alterar um registro no repositório T.
+        /// </summary>
         public T Update<V>(T obj) where V : AbstractValidator<T>
         {
             Validate(obj, Activator.CreateInstance<V>());
@@ -56,6 +72,10 @@ namespace LogQuake.Service.Services
             repository.Update(obj);
             return obj;
         }
+
+        /// <summary>
+        /// Método para validar um registro do repositório T.
+        /// </summary>
         private void Validate(T obj, AbstractValidator<T> validator)
         {
             if (obj == null)
@@ -64,6 +84,9 @@ namespace LogQuake.Service.Services
             validator.ValidateAndThrow(obj);
         }
 
+        /// <summary>
+        /// Método para descarregar da memória a classe de Serviço Base.
+        /// </summary>
         public void Dispose()
         {
             throw new NotImplementedException();

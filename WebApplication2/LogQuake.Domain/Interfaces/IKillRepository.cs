@@ -7,5 +7,8 @@ namespace LogQuake.Domain.Interfaces
 {
     public interface IKillRepository : IRepositoryBase<Kill>
     {
+        List<Kill> GetByIdList(int Id);
+
+        void RemoveAll();
     }
 }
