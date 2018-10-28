@@ -30,11 +30,20 @@ namespace LogQuake.Infra.Data.Repositories
 
             List<Kill> result = new List<Kill>();
 
+            //var resultTemp = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
+            //    .ToList();
+
+            //var resultGroupByIdGame = context.Kills.OrderBy(x => x.IdGame).Select(p => new { p.IdGame })
+            //                  .Distinct().Skip(pageRequest.PageNumber - 1).Take(pageRequest.PageSize).ToList();
+
             //Buscar jogos agrupados po IdGame
             var resultGroupByIdGame = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
-                .Skip(pageRequest.PageNumber - 1)
+                //.Skip(pageRequest.PageNumber - 1)
+                .Skip(((pageRequest.PageNumber - 1) * pageRequest.PageSize))
                 .Take(pageRequest.PageSize)
                 .ToList();
+
+            //((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1
 
             if (resultGroupByIdGame.Count == 0)
             {
@@ -46,6 +55,7 @@ namespace LogQuake.Infra.Data.Repositories
             List<int> temp = new List<int>();
             foreach (var item in resultGroupByIdGame)
             {
+                //temp.Add(item.IdGame);
                 temp.Add(item.Key);
             }
             if (temp.Count == 0)

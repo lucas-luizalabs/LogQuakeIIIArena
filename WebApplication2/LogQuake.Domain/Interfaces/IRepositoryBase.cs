@@ -15,6 +15,8 @@ namespace LogQuake.Domain.Interfaces
 
         void Update(TEntity obj);
 
+        int Count();
+
         void Remove(TEntity obj);
 
         void Dispose();

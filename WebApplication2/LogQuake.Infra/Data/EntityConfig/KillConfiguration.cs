@@ -16,12 +16,14 @@ namespace LogQuake.Infra.Data.EntityConfig
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.PlayerKiller)
+                .HasMaxLength(30)
                 .IsRequired();
 
             builder.Property(c => c.IdGame)
                 .IsRequired();
 
             builder.Property(c => c.PlayerKilled)
+                .HasMaxLength(30)
                 .IsRequired();
 
         }

@@ -13,6 +13,7 @@ namespace LogQuake.Infra.Data.Repositories
     public class RepositoryBase<TEntity> : IDisposable, IRepositoryBase<TEntity> where TEntity : class
     {
         protected LogQuakeContext context;
+        private bool _disposed = false;
 
         public RepositoryBase(LogQuakeContext context)
         {
@@ -47,9 +48,29 @@ namespace LogQuake.Infra.Data.Repositories
             context.SaveChanges();
         }
 
+        public int Count()
+        {
+            return context.Set<TEntity>().Count();
+        }
+
         public void Dispose()
         {
-            //throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+            GC.Collect();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+
+                _disposed = true;
+            }
         }
     }
 }

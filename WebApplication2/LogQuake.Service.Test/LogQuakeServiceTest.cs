@@ -16,47 +16,51 @@ namespace LogQuake.Service.Test
     [TestClass]
     public class LogQuakeServiceTest
     {
-        private LogQuakeContext _logQuakeContext;
+        #region Atributos
+        private LogQuakeContext _context;
         private KillRepository _killRepository;
-        private ServiceBase<Kill> _serviceBase;
+        private LogQuakeService _logQuakeService;
+        #endregion
 
         public LogQuakeServiceTest()
         {
             InitContext();
         }
 
+        [TestInitialize]
         public void InitContext()
         {
             var builder = new DbContextOptionsBuilder<LogQuakeContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database");
 
-            _logQuakeContext = new LogQuakeContext(builder.Options);
-            //var books = Enumerable.Range(1, 10)
-            //    .Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
-            //context.Kills.AddRange(books);
-            //int changed = context.SaveChanges();
+            _context = new LogQuakeContext(builder.Options);
 
-            //_logQuakeContext = context;
-            //_killRepository = context.Kills;
-            _killRepository = new KillRepository(_logQuakeContext);
-            _serviceBase = new ServiceBase<Kill>(_killRepository);
+            _killRepository = new KillRepository(_context);
+            _logQuakeService = new LogQuakeService(_killRepository);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+            _context = null;
         }
 
         [TestMethod]
         public void BuscaPaginada()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
             var books = Enumerable.Range(1, 10).Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            _context.Kills.RemoveRange(_context.Kills);
+            _context.Kills.AddRange(books);
+            _context.SaveChanges();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = controller.GetAll(pageRequest);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
 
             //assert
             Assert.IsTrue(result != null);
@@ -68,27 +72,17 @@ namespace LogQuake.Service.Test
         public void BuscaPrimeiraPagina()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
-            List<Kill> books = new List<Kill>();
-            books.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-            books.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = controller.GetAll(pageRequest);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
 
             //assert
             Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 1);
+            Assert.IsTrue(result.Count == 4);
             Assert.IsTrue(result.Values.First().TotalKills == 6);
             Assert.IsTrue(result.Values.First().Kills["Zeh"] == 2);
             Assert.IsTrue(result.Values.First().Kills["Isgalamido"] == 1);
@@ -99,53 +93,34 @@ namespace LogQuake.Service.Test
         public void BuscaSegundaPagina()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
-            List<Kill> books = new List<Kill>();
-            books.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-            books.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 4, IdGame = 2, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 5, IdGame = 2, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 6, IdGame = 2, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
             pageRequest.PageNumber = 2;
             pageRequest.PageSize = 3;
-            Dictionary<string, _Game> result = controller.GetAll(pageRequest);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
 
             //assert
             Assert.IsTrue(result != null);
             Assert.IsTrue(result.Count == 1);
-            Assert.IsTrue(result.Values.First().TotalKills == 3);
-            Assert.IsTrue(result.Values.First().Kills["Isgalamido"] == 2);
-            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -3);
+            Assert.IsTrue(result.Values.First().TotalKills == 2);
+            Assert.IsTrue(result.Values.First().Kills["Teste"] == 1);
+            Assert.IsTrue(result.Values.First().Kills["Docinho"] == -1);
+            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -1);
         }
 
         [TestMethod]
-        public void BuscaNaoEncontrandoSegundaPagina()
+        public void BuscaNaoEncontrandoPagina200()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
-            List<Kill> books = new List<Kill>();
-            books.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-            books.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 2;
+            pageRequest.PageNumber = 200;
             pageRequest.PageSize = 3;
-            Dictionary<string, _Game> result = controller.GetAll(pageRequest);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
 
             //assert
             Assert.IsTrue(result != null);
@@ -157,16 +132,17 @@ namespace LogQuake.Service.Test
         public void BuscaPaginadaQueNaoEncontradaNada()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
+            PreparaBaseDeDados(false);
+
             //limpando a tabela Kill
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.SaveChanges();
+            //_context.Kills.RemoveRange(_context.Kills);
+            //_context.SaveChanges();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = controller.GetAll(pageRequest);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
 
             //assert
             Assert.IsTrue(result.Count == 0, "Erro");
@@ -177,10 +153,9 @@ namespace LogQuake.Service.Test
         public void BuscaPaginadaNulo()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
 
             //action
-            Dictionary<string, _Game> result = controller.GetAll(null);
+            Dictionary<string, _Game> result = _logQuakeService.GetAll(null);
 
             //assert
         }
@@ -189,50 +164,57 @@ namespace LogQuake.Service.Test
         public void BuscaPorId()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
-            List<Kill> books = new List<Kill>();
-            books.Add(new Kill { Id = 1, IdGame = 2, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-            books.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 5, IdGame = 2, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
-            Dictionary<string, _Game> result = controller.GetById(2);
+            Dictionary<string, _Game> result = _logQuakeService.GetById(2);
 
             //assert
             Assert.IsTrue(result != null);
             Assert.IsTrue(result.Values.First().TotalKills == 2);
             Assert.IsTrue(result.Values.First().Kills["Zeh"] == 1);
-            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -1);
+            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -2);
         }
 
         [TestMethod]
         public void BuscaPorIdNaoencontrado()
         {
             //arrange
-            LogQuakeService controller = new LogQuakeService(_killRepository);
-            List<Kill> books = new List<Kill>();
-            books.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-            books.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            books.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-            _logQuakeContext.Kills.RemoveRange(_logQuakeContext.Kills);
-            _logQuakeContext.Kills.AddRange(books);
-            _logQuakeContext.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
-            Dictionary<string, _Game> result = controller.GetById(2);
+            Dictionary<string, _Game> result = _logQuakeService.GetById(22);
 
             //assert
             Assert.IsTrue(result != null);
             Assert.IsTrue(result.Values.Count == 0);
         }
+
+        private void PreparaBaseDeDados(bool ComRegistros = true)
+        {
+            _context.Kills.RemoveRange(_context.Kills);
+            if (ComRegistros)
+            {
+                List<Kill> kills = new List<Kill>();
+                kills.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
+                kills.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
+
+                kills.Add(new Kill { Id = 7, IdGame = 2, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 8, IdGame = 2, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+
+                kills.Add(new Kill { Id = 9, IdGame = 3, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 10, IdGame = 3, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+
+                kills.Add(new Kill { Id = 11, IdGame = 4, PlayerKiller = "Teste", PlayerKilled = "Docinho" });
+                kills.Add(new Kill { Id = 12, IdGame = 4, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+                _context.Kills.AddRange(kills);
+            }
+            _context.SaveChanges();
+        }
+
     }
 }
