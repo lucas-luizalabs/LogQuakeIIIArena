@@ -12,15 +12,29 @@ namespace LogQuake.Infra.Data.Repositories
 {
     public class KillRepository : RepositoryBase<Kill>, IKillRepository
     {
+        /// <summary>
+        /// Consutrtor da classe
+        /// </summary>
         public KillRepository(LogQuakeContext context) : base(context)
         {
         }
 
+        /// <summary>
+        /// Remover/Excluir todos os registro da tabela Kill
+        /// </summary>
         public void RemoveAll()
         {
             context.Kills.RemoveRange(context.Kills);
+            //context.SaveChanges();
         }
 
+        /// <summary>
+        /// Buscar todos os registros da tabela Kill de forma paginada
+        /// </summary>
+        /// <param name="pageRequest">Define a página e o tamanho da página a ser utilizada na consulta</param>
+        /// <returns>
+        /// Retornar uma lista de registro da tabela Kill.
+        /// </returns>
         public new List<Kill> GetAll(PageRequestBase pageRequest)
         {
             if (pageRequest == null)
@@ -30,32 +44,21 @@ namespace LogQuake.Infra.Data.Repositories
 
             List<Kill> result = new List<Kill>();
 
-            //var resultTemp = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
-            //    .ToList();
-
-            //var resultGroupByIdGame = context.Kills.OrderBy(x => x.IdGame).Select(p => new { p.IdGame })
-            //                  .Distinct().Skip(pageRequest.PageNumber - 1).Take(pageRequest.PageSize).ToList();
-
             //Buscar jogos agrupados po IdGame
             var resultGroupByIdGame = context.Set<Kill>().OrderBy(i => i.IdGame).Select(p => new { p.IdGame }).GroupBy(i => i.IdGame)
-                //.Skip(pageRequest.PageNumber - 1)
                 .Skip(((pageRequest.PageNumber - 1) * pageRequest.PageSize))
                 .Take(pageRequest.PageSize)
                 .ToList();
-
-            //((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1
 
             if (resultGroupByIdGame.Count == 0)
             {
                 return result;
             }
 
-
             //Criar uma lista com somente o campo IdGame
             List<int> temp = new List<int>();
             foreach (var item in resultGroupByIdGame)
             {
-                //temp.Add(item.IdGame);
                 temp.Add(item.Key);
             }
             if (temp.Count == 0)
@@ -63,14 +66,18 @@ namespace LogQuake.Infra.Data.Repositories
                 return result;
             }
 
-
             result = context.Set<Kill>().Where(x => temp.Contains(x.IdGame)).ToList();
 
             return result;
-
         }
 
-
+        /// <summary>
+        /// Buscar registros da tabela Kill por Id
+        /// </summary>
+        /// <param name="Id">Identificador da tabela Kill</param>
+        /// <returns>
+        /// Retornar uma lista de registro da tabela Kill.
+        /// </returns>
         public List<Kill> GetByIdList(int Id)
         {
             return context.Set<Kill>().Where(x => x.IdGame == Id).ToList();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,6 +12,7 @@ using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using LogQuake.Service.Validators;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
@@ -22,6 +24,7 @@ namespace LogQuake.API.Controllers
     /// API controladora do jogo
     /// </summary>
     [Route("api/[controller]")]
+    //[Consumes("application/json", "multipart/form-data")]
     public class GamesController : Controller
     {
         private readonly IKillRepository _killRepository;// = new PlayerRepository();
@@ -56,7 +59,7 @@ namespace LogQuake.API.Controllers
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
-            Dictionary<string, _Game> jogos;
+            Dictionary<string, Game> jogos;
 
             if (pageRequest == null)
                 pageRequest = new PageRequestBase { PageNumber = 1, PageSize = 5 };
@@ -80,7 +83,7 @@ namespace LogQuake.API.Controllers
         [HttpGet("{IdGame}")]
         public IActionResult Get(int IdGame)
         {
-            Dictionary<string, _Game> jogo;
+            Dictionary<string, Game> jogo;
 
             try
             {
@@ -98,35 +101,75 @@ namespace LogQuake.API.Controllers
         /// </summary>
         /// <param name="arquivo">nome do arquivo a ser processado</param>
         // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string arquivo)
+        //[HttpPost]
+        //public void Post([FromBody]string arquivo)
+        //{
+        //    string fileName = @"c:\LogQuake\games.log";
+        //    List<Kill> Kills;
+
+        //    List<string> linhas = _logQuakeService.LerArquivoDeLog(fileName);
+
+        //    if (linhas.Count > 0)
+        //    {
+        //        Kills = _logQuakeService.CarregarLogParaDB(linhas);
+
+        //        foreach (Kill item in Kills)
+        //        {
+        //            _serviceBase.Add<KillValidator>(item);
+        //        }
+        //    }
+        //}
+
+
+        /// <summary>
+        /// Método para receber o Upload do arquivo de Log do jogo Quake
+        /// </summary>
+        /// <param name="file">arquivo a ser processado</param>
+        // POST api/<controller>
+        [HttpPost("upload")]
+        public IActionResult Upload(IFormFile file)
         {
-            string fileName = @"c:\LogQuake\games.log";
-            List<Kill> Kills;
+            string path;
+            int RegistrosInseridos = 0;
 
-            List<string> linhas = _logQuakeService.LerArquivoDeLog(fileName);
+            if (file == null || file.Length == 0)
+                return Content("Arquivo não selecionado.");
 
-            if (linhas.Count > 0)
+            try
             {
-                Kills = _logQuakeService.CarregarLogParaDB(linhas);
+                var stream = file.OpenReadStream();
+                var name = file.FileName;
 
-                foreach (Kill item in Kills)
+                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/log", file.FileName);
+
+                using (var stream2 = new FileStream(path, FileMode.Create))
                 {
-                    _serviceBase.Add<KillValidator>(item);
+                    file.CopyTo(stream2);
                 }
             }
+            catch (Exception ex)
+            {
+                return BadRequest("Falha ao ler o arquivo " + file.FileName + Environment.NewLine + ex.InnerException);
+            }
+
+            try
+            {
+                List<Kill> Kills;
+                List<string> linhas = _logQuakeService.LerArquivoDeLog(path);
+
+                if (linhas.Count > 0)
+                {
+                    Kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+
+                    RegistrosInseridos = _logQuakeService.AdicionarEmBDListaDeKill(Kills);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Falha ao processar o arquivo " + file.FileName + Environment.NewLine + ex.InnerException);
+            }
+
+            return Ok(new { length = file.Length, name = file.Name, Registros = RegistrosInseridos });
         }
-
-        //// PUT api/<controller>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE api/<controller>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

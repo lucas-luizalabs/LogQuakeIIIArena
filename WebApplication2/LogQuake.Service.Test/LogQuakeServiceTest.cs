@@ -22,11 +22,14 @@ namespace LogQuake.Service.Test
         private LogQuakeService _logQuakeService;
         #endregion
 
+        #region Construtor
         public LogQuakeServiceTest()
         {
             InitContext();
         }
+        #endregion
 
+        #region Criação do Contexto
         [TestInitialize]
         public void InitContext()
         {
@@ -46,150 +49,9 @@ namespace LogQuake.Service.Test
             _context.Dispose();
             _context = null;
         }
+        #endregion
 
-        [TestMethod]
-        public void BuscaPaginada()
-        {
-            //arrange
-            var books = Enumerable.Range(1, 10).Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
-            _context.Kills.RemoveRange(_context.Kills);
-            _context.Kills.AddRange(books);
-            _context.SaveChanges();
-
-            //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 1;
-            pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 5);
-            Assert.IsTrue(result.Values.First().TotalKills == 1);
-        }
-
-        [TestMethod]
-        public void BuscaPrimeiraPagina()
-        {
-            //arrange
-            PreparaBaseDeDados();
-
-            //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 1;
-            pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 4);
-            Assert.IsTrue(result.Values.First().TotalKills == 6);
-            Assert.IsTrue(result.Values.First().Kills["Zeh"] == 2);
-            Assert.IsTrue(result.Values.First().Kills["Isgalamido"] == 1);
-            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -5);
-        }
-
-        [TestMethod]
-        public void BuscaSegundaPagina()
-        {
-            //arrange
-            PreparaBaseDeDados();
-
-            //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 2;
-            pageRequest.PageSize = 3;
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 1);
-            Assert.IsTrue(result.Values.First().TotalKills == 2);
-            Assert.IsTrue(result.Values.First().Kills["Teste"] == 1);
-            Assert.IsTrue(result.Values.First().Kills["Docinho"] == -1);
-            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -1);
-        }
-
-        [TestMethod]
-        public void BuscaNaoEncontrandoPagina200()
-        {
-            //arrange
-            PreparaBaseDeDados();
-
-            //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 200;
-            pageRequest.PageSize = 3;
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 0);
-        }
-
-
-        [TestMethod]
-        public void BuscaPaginadaQueNaoEncontradaNada()
-        {
-            //arrange
-            PreparaBaseDeDados(false);
-
-            //limpando a tabela Kill
-            //_context.Kills.RemoveRange(_context.Kills);
-            //_context.SaveChanges();
-
-            //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 1;
-            pageRequest.PageSize = 5;
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(pageRequest);
-
-            //assert
-            Assert.IsTrue(result.Count == 0, "Erro");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void BuscaPaginadaNulo()
-        {
-            //arrange
-
-            //action
-            Dictionary<string, _Game> result = _logQuakeService.GetAll(null);
-
-            //assert
-        }
-
-        [TestMethod]
-        public void BuscaPorId()
-        {
-            //arrange
-            PreparaBaseDeDados();
-
-            //action
-            Dictionary<string, _Game> result = _logQuakeService.GetById(2);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Values.First().TotalKills == 2);
-            Assert.IsTrue(result.Values.First().Kills["Zeh"] == 1);
-            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -2);
-        }
-
-        [TestMethod]
-        public void BuscaPorIdNaoencontrado()
-        {
-            //arrange
-            PreparaBaseDeDados();
-
-            //action
-            Dictionary<string, _Game> result = _logQuakeService.GetById(22);
-
-            //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Values.Count == 0);
-        }
-
+        #region Criação do Banco de Dados
         private void PreparaBaseDeDados(bool ComRegistros = true)
         {
             _context.Kills.RemoveRange(_context.Kills);
@@ -215,6 +77,151 @@ namespace LogQuake.Service.Test
             }
             _context.SaveChanges();
         }
+        #endregion
 
+        #region Testes Unitários
+        [TestMethod]
+        public void BuscaPaginada()
+        {
+            //arrange
+            var books = Enumerable.Range(1, 10).Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
+            _context.Kills.RemoveRange(_context.Kills);
+            _context.Kills.AddRange(books);
+            _context.SaveChanges();
+
+            //action
+            PageRequestBase pageRequest = new PageRequestBase();
+            pageRequest.PageNumber = 1;
+            pageRequest.PageSize = 5;
+            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Count == 5);
+            Assert.IsTrue(result.Values.First().TotalKills == 1);
+        }
+
+        [TestMethod]
+        public void BuscaPrimeiraPagina()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            PageRequestBase pageRequest = new PageRequestBase();
+            pageRequest.PageNumber = 1;
+            pageRequest.PageSize = 5;
+            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Count == 4);
+            Assert.IsTrue(result.Values.First().TotalKills == 6);
+            Assert.IsTrue(result.Values.First().Kills["Zeh"] == 2);
+            Assert.IsTrue(result.Values.First().Kills["Isgalamido"] == 1);
+            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -5);
+        }
+
+        [TestMethod]
+        public void BuscaSegundaPagina()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            PageRequestBase pageRequest = new PageRequestBase();
+            pageRequest.PageNumber = 2;
+            pageRequest.PageSize = 3;
+            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Count == 1);
+            Assert.IsTrue(result.Values.First().TotalKills == 2);
+            Assert.IsTrue(result.Values.First().Kills["Teste"] == 1);
+            Assert.IsTrue(result.Values.First().Kills["Docinho"] == -1);
+            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -1);
+        }
+
+        [TestMethod]
+        public void BuscaNaoEncontrandoPagina200()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            PageRequestBase pageRequest = new PageRequestBase();
+            pageRequest.PageNumber = 200;
+            pageRequest.PageSize = 3;
+            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+
+        [TestMethod]
+        public void BuscaPaginadaQueNaoEncontradaNada()
+        {
+            //arrange
+            PreparaBaseDeDados(false);
+
+            //limpando a tabela Kill
+            //_context.Kills.RemoveRange(_context.Kills);
+            //_context.SaveChanges();
+
+            //action
+            PageRequestBase pageRequest = new PageRequestBase();
+            pageRequest.PageNumber = 1;
+            pageRequest.PageSize = 5;
+            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+
+            //assert
+            Assert.IsTrue(result.Count == 0, "Erro");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void BuscaPaginadaNulo()
+        {
+            //arrange
+
+            //action
+            Dictionary<string, Game> result = _logQuakeService.GetAll(null);
+
+            //assert
+        }
+
+        [TestMethod]
+        public void BuscaPorId()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            Dictionary<string, Game> result = _logQuakeService.GetById(2);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Values.First().TotalKills == 2);
+            Assert.IsTrue(result.Values.First().Kills["Zeh"] == 1);
+            Assert.IsTrue(result.Values.First().Kills["Dono da Bola"] == -2);
+        }
+
+        [TestMethod]
+        public void BuscaPorIdNaoencontrado()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            Dictionary<string, Game> result = _logQuakeService.GetById(22);
+
+            //assert
+            Assert.IsTrue(result != null);
+            Assert.IsTrue(result.Values.Count == 0);
+        }
+        #endregion
     }
 }

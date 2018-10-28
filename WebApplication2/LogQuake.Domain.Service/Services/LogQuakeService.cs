@@ -1,7 +1,9 @@
-﻿using LogQuake.Domain.Entities;
+﻿using FluentValidation;
+using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Repositories;
+using LogQuake.Service.Validators;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,116 +12,19 @@ using System.Text;
 
 namespace LogQuake.Service.Services
 {
-    public class LogQuakeService : ILogQuakeService
+    public class LogQuakeService :  ILogQuakeService
     {
-        //private KillRepository repository = new KillRepository();
-        //private readonly IUnitOfWork _unitOfWork;
         private readonly IKillRepository _killRepository;
-        //private readonly IUploadRepository _uploadRepository;
-        //private bool _disposed = false;
-
-        //public LogQuakeService(IUnitOfWork unitOfWork, IJogoRepository jogoRepository, IUploadRepository uploadRepository)
-        //public LogQuakeService()
-        //{
-        //}
 
         public LogQuakeService(IKillRepository killRepository)
         {
-            //_unitOfWork = unitOfWork;
             _killRepository = killRepository;
-            //_uploadRepository = uploadRepository;
-        }
-
-        public List<Game> CarregarLog(string fileName)
-        {
-            List<string> linhas;
-            //string fileName = @"c:\LogQuake\games.txt";
-
-            try
-            {
-                linhas = File.ReadAllLines(fileName).ToList();
-                List<Game> games = new List<Game>();
-
-                Game game = null;
-                foreach (string linha in linhas)
-                {
-                    if (linha.Contains("InitGame"))
-                    {
-                        game = new Game();
-                        game.Player = new List<Player>();
-                        game.Kills = new Kills();
-                        game.Id = games.Count() + 1;
-                        games.Add(game);
-                    }
-
-                    //verificando se houve algum assassinato, caso encontre deve adicionar ao Game
-                    int posKilled = linha.IndexOf(" killed ");
-
-                    if (posKilled > 0)
-                    {
-                        int pos1 = linha.Substring(0, posKilled).LastIndexOf(": ");
-                        string Assassino = linha.Substring(pos1 + 2, posKilled - (pos1 + 2)).Trim();
-                        string Assassinado = linha.Substring(posKilled + 8, linha.Substring(posKilled + 8).IndexOf(" by "));
-
-                        //Incrementa o contador de mortos no jogo independente se é um Player ou '<world>'
-                        game.TotalKills++;
-
-                        bool AssassinoEstaNoJogo = game.Player.Any(x => x.PlayerName == Assassino);
-                        bool AssassinadoEstaNoJogo = game.Player.Any(x => x.PlayerName == Assassinado);
-
-                        if (!AssassinoEstaNoJogo && Assassino != "<world>")
-                        {
-                            //adicionar Assasino na lista de Players
-                            game.Player.Add(new Player() { PlayerName = Assassino });
-                        }
-                        if (!AssassinadoEstaNoJogo)
-                        {
-                            //adicionar Assasinado na lista de Players
-                            game.Player.Add(new Player() { PlayerName = Assassinado });
-                        }
-
-                        if (Assassino == "<world>")
-                        {
-                            //Assasinado deve perder -1 kill
-                            if (game.Kills.values.ContainsKey(Assassinado))
-                            {
-                                game.Kills.values[Assassinado] -= 1;
-                            }
-                            else
-                            {
-                                game.Kills.values.Add(Assassinado, -1);
-                            }
-                        }
-                        else
-                        {
-                            //Assasino deve ganhar +1 kill
-                            if (game.Kills.values.ContainsKey(Assassino))
-                            {
-                                game.Kills.values[Assassino] += 1;
-                            }
-                            else
-                            {
-                                game.Kills.values.Add(Assassino, 1);
-                            }
-                        }
-
-                    }
-                }
-
-                return games;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro ao carregar arquivo de log " + fileName, ex);
-            }
         }
 
 
         public List<string> LerArquivoDeLog(string fileName)
         {
             List<string> linhas;
-
 
             if (File.Exists(fileName))
                 linhas = File.ReadAllLines(fileName).ToList();
@@ -129,10 +34,8 @@ namespace LogQuake.Service.Services
             return linhas;
         }
 
-        public List<Kill> CarregarLogParaDB(List<string> linhas)
+        public List<Kill> ConverterArquivoEmListaDeKill(List<string> linhas)
         {
-            _killRepository.RemoveAll();
-
             try
             {
                 List<Kill> kills = new List<Kill>();
@@ -166,7 +69,6 @@ namespace LogQuake.Service.Services
                 }
 
                 return kills;
-
             }
             catch (Exception ex)
             {
@@ -174,37 +76,81 @@ namespace LogQuake.Service.Services
             }
         }
 
-        public Dictionary<string, _Game> GetById(int Id)
+        public int AdicionarEmBDListaDeKill(List<Kill> Kills)
+        {
+            _killRepository.RemoveAll();
+
+            foreach (Kill item in Kills)
+            {
+                Validate(item, Activator.CreateInstance<KillValidator>());
+                _killRepository.Add(item);
+            }
+            _killRepository.SaveChanges();
+
+            return Kills.Count;
+        }
+
+        public Kill Add<V>(Kill obj) where V : AbstractValidator<Kill>
+        {
+            Validate(obj, Activator.CreateInstance<V>());
+
+            _killRepository.Add(obj);
+            return obj;
+        }
+
+        private void Validate(Kill obj, AbstractValidator<Kill> validator)
+        {
+            if (obj == null)
+                throw new Exception("Registros não detectados!");
+
+            validator.ValidateAndThrow(obj);
+        }
+
+        /// <summary>
+        /// Busca no Banco de Dados todos os dados de um determinado Jogo
+        /// </summary>
+        /// <param name="Id">Identificador do Jogo</param>
+        public Dictionary<string, Game> GetById(int Id)
         {
             List<Kill> listaKill = _killRepository.GetByIdList(Id).ToList();
 
-            Dictionary<string, _Game> games = new Dictionary<string, _Game>();
+            Dictionary<string, Game> games = new Dictionary<string, Game>();
 
             if (listaKill.Count == 0)
                 return games;
 
-            ProcessaListaKill(listaKill, games, Id);
+            ConverteListKillParaGame(listaKill, games, Id);
 
             return games;
         }
 
-        public Dictionary<string, _Game> GetAll(PageRequestBase pageRequest)
+        /// <summary>
+        /// Busca no Banco de Dados todos os Kill, respeitando a paginação
+        /// </summary>
+        /// <param name="pageRequest">parâmetros de paginação para buscar no Banco de Dados</param>
+        public Dictionary<string, Game> GetAll(PageRequestBase pageRequest)
         {
             List<Kill> listaKill = _killRepository.GetAll(pageRequest).ToList();
 
-            Dictionary<string, _Game> games = new Dictionary<string, _Game>();
+            Dictionary<string, Game> games = new Dictionary<string, Game>();
 
             if (listaKill.Count == 0)
                 return games;
 
-            ProcessaListaKill(listaKill, games, ((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1);
+            ConverteListKillParaGame(listaKill, games, ((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1);
 
             return games;
         }
 
-        private static void ProcessaListaKill(List<Kill> listaKill, Dictionary<string, _Game> games, int ContadorGame)
+        /// <summary>
+        /// Converter lista de Kill que foi obtida do Banco de Dados e converte para o objeto de retorno da API (Game)
+        /// </summary>
+        /// <param name="listaKill">lista de entrada</param>
+        /// <param name="games">retorno preenchido com os Jogos encontrados no Banco de Dados</param>
+        /// <param name="ContadorGame">variável de controle para indicar o número do Jogo "game_x"</param>
+        private static void ConverteListKillParaGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
         {
-            _Game game;
+            Game game;
             int idgame = 0;
             List<Kill> listaKillFiltrada;
             do
@@ -220,7 +166,7 @@ namespace LogQuake.Service.Services
                     throw ex;
                 }
 
-                game = new _Game
+                game = new Game
                 {
                     TotalKills = listaKillFiltrada.Count()
                 };

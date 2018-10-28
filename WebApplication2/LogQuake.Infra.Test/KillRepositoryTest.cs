@@ -16,11 +16,14 @@ namespace LogQuake.Infra.Test
         private KillRepository _killRepository;
         #endregion
 
+        #region Construtor
         public KillRepositoryTest()
         {
             InitContext();
         }
+        #endregion
 
+        #region Criação do Contexto
         [TestInitialize]
         public void InitContext()
         {
@@ -39,7 +42,28 @@ namespace LogQuake.Infra.Test
             _context.Dispose();
             _context = null;
         }
+        #endregion
 
+        #region Criação do BD
+        private void PreparaBaseDeDados(bool ComRegistros = true)
+        {
+            _context.Kills.RemoveRange(_context.Kills);
+            if (ComRegistros)
+            {
+                List<Kill> kills = new List<Kill>();
+                kills.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
+                kills.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
+                kills.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
+                _context.Kills.AddRange(kills);
+            }
+            _context.SaveChanges();
+        }
+        #endregion
+
+        #region Testes Unitários
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void InserirRegistroNulo()
@@ -84,8 +108,7 @@ namespace LogQuake.Infra.Test
             //assert
             Assert.IsTrue(_killRepository.Count() == 2);
         }
-
-
+        
         [TestMethod]
         public void InserirResgistroSemPlayerKilled()
         {
@@ -158,23 +181,6 @@ namespace LogQuake.Infra.Test
             //assert
             Assert.IsNull(retorno);
         }
-
-        private void PreparaBaseDeDados(bool ComRegistros = true)
-        {
-            _context.Kills.RemoveRange(_context.Kills);
-            if (ComRegistros)
-            {
-                List<Kill> kills = new List<Kill>();
-                kills.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
-                kills.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
-                kills.Add(new Kill { Id = 3, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-                kills.Add(new Kill { Id = 4, IdGame = 1, PlayerKiller = "<world>", PlayerKilled = "Dono da Bola" });
-                kills.Add(new Kill { Id = 5, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-                kills.Add(new Kill { Id = 6, IdGame = 1, PlayerKiller = "Isgalamido", PlayerKilled = "Dono da Bola" });
-                _context.Kills.AddRange(kills);
-            }
-            _context.SaveChanges();
-        }
-
+        #endregion
     }
 }

@@ -11,10 +11,13 @@ namespace LogQuake.Infra.Data.EntityConfig
     {
         public void Configure(EntityTypeBuilder<Kill> builder)
         {
+            //Nome da tabela
             builder.ToTable("Kill");
 
+            //Chave primária
             builder.HasKey(c => c.Id);
 
+            //Definindo as propriedades de cada coluna da tabela
             builder.Property(c => c.PlayerKiller)
                 .HasMaxLength(30)
                 .IsRequired();

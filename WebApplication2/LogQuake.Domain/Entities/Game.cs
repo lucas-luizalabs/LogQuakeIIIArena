@@ -1,21 +1,21 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LogQuake.Domain.Entities
 {
-    public class Game
+    public partial class Game
     {
-
-        public int Id { get; set; }
-
+        [JsonProperty("total_kills")]
         public long TotalKills { get; set; }
 
         [JsonProperty("players")]
-        public virtual List<Player> Player { get; set; }
+        public string[] Players { get; set; }
 
         [JsonProperty("kills")]
-        public virtual Kills Kills { get; set; }
+        public Dictionary<string, int> Kills = new Dictionary<string, int>();
     }
 }

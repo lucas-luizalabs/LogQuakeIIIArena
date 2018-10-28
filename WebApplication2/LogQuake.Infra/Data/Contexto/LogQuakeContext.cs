@@ -25,8 +25,6 @@ namespace LogQuake.Infra.Data.Contexto
           : base(options)
         { }
 
-        public DbSet<Player> Players { get; set; }
-
         public DbSet<Kill> Kills { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -41,8 +39,6 @@ namespace LogQuake.Infra.Data.Contexto
 
             //ou utiliza assim ou o jeito de baixo
             //modelBuilder.Entity<Player>(new PlayerConfiguration().Configure);
-
-            modelBuilder.ApplyConfiguration(new PlayerConfiguration());
 
             modelBuilder.ApplyConfiguration(new KillConfiguration());
         }

@@ -27,7 +27,7 @@ namespace LogQuake.API.AutoMapper
         public DomainToviewModelMappginProfile()
         {
 
-            CreateMap<PlayerViewModel, Player>();
+            //CreateMap<PlayerViewModel, Player>();
         }
     }
 }

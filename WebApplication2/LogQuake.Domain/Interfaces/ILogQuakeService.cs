@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentValidation;
 using LogQuake.Domain.Entities;
 using LogQuake.Infra.CrossCuting;
 
@@ -6,13 +7,15 @@ namespace LogQuake.Service.Services
 {
     public interface ILogQuakeService
     {
-        List<Game> CarregarLog(string fileName);
+        int AdicionarEmBDListaDeKill(List<Kill> Kills);
+            
+        Kill Add<V>(Kill obj) where V : AbstractValidator<Kill>;
 
-        List<Kill> CarregarLogParaDB(List<string> linhas);
+        List<Kill> ConverterArquivoEmListaDeKill(List<string> linhas);
 
-        Dictionary<string, _Game> GetAll(PageRequestBase pageRequest);
+        Dictionary<string, Game> GetAll(PageRequestBase pageRequest);
 
-        Dictionary<string, _Game> GetById(int Id);
+        Dictionary<string, Game> GetById(int Id);
 
         List<string> LerArquivoDeLog(string fileName);
     }
