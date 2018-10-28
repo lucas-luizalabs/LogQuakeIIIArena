@@ -5,15 +5,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\Log\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
+    <PackageReference Include="NSwag.AspNetCore" Version="11.20.1" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogQuake.Domain.Service\LogQuake.Service.csproj" />
+    <ProjectReference Include="..\LogQuake.Domain\LogQuake.Domain.csproj" />
+    <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
   </ItemGroup>
 
 </Project>

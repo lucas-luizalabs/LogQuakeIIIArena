@@ -1,4 +1,4 @@
-using LogQuake.API.Controllers;
+//using LogQuake.API.Controllers;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;

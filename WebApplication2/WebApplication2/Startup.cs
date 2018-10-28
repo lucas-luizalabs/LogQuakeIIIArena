@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+//using AutoMapper;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.Data.Contexto;
@@ -49,7 +49,7 @@ namespace WebApplication2
                 new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
             );
 
-            services.AddAutoMapper();
+            //services.AddAutoMapper();
 
             services.AddMvc();
 

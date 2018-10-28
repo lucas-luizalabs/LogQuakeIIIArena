@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\LogQuake.Domain.Service\LogQuake.Service.csproj" />
     <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
-    <ProjectReference Include="..\WebApplication2\LogQuake.API.csproj" />
   </ItemGroup>
 
 </Project>

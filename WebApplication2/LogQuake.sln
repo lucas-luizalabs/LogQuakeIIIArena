@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.API", "WebApplication2\LogQuake.API.csproj", "{BBD139AC-D29C-4F10-827A-B3F680C192E8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Service", "LogQuake.Domain.Service\LogQuake.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{728E0C07-5509-4EA7-9B2B-49140700764F} = {728E0C07-5509-4EA7-9B2B-49140700764F}
@@ -38,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{EBD3D910-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - API", "1 - API", "{517BDDD4-9120-402E-B574-D0B4492448EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{44026B85-9C0F-48D0-AB55-EBF677D74AD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.API", "WebApplication1\LogQuake.API.csproj", "{44026B85-9C0F-48D0-AB55-EBF677D74AD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,10 +44,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBD139AC-D29C-4F10-827A-B3F680C192E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,7 +81,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BBD139AC-D29C-4F10-827A-B3F680C192E8} = {517BDDD4-9120-402E-B574-D0B4492448EB}
 		{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5} = {FA608F4C-06E7-4D6C-ABE7-B446E82E9108}
 		{5B572BC4-13C1-48CE-8466-3BA65749065B} = {85B0419D-A449-469A-97C9-DB67175DE406}
 		{728E0C07-5509-4EA7-9B2B-49140700764F} = {5CD18527-B8D4-4F53-B862-D3F0381E617A}
