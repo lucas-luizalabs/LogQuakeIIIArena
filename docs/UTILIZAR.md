@@ -48,8 +48,8 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 5. Informe o local da API: http://localhost:65080/api/games/upload
 6. Selecione a opção Body
 7. Selecione a opção form-data
-8. Em Key, selecione File, e digite o nome file no campo Key
-9. No campo Value, selecione um arquivo de log do jogo Quake III Arena
+8. Em Key, selecione File, e digite o nome file no campo KEY
+9. No campo VALUE, selecione um arquivo de log do jogo Quake III Arena
 10. Clique no botão Send
 
 Segue exemplo abaixo:
