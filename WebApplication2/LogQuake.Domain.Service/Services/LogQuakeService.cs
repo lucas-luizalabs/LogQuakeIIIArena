@@ -27,7 +27,7 @@ namespace LogQuake.Service.Services
 
 
         /// <summary>
-        /// Método responsável ler o arquivo de log e criar uma lista de string, contendo as linhas do log.
+        /// Método responsável por ler o arquivo de log do jogo Quake 3 Arena e criar uma lista de string, contendo as linhas do log.
         /// </summary>
         /// <param name="filename">arquivo a ser lido</param>
         /// <returns>
@@ -46,7 +46,7 @@ namespace LogQuake.Service.Services
         }
 
         /// <summary>
-        /// Método responsável por converter as linhas do arquivo de log, em uma lista de Kills.
+        /// Método responsável por converter as linhas do arquivo de log contidas em uma lista de strings, em uma lista de Kills.
         /// </summary>
         /// <param name="linhas">lista de string, contendo as linhas do arquivo de log</param>
         /// <returns>
@@ -73,14 +73,14 @@ namespace LogQuake.Service.Services
                     if (posKilled > 0)
                     {
                         int pos1 = linha.Substring(0, posKilled).LastIndexOf(": ");
-                        string Assassino = linha.Substring(pos1 + 2, posKilled - (pos1 + 2)).Trim();
-                        string Assassinado = linha.Substring(posKilled + 8, linha.Substring(posKilled + 8).IndexOf(" by "));
+                        string killer = linha.Substring(pos1 + 2, posKilled - (pos1 + 2)).Trim();
+                        string killed = linha.Substring(posKilled + 8, linha.Substring(posKilled + 8).IndexOf(" by "));
 
                         kill = new Kill();
 
                         kill.IdGame = IdGame;
-                        kill.PlayerKilled = Assassinado;
-                        kill.PlayerKiller = Assassino;
+                        kill.PlayerKiller = killer;
+                        kill.PlayerKilled = killed;
 
                         kills.Add(kill);
                     }
@@ -124,7 +124,7 @@ namespace LogQuake.Service.Services
         }
 
         /// <summary>
-        /// Busca no Banco de Dados todos os dados de um determinado Jogo
+        /// Busca no Banco de Dados os dados de um determinado Jogo.
         /// </summary>
         /// <param name="Id">Identificador do Jogo</param>
         public Dictionary<string, Game> GetById(int Id)
@@ -142,7 +142,7 @@ namespace LogQuake.Service.Services
         }
 
         /// <summary>
-        /// Busca no Banco de Dados todos os Kill, respeitando a paginação
+        /// Busca no Banco de Dados os dados de todos os jogos, respeitando a paginação informada.
         /// </summary>
         /// <param name="pageRequest">parâmetros de paginação para buscar no Banco de Dados</param>
         public Dictionary<string, Game> GetAll(PageRequestBase pageRequest)
@@ -162,9 +162,9 @@ namespace LogQuake.Service.Services
         /// <summary>
         /// Converter lista de Kill que foi obtida do Banco de Dados e converte para o objeto de retorno da API (Game)
         /// </summary>
-        /// <param name="listaKill">lista de entrada</param>
-        /// <param name="games">retorno preenchido com os Jogos encontrados no Banco de Dados</param>
-        /// <param name="ContadorGame">variável de controle para indicar o número do Jogo "game_x"</param>
+        /// <param name="listaKill">lista Kill de entrada</param>
+        /// <param name="games">retorna uma lista preenchida com os Jogos encontrados de acordo com a listaKill</param>
+        /// <param name="ContadorGame">variável de controle para indicar o número do Jogo "game_x" dentro da lista games</param>
         private static void ConverteListKillParaGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
         {
             Game game;
@@ -205,6 +205,5 @@ namespace LogQuake.Service.Services
                 listaKill.RemoveAll(x => x.IdGame == idgame);
             } while (listaKill.Count() > 0);
         }
-
     }
 }

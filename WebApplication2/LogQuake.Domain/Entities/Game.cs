@@ -18,6 +18,10 @@ namespace LogQuake.Domain.Entities
         [JsonProperty("kills")]
         public Dictionary<string, int> Kills = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Adiciona na lista Players os jogadores informados, removendo Nulos e world
+        /// </summary>
+        /// <param name="players">lista de jogadores</param>
         public void RegistraPlayers(List<string> players)
         {
             players.Remove("<world>");
@@ -26,40 +30,43 @@ namespace LogQuake.Domain.Entities
             Players = players.ToArray();
         }
 
-        public void RegistraMorte(string Assassino, string Assassinado)
+        /// <summary>
+        /// Registra morte na Lista Kills, para cada Player e incrementa o contador total de mortes "TotalKills"
+        /// </summary>
+        /// <param name="killer">nome do assassino</param>
+        /// <param name="killed">nome do assassinado</param>
+        public void RegistraMorte(string killer, string killed)
         {
             TotalKills++;
             //Assasino deve ganhar +1 kill
-            if (!string.IsNullOrEmpty(Assassino) && Assassino != "<world>")
+            if (!string.IsNullOrEmpty(killer) && killer != "<world>")
             {
-                if (Kills.ContainsKey(Assassino))
+                if (Kills.ContainsKey(killer)) //Assassino
                 {
-                    if (Kills[Assassino] + 1 == 0)
-                        Kills.Remove(Assassino);
+                    if (Kills[killer] + 1 == 0)
+                        Kills.Remove(killer);
                     else
-                        Kills[Assassino] += 1;
+                        Kills[killer] += 1;
                 }
                 else
                 {
-                    Kills.Add(Assassino, 1);
+                    Kills.Add(killer, 1);
                 }
             }
-            if (!string.IsNullOrEmpty(Assassinado))
+            if (!string.IsNullOrEmpty(killed)) //Assassinado
             {
-                if (!string.IsNullOrEmpty(Assassinado) && Kills.ContainsKey(Assassinado))
+                if (!string.IsNullOrEmpty(killed) && Kills.ContainsKey(killed))
                 {
-                    if (Kills[Assassinado] - 1 == 0)
-                        Kills.Remove(Assassinado);
+                    if (Kills[killed] - 1 == 0)
+                        Kills.Remove(killed);
                     else
-                        Kills[Assassinado] -= 1;
+                        Kills[killed] -= 1;
                 }
                 else
                 {
-                    Kills.Add(Assassinado, -1);
+                    Kills.Add(killed, -1);
                 }
             }
-
         }
-
     }
 }

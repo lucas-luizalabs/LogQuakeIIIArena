@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogQuake.Infra.Migrations
 {
     [DbContext(typeof(LogQuakeContext))]
-    [Migration("20181023014706_Versao_2")]
-    partial class Versao_2
+    [Migration("20181029014734_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,30 +29,16 @@ namespace LogQuake.Infra.Migrations
                     b.Property<int>("IdGame");
 
                     b.Property<string>("PlayerKilled")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(30);
 
                     b.Property<string>("PlayerKiller")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(30);
 
                     b.HasKey("Id");
 
                     b.ToTable("Kill");
-                });
-
-            modelBuilder.Entity("LogQuake.Domain.Entities.Player", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("PlayerName")
-                        .IsRequired()
-                        .HasColumnName("PlayerName")
-                        .HasMaxLength(60);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Player");
                 });
 #pragma warning restore 612, 618
         }

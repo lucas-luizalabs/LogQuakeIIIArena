@@ -8,24 +8,25 @@ namespace LogQuake.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Player",
+                name: "Kill",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    PlayerName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true)
+                    PlayerKiller = table.Column<string>(maxLength: 30, nullable: false),
+                    IdGame = table.Column<int>(nullable: false),
+                    PlayerKilled = table.Column<string>(maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Players", x => x.Id);
+                    table.PrimaryKey("PK_Kill", x => x.Id);
                 });
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Player");
+                name: "Kill");
         }
     }
 }

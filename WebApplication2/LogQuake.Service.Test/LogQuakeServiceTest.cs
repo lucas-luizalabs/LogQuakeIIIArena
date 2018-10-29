@@ -59,6 +59,7 @@ namespace LogQuake.Service.Test
             _context.Kills.RemoveRange(_context.Kills);
             if (ComRegistros)
             {
+                //var kills = Enumerable.Range(1, 10).Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
                 List<Kill> kills = new List<Kill>();
                 kills.Add(new Kill { Id = 1, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Isgalamido" });
                 kills.Add(new Kill { Id = 2, IdGame = 1, PlayerKiller = "Zeh", PlayerKilled = "Dono da Bola" });
@@ -86,10 +87,7 @@ namespace LogQuake.Service.Test
         public void BuscaPaginada()
         {
             //arrange
-            var books = Enumerable.Range(1, 10).Select(i => new Kill { Id = i, IdGame = i, PlayerKilled = "Wrox Press" });
-            _context.Kills.RemoveRange(_context.Kills);
-            _context.Kills.AddRange(books);
-            _context.SaveChanges();
+            PreparaBaseDeDados();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();
@@ -168,10 +166,6 @@ namespace LogQuake.Service.Test
         {
             //arrange
             PreparaBaseDeDados(false);
-
-            //limpando a tabela Kill
-            //_context.Kills.RemoveRange(_context.Kills);
-            //_context.SaveChanges();
 
             //action
             PageRequestBase pageRequest = new PageRequestBase();

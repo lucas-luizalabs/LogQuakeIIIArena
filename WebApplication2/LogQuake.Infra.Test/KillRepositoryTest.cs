@@ -68,8 +68,13 @@ namespace LogQuake.Infra.Test
         [ExpectedException(typeof(ArgumentNullException))]
         public void InserirRegistroNulo()
         {
+            //arrange
+
+            //action
             _killRepository.Add(null);
             _killRepository.SaveChanges();
+
+            //assert
         }
 
         [TestMethod]

@@ -9,13 +9,7 @@ namespace LogQuake.Infra.Data.Contexto
 {
     public class LogQuakeContext: DbContext
     {
-        //private const string V = "LogQuakeDatabase";
-        private const string V = "Server=(localdb)\\mssqllocaldb;Database=EFGetStarted.ConsoleApp.NewDb;Trusted_Connection=True;";
-        //private DbContextOptions<LogQuakeContext> options = new DbContextOptions<LogQuakeContext>();
-
-        //public LogQuakeContext()
-        //    : base(V)
-        //{ }
+        private const string stringConnection = "Server=(localdb)\\mssqllocaldb;Database=EFGetStarted.ConsoleApp.NewDb;Trusted_Connection=True;";
 
         public LogQuakeContext()
         {
@@ -23,14 +17,18 @@ namespace LogQuake.Infra.Data.Contexto
 
         public LogQuakeContext(DbContextOptions<LogQuakeContext> options)
           : base(options)
-        { }
+        {
+        }
 
+        /// <summary>
+        /// Acesso aos dados da tabela Kill
+        /// </summary>
         public DbSet<Kill> Kills { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(V);
+                optionsBuilder.UseSqlServer(stringConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,10 +43,6 @@ namespace LogQuake.Infra.Data.Contexto
 
         public override int SaveChanges()
         {
-            //foreach (var item in ChangeTracker.Entries().Equals)
-            //{
-
-            //}
             return base.SaveChanges();
         }
     }

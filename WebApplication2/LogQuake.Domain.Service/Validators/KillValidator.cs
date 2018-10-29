@@ -18,16 +18,16 @@ namespace LogQuake.Service.Validators
                 });
 
             RuleFor(c => c.PlayerKiller)
-                .NotEmpty().WithMessage("Obrigatório informar o IdPlayerKiller.")
-                .NotNull().WithMessage("Obrigatório informar o IdPlayerKiller.");
+                .NotEmpty().WithMessage("Obrigatório informar o PlayerKiller.")
+                .NotNull().WithMessage("Obrigatório informar o PlayerKiller.");
 
             RuleFor(c => c.IdGame)
                 .NotEmpty().WithMessage("Obrigatório informar o IdGame.")
                 .NotNull().WithMessage("Obrigatório informar o IdGame.");
 
             RuleFor(c => c.PlayerKilled)
-                .NotEmpty().WithMessage("Obrigatório informar o IdPlayerKilled.")
-                .NotNull().WithMessage("Obrigatório informar o IdPlayerKilled.");
+                .NotEmpty().WithMessage("Obrigatório informar o PlayerKilled.")
+                .NotNull().WithMessage("Obrigatório informar o PlayerKilled.");
         }
     }
 }

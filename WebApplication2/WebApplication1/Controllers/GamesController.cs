@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using LogQuake.Domain.Entities;
-using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
-using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
-using LogQuake.Service.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +18,6 @@ namespace LogQuake.API.Controllers
     public class GamesController : Controller
     {
         #region Atributos
-        private readonly IKillRepository _killRepository;
         private readonly ILogQuakeService _logQuakeService;
         #endregion
 
@@ -41,6 +32,7 @@ namespace LogQuake.API.Controllers
         }
         #endregion
 
+        #region Métodos
         /// <summary>
         /// Consultar log de todos os jogos, respeitando paginação
         /// </summary>
@@ -50,18 +42,18 @@ namespace LogQuake.API.Controllers
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
-            Dictionary<string, Game> jogos;
+            Dictionary<string, Game> games;
 
             if (pageRequest == null)
                 pageRequest = new PageRequestBase { PageNumber = 1, PageSize = 5 };
 
             try
             {
-                jogos = _logQuakeService.GetAll(pageRequest);
-                if (jogos.Count == 0)
-                    return NotFound(jogos);
+                games = _logQuakeService.GetAll(pageRequest);
+                if (games.Count == 0)
+                    return NotFound(games);
                 else
-                    return Ok(jogos);
+                    return Ok(games);
             }
             catch (Exception ex)
             {
@@ -72,27 +64,26 @@ namespace LogQuake.API.Controllers
         /// <summary>
         /// Consultar log dos jogos por IdGame
         /// </summary>
-        /// <param name="IdGame">Código de identificação do jogo</param>
+        /// <param name="idGame">Código de identificação do jogo</param>
         // GET api/<controller>/5
-        [HttpGet("{IdGame}")]
-        public IActionResult Get(int IdGame)
+        [HttpGet("{idGame}")]
+        public IActionResult Get(int idGame)
         {
-            Dictionary<string, Game> jogo;
+            Dictionary<string, Game> game;
 
             try
             {
-                jogo = _logQuakeService.GetById(IdGame);
-                if (jogo.Count == 0)
-                    return NotFound(jogo);
+                game = _logQuakeService.GetById(idGame);
+                if (game.Count == 0)
+                    return NotFound(game);
                 else
-                    return Ok(jogo);
+                    return Ok(game);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
         }
-
 
         /// <summary>
         /// Método para receber o Upload do arquivo de Log do jogo Quake
@@ -144,5 +135,6 @@ namespace LogQuake.API.Controllers
 
             return Ok(new { length = file.Length, name = file.Name, Registros = RegistrosInseridos });
         }
+        #endregion
     }
 }
