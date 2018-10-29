@@ -9,8 +9,6 @@ namespace LogQuake.Service.Services
     {
         int AdicionarEmBDListaDeKill(List<Kill> Kills);
             
-        Kill Add<V>(Kill obj) where V : AbstractValidator<Kill>;
-
         List<Kill> ConverterArquivoEmListaDeKill(List<string> linhas);
 
         Dictionary<string, Game> GetAll(PageRequestBase pageRequest);

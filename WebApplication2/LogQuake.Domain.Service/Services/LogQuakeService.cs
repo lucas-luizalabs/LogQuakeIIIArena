@@ -14,14 +14,25 @@ namespace LogQuake.Service.Services
 {
     public class LogQuakeService :  ILogQuakeService
     {
+        #region Atributos
         private readonly IKillRepository _killRepository;
+        #endregion
 
+        #region Construtor
         public LogQuakeService(IKillRepository killRepository)
         {
             _killRepository = killRepository;
         }
+        #endregion
 
 
+        /// <summary>
+        /// Método responsável ler o arquivo de log e criar uma lista de string, contendo as linhas do log.
+        /// </summary>
+        /// <param name="filename">arquivo a ser lido</param>
+        /// <returns>
+        /// Retorna uma lista de string, contendo as linhas do arquivo de log lido.
+        /// </returns>
         public List<string> LerArquivoDeLog(string fileName)
         {
             List<string> linhas;
@@ -34,6 +45,13 @@ namespace LogQuake.Service.Services
             return linhas;
         }
 
+        /// <summary>
+        /// Método responsável por converter as linhas do arquivo de log, em uma lista de Kills.
+        /// </summary>
+        /// <param name="linhas">lista de string, contendo as linhas do arquivo de log</param>
+        /// <returns>
+        /// Retorna uma lista de Kills.
+        /// </returns>
         public List<Kill> ConverterArquivoEmListaDeKill(List<string> linhas)
         {
             try
@@ -76,6 +94,13 @@ namespace LogQuake.Service.Services
             }
         }
 
+        /// <summary>
+        /// Adicionar no Banco de Dados uma lista Kills.
+        /// </summary>
+        /// <param name="Kills">lista de kills</param>
+        /// <returns>
+        /// Retorna a quantidade de registros inseridos no Banco de Dados.
+        /// </returns>
         public int AdicionarEmBDListaDeKill(List<Kill> Kills)
         {
             _killRepository.RemoveAll();
@@ -88,14 +113,6 @@ namespace LogQuake.Service.Services
             _killRepository.SaveChanges();
 
             return Kills.Count;
-        }
-
-        public Kill Add<V>(Kill obj) where V : AbstractValidator<Kill>
-        {
-            Validate(obj, Activator.CreateInstance<V>());
-
-            _killRepository.Add(obj);
-            return obj;
         }
 
         private void Validate(Kill obj, AbstractValidator<Kill> validator)
@@ -166,57 +183,25 @@ namespace LogQuake.Service.Services
                     throw ex;
                 }
 
-                game = new Game
-                {
-                    TotalKills = listaKillFiltrada.Count()
-                };
+                game = new Game();
 
+                //criando uma lista unificada com todos os Players 
                 var listKillers = listaKillFiltrada.Select(x => x.PlayerKiller).ToList();
                 var listKilleds = listaKillFiltrada.Select(x => x.PlayerKilled).ToList();
                 var listKills = listKillers.Union(listKilleds).ToList();
-                listKills.Remove("<world>");
-                listKills.Remove(null);
-                game.Players = listKills.ToArray();
+
+                //adiciona os players ao retorno
+                game.RegistraPlayers(listKills);
 
                 foreach (Kill item in listaKillFiltrada)
                 {
-                    string Assassino = item.PlayerKiller;
-                    string Assassinado = item.PlayerKilled;
-
-                    //Assasino deve ganhar +1 kill
-                    if (!string.IsNullOrEmpty(Assassino) && Assassino != "<world>")
-                    {
-                        if (game.Kills.ContainsKey(Assassino))
-                        {
-                            if (game.Kills[Assassino] + 1 == 0)
-                                game.Kills.Remove(Assassino);
-                            else
-                                game.Kills[Assassino] += 1;
-                        }
-                        else
-                        {
-                            game.Kills.Add(Assassino, 1);
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(Assassinado))
-                    {
-                        if (!string.IsNullOrEmpty(Assassinado) && game.Kills.ContainsKey(Assassinado))
-                        {
-                            if (game.Kills[Assassinado] - 1 == 0)
-                                game.Kills.Remove(Assassinado);
-                            else
-                                game.Kills[Assassinado] -= 1;
-                        }
-                        else
-                        {
-                            game.Kills.Add(Assassinado, -1);
-                        }
-                    }
+                    game.RegistraMorte(item.PlayerKiller, item.PlayerKilled);
                 }
+
                 games.Add("game_" + (ContadorGame), game);
                 ContadorGame++;
 
-                //remove os jogos da lista até zerar a lista
+                //remove os jogos da lista original até zerar a lista
                 listaKill.RemoveAll(x => x.IdGame == idgame);
             } while (listaKill.Count() > 0);
         }

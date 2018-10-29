@@ -31,7 +31,6 @@ namespace LogQuake.Infra.Data.Repositories
         public void Add(TEntity obj)
         {
             context.Set<TEntity>().Add(obj);
-            //context.SaveChanges();
         }
 
         /// <summary>
@@ -65,7 +64,6 @@ namespace LogQuake.Infra.Data.Repositories
         public void Remove(TEntity obj)
         {
             context.Set<TEntity>().Remove(obj);
-            //context.SaveChanges();
         }
 
         /// <summary>
@@ -75,7 +73,6 @@ namespace LogQuake.Infra.Data.Repositories
         public void Update(TEntity obj)
         {
             context.Entry(obj).State = EntityState.Modified;
-            //context.SaveChanges();
         }
 
         /// <summary>
@@ -93,7 +90,6 @@ namespace LogQuake.Infra.Data.Repositories
         {
             return context.Set<TEntity>().Count();
         }
-
 
         /// <summary>
         /// Método Base para liberar a memória usada sem ter que esperar o Garbage Collector

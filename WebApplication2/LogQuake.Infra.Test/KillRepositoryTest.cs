@@ -188,6 +188,21 @@ namespace LogQuake.Infra.Test
             //assert
             Assert.IsNull(retorno);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ExcluirResgistroNaoEncontrado()
+        {
+            //arrange
+            PreparaBaseDeDados();
+
+            //action
+            _killRepository.Remove(null);
+            _killRepository.SaveChanges();
+
+            //assert
+            //Assert.IsNull(null);
+        }
         #endregion
     }
 }

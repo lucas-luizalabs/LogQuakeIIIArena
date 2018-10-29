@@ -23,31 +23,23 @@ namespace LogQuake.API.Controllers
     /// API controladora do jogo
     /// </summary>
     [Route("api/[controller]")]
-    //[Consumes("application/json", "multipart/form-data")]
     public class GamesController : Controller
     {
-        private readonly IKillRepository _killRepository;// = new PlayerRepository();
+        #region Atributos
+        private readonly IKillRepository _killRepository;
         private readonly ILogQuakeService _logQuakeService;
-        private readonly IServiceBase<Kill> _serviceBase;
+        #endregion
 
+        #region Construtor
         /// <summary>
-        /// Constrututor da classe
+        /// Constrututor da classe controladora de Games
         /// </summary>
-        /// <param name="killRepository">repositório do log</param>
         /// <param name="logQuakeService">objeto de Serviço do Jogo</param>
-        /// <param name="serviceBase">objeto de Serviço Base</param>
-        //public GamesController(IKillRepository killRepository, ILogQuakeService logQuakeService, IServiceBase<Kill> serviceBase)
-        //{
-        //    _logQuakeService = logQuakeService;
-        //    _serviceBase = serviceBase;
-        //    _killRepository = killRepository;
-        //}
-
         public GamesController(ILogQuakeService logQuakeService)
         {
             _logQuakeService = logQuakeService;
         }
-
+        #endregion
 
         /// <summary>
         /// Consultar log de todos os jogos, respeitando paginação
@@ -66,7 +58,10 @@ namespace LogQuake.API.Controllers
             try
             {
                 jogos = _logQuakeService.GetAll(pageRequest);
-                return new ObjectResult(jogos);
+                if (jogos.Count == 0)
+                    return NotFound(jogos);
+                else
+                    return Ok(jogos);
             }
             catch (Exception ex)
             {
@@ -75,7 +70,7 @@ namespace LogQuake.API.Controllers
         }
 
         /// <summary>
-        /// Consultar log de todos os jogos po IdGame
+        /// Consultar log dos jogos por IdGame
         /// </summary>
         /// <param name="IdGame">Código de identificação do jogo</param>
         // GET api/<controller>/5
@@ -87,7 +82,10 @@ namespace LogQuake.API.Controllers
             try
             {
                 jogo = _logQuakeService.GetById(IdGame);
-                return new ObjectResult(jogo);
+                if (jogo.Count == 0)
+                    return NotFound(jogo);
+                else
+                    return Ok(jogo);
             }
             catch (Exception ex)
             {
@@ -95,44 +93,20 @@ namespace LogQuake.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Método para gravar o log em Banco de Dados
-        /// </summary>
-        /// <param name="arquivo">nome do arquivo a ser processado</param>
-        // POST api/<controller>
-        //[HttpPost]
-        //public void Post([FromBody]string arquivo)
-        //{
-        //    string fileName = @"c:\LogQuake\games.log";
-        //    List<Kill> Kills;
-
-        //    List<string> linhas = _logQuakeService.LerArquivoDeLog(fileName);
-
-        //    if (linhas.Count > 0)
-        //    {
-        //        Kills = _logQuakeService.CarregarLogParaDB(linhas);
-
-        //        foreach (Kill item in Kills)
-        //        {
-        //            _serviceBase.Add<KillValidator>(item);
-        //        }
-        //    }
-        //}
-
 
         /// <summary>
         /// Método para receber o Upload do arquivo de Log do jogo Quake
         /// </summary>
         /// <param name="file">arquivo a ser processado</param>
         // POST api/<controller>
-        [HttpPost("upload")]
+        [HttpPost("Upload")]
         public IActionResult Upload(IFormFile file)
         {
             string path;
             int RegistrosInseridos = 0;
 
             if (file == null || file.Length == 0)
-                return Content("Arquivo não selecionado.");
+                return BadRequest("Arquivo não selecionado.");
 
             try
             {
