@@ -14,11 +14,29 @@ Abaixo segue um print a ser exibido:
 Podemos consumir este recurso, por exemplo, com Postman seguindo os passos listados abaixo: 
 
 1. Crie um novo Request
-2. Informe um nome
+2. Informe um nome para o Request
 3. Adicione esse Request em uma Collection
 4. Informe o verbo GET
-5. informe o local da API: http://localhost:65080/api/games/5
+5. Informe o local da API: http://localhost:65080/api/games/5
+6. Clique no botão Send
+
+Segue exemplo abaixo:
+![getbyid](https://user-images.githubusercontent.com/44147082/47686174-882e4800-dbb8-11e8-86fd-be8ca6487a6f.PNG)
+
 
 ## Consultar todas as partidas de forma paginada
+Podemos consumir este recurso, por exemplo, com Postman seguindo os passos listados abaixo: 
+
+1. Crie um novo Request
+2. Informe um nome para o Request
+3. Adicione esse Request em uma Collection
+4. Informe o verbo GET
+5. Informe o local da API: http://localhost:65080/api/games/5
+6. Informe os campos PageNumber e PageSize
+6. Clique no botão Send
+
+Segue exemplo abaixo:
+![getbyid](https://user-images.githubusercontent.com/44147082/47686174-882e4800-dbb8-11e8-86fd-be8ca6487a6f.PNG)
+
 
 ## Upload de novo arquivo de log
