@@ -36,7 +36,18 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 6. Clique no botão Send
 
 Segue exemplo abaixo:
-![getbyid](https://user-images.githubusercontent.com/44147082/47686174-882e4800-dbb8-11e8-86fd-be8ca6487a6f.PNG)
-
+![getallpaginada](https://user-images.githubusercontent.com/44147082/47686284-13a7d900-dbb9-11e8-807c-f84c07437f6a.PNG)
 
 ## Upload de novo arquivo de log
+Podemos consumir este recurso, por exemplo, com Postman seguindo os passos listados abaixo: 
+
+1. Crie um novo Request
+2. Informe um nome para o Request
+3. Adicione esse Request em uma Collection
+4. Informe o verbo GET
+5. Informe o local da API: http://localhost:65080/api/games/5
+6. Informe os campos PageNumber e PageSize
+6. Clique no botão Send
+
+Segue exemplo abaixo:
+![getallpaginada](https://user-images.githubusercontent.com/44147082/47686284-13a7d900-dbb9-11e8-807c-f84c07437f6a.PNG)
