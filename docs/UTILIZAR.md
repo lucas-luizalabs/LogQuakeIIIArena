@@ -1,3 +1,5 @@
+[Voltar](../README.md)
+
 # Como utilizar a Solution LogQuake
 
 Após abrir a Solution LogQuake, e rodar a Solution no VS2017, será abeto o navegador no seguinte http://localhost:65080/swagger esta página contém os contratos Swagger utilizar na API.
@@ -8,6 +10,7 @@ Abaixo segue um print a ser exibido:
 ![swagger](https://user-images.githubusercontent.com/44147082/47685927-5072d080-dbb7-11e8-9238-e548273941b1.PNG)
 
 # Consumir a API
+Abaixo serão apresentados exemplo de como consumir a API.
 
 ## Consultar uma partida por IdGame
 
