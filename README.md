@@ -24,4 +24,4 @@ Você poderá rodar o projeto em Windows
 ## Manual do Desenvolvedor
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
 - [Como abrir o projeto com Visusal Studio 2017](docs/VS2017.md)
-- [Como utilizar](docs/UTILIZAR.md)
+- [Como utilizar a Solution LogQuake](docs/UTILIZAR.md)
