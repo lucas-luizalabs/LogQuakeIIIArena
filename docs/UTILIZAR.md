@@ -53,4 +53,4 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 10. Clique no botão Send
 
 Segue exemplo abaixo:
-
+![upload](https://user-images.githubusercontent.com/44147082/47686418-d132cc00-dbb9-11e8-9fd2-6fe943171903.PNG)
