@@ -10,7 +10,7 @@ Abaixo segue um print a ser exibido:
 ![swagger](https://user-images.githubusercontent.com/44147082/47685927-5072d080-dbb7-11e8-9238-e548273941b1.PNG)
 
 # Consumir a API
-Abaixo serão apresentados exemplo de como consumir a API.
+Abaixo serão apresentados exemplos de como consumir a API.
 
 ## Consultar uma partida por IdGame
 
