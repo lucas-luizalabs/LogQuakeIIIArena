@@ -31,9 +31,9 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 2. Informe um nome para o Request
 3. Adicione esse Request em uma Collection
 4. Informe o verbo GET
-5. Informe o local da API: http://localhost:65080/api/games/5
+5. Informe o local da API: http://localhost:65080/api/games
 6. Informe os campos PageNumber e PageSize
-6. Clique no botão Send
+7. Clique no botão Send
 
 Segue exemplo abaixo:
 ![getallpaginada](https://user-images.githubusercontent.com/44147082/47686284-13a7d900-dbb9-11e8-807c-f84c07437f6a.PNG)
@@ -44,10 +44,13 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 1. Crie um novo Request
 2. Informe um nome para o Request
 3. Adicione esse Request em uma Collection
-4. Informe o verbo GET
-5. Informe o local da API: http://localhost:65080/api/games/5
-6. Informe os campos PageNumber e PageSize
-6. Clique no botão Send
+4. Informe o verbo POST
+5. Informe o local da API: http://localhost:65080/api/games/upload
+6. Selecione a opção Body
+7. Selecione a opção form-data
+8. Em Key, selecione File, e digite o nome file no campo Key
+9. No campo Value, selecione um arquivo de log do jogo Quake III Arena
+10. Clique no botão Send
 
 Segue exemplo abaixo:
-![getallpaginada](https://user-images.githubusercontent.com/44147082/47686284-13a7d900-dbb9-11e8-807c-f84c07437f6a.PNG)
+
