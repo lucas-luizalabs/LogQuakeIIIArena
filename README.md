@@ -1,5 +1,5 @@
 # Log - Quake III Arena
-É um projeto de estudo, que tem como finalidade efetuar a leitura de um log gerado pelo jogo Quake III Arena, inserir em umbanco de dados e depois disponibilizar consulta através de API RESTFul. Também é possível efetuar um upload do aquivo de log para atualizar os dados das partidas.
+É um projeto de estudo, que tem como finalidade efetuar a leitura de um log gerado pelo jogo Quake III Arena, inserir em um banco de dados e depois disponibilizar consulta através de API RESTFul. Também é possível efetuar um upload do aquivo de log para atualizar os dados das partidas.
 
 ## Dê uma estrela! :star:
 Se você gostou do projeto ou se ele te ajudou, por favor dê um estrela.
