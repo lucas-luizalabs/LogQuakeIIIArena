@@ -22,6 +22,6 @@ Você poderá rodar o projeto em Windows
 - Domain Driven Design 
 
 ## Manual do Desenvolvedor
-- [Estrutura de pastas do projeto](docs/DESENVOLVEDOR.MD)
-- [Camadas utilizadas no projeto](docs/CAMADAS.MD)
-- [Como abrir o projeto com Visusal Studio 2017](docs/VS2017.MD)
+- [Estrutura de pastas do projeto](docs/ESTRUTURA.md)
+- [Camadas utilizadas no projeto](docs/CAMADAS.md)
+- [Como abrir o projeto com Visusal Studio 2017](docs/VS2017.md)
