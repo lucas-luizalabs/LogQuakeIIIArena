@@ -1,6 +1,7 @@
 ﻿using LogQuake.Domain.Entities;
 using LogQuake.Infra.Data.EntityConfig;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +10,7 @@ namespace LogQuake.Infra.Data.Contexto
 {
     public class LogQuakeContext: DbContext
     {
-        private const string stringConnection = "Server=(localdb)\\mssqllocaldb;Database=EFGetStarted.ConsoleApp.NewDb;Trusted_Connection=True;";
+        private const string stringConnection = "Server=(localdb)\\mssqllocaldb;Database=Quake3Arena;Trusted_Connection=True;";
 
         public LogQuakeContext()
         {
@@ -29,6 +30,7 @@ namespace LogQuake.Infra.Data.Contexto
         {
             if (!optionsBuilder.IsConfigured)
                 optionsBuilder.UseSqlServer(stringConnection);
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

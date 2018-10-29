@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogQuake.Infra.Migrations
 {
     [DbContext(typeof(LogQuakeContext))]
-    [Migration("20181029014734_InitialMigration")]
+    [Migration("20181029015400_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
