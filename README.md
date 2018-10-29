@@ -20,3 +20,6 @@ Você poderá rodar o projeto em Windows
 
 ## Arquitetura:
 - Domain Driven Design 
+
+## Manual do Desenvolvedor
+[Contribution guidelines for this project](docs/DESENVOLVEDOR.md)
