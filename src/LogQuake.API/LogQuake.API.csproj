@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Log\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="NSwag.AspNetCore" Version="11.20.1" />
   </ItemGroup>
@@ -21,6 +17,12 @@
     <ProjectReference Include="..\LogQuake.Domain.Service\LogQuake.Service.csproj" />
     <ProjectReference Include="..\LogQuake.Domain\LogQuake.Domain.csproj" />
     <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Log\games.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
