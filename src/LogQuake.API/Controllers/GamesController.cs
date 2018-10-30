@@ -6,7 +6,6 @@ using LogQuake.Infra.CrossCuting;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NSwag.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,23 +33,19 @@ namespace LogQuake.API.Controllers
         #endregion
 
         #region Métodos
+        // GET: api/<controller>
         /// <summary>
         /// Consultar log de todos os jogos, respeitando paginação
         /// </summary>
         /// <param name="pageRequest">controle de paginação</param>
         /// <example>teste</example>
         /// <remarks>
-        /// Consultar log de todos os jogos, respeitando paginação.
+        /// Busca partidas registradas em Banco de Dados de forma paginada, para isso deve informar os parâmetros de paginação.
         /// </remarks>        
-        /// <response code="200">Lista de jogos encontrados.<paramref name="pageRequest"/>.</response>
-        /// <response code="404">Nenhum jogo encontrado.<paramref name="pageRequest"/>.</response>
-        // GET: api/<controller>
+        /// <response code="200">Lista de partidas encontradas.</response>
+        /// <response code="404">Nenhuma partida encontrada.</response>
         [HttpGet]
-        [SwaggerResponse("200", typeof(Game))]
-        [SwaggerResponse("404", typeof(void))]
-        [SwaggerTags("Games/Consulta")]
         [Produces("application/json", Type = typeof(Game))]
-        [SwaggerOperation(operationId: "getA")]
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
@@ -73,15 +68,17 @@ namespace LogQuake.API.Controllers
             }
         }
 
+        // GET api/<controller>/5
         /// <summary>
         /// Consultar log dos jogos por IdGame
         /// </summary>
         /// <param name="idGame">Código de identificação do jogo</param>
-        // GET api/<controller>/5
+        /// <remarks>
+        /// Busca partida registrada em Banco de Dados por IdGame.
+        /// </remarks>        
+        /// <response code="200">Partida encontrada <paramref name="idGame"/>.</response>
+        /// <response code="404">Nenhuma partida encontrada.</response>
         [HttpGet("{idGame}")]
-        [SwaggerResponse("200", typeof(Game))]
-        [SwaggerResponse("404", typeof(void))]
-        [SwaggerTags("Games/Consulta")]
         [Produces("application/json", Type = typeof(Game))]
         public IActionResult Get(int idGame)
         {
@@ -101,16 +98,17 @@ namespace LogQuake.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Método para receber o Upload do arquivo de Log do jogo Quake
-        /// </summary>
-        /// <param name="file">arquivo a ser processado</param>
         // POST api/<controller>
+        /// <summary>
+        /// Método para efetuar o Upload do arquivo de Log do jogo Quake III Arena
+        /// </summary>
+        /// <remarks>
+        /// Selecione um arquivo texto.
+        /// </remarks>        
+        /// <param name="file">arquivo a ser processado</param>
+        /// <response code="200">Upload realizado com sucesso.</response>
+        /// <response code="400">Bad Request.</response>
         [HttpPost("Upload")]
-        [SwaggerTags("Games/Upload")]
-        [SwaggerResponse("200", typeof(void))]
-        [SwaggerResponse("400", typeof(void))]
-        //[SwaggerOperation("Upload", typeof(void))]
         public IActionResult Upload(IFormFile file)
         {
             string path;

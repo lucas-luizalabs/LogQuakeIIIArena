@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
@@ -13,9 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NSwag.AspNetCore;
+
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace WebApplication1
 {
@@ -37,7 +35,34 @@ namespace WebApplication1
 
             services.AddMvc();
 
-            services.AddSwagger();
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Log - Quake III Arena",
+                    Description = "API para retornar informações das partidas realizadas no jogo Quake III Arena como por exemplo, quantidades de participantes, total de mortes e quantidades de mortes por jogador. " + Environment.NewLine + "Essas informações são obtidas através do log gerado pelo próprio jogo.",
+                    TermsOfService = "None",
+                    Contact = new Contact
+                    {
+                        Name = "Márcio de Souza Teixeira",
+                        Email = "marcio79.teixeira@gmail.com",
+                        Url = ""
+                    },
+                    License = new License
+                    {
+                        Name = "Use under LICX",
+                        Url = "https://example.com/license"
+                    }
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
 
             services.AddDbContext<LogQuakeContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase"), b => b.UseRowNumberForPaging()));
@@ -60,27 +85,15 @@ namespace WebApplication1
 
             app.UseMvc();
 
-            // Register the Swagger generator middleware
-            app.UseSwaggerUi3WithApiExplorer(settings =>
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
             {
-                settings.PostProcess = document =>
-                {
-                    document.Info.Version = "v1";
-                    document.Info.Title = "Log - Quake III Arena";
-                    document.Info.Description = "API para retornar informações das partidas realizadas no jogo Quake III Arena como por exemplo, quantidades de participantes, total de mortes e quantidades de mortes por jogador. " + Environment.NewLine + "Essas informações são obtidas através do log gerado pelo próprio jogo.";
-                    document.Info.TermsOfService = "Nenhum termo de serviço";
-                    document.Info.Contact = new NSwag.SwaggerContact
-                    {
-                        Name = "Márcio de Souza Teixeira",
-                        Email = "marcio79.teixeira@gamil.com",
-                        Url = ""
-                    };
-                    //document.Info.License = new NSwag.SwaggerLicense
-                    //{
-                    //    Name = "Use under LICX",
-                    //    Url = "https://example.com/license"
-                    //};
-                };
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
             });
 
         }
