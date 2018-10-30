@@ -2,6 +2,8 @@
 
 # Banco de Dados
 
+Para o projeto apresentado foi criado somente uma tabela chamda Kill, nela contém informações suficientes para montar o retorno da API.
+
 1. Sql Server
 2. Foi utilizado Migrations para criação do Banco de Dados
 
