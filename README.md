@@ -21,7 +21,7 @@ Você poderá rodar o projeto em Windows
 ## Arquitetura:
 - Domain Driven Design 
 
-## Manual do Desenvolvedor
+## Manual do Desenvolvedor:
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
 - [Como abrir a Solution com Visusal Studio 2017](docs/VS2017.md)
 - [Como utilizar a Solution LogQuake](docs/UTILIZAR.md)
