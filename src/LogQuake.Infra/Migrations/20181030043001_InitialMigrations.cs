@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LogQuake.Infra.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,11 @@ namespace LogQuake.Infra.Migrations
                 {
                     table.PrimaryKey("PK_Kill", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Kill_IdGame",
+                table: "Kill",
+                column: "IdGame");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

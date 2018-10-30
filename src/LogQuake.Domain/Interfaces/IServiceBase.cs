@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using LogQuake.Infra.CrossCuting;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LogQuake.Domain.Interfaces
 {

@@ -36,6 +36,8 @@ namespace LogQuake.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdGame");
+
                     b.ToTable("Kill");
                 });
 #pragma warning restore 612, 618

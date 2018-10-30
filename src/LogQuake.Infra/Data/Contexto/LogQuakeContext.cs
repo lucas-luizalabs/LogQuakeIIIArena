@@ -41,6 +41,9 @@ namespace LogQuake.Infra.Data.Contexto
             //modelBuilder.Entity<Player>(new PlayerConfiguration().Configure);
 
             modelBuilder.ApplyConfiguration(new KillConfiguration());
+
+            modelBuilder.Entity<Kill>()
+                .HasIndex(u => u.IdGame);
         }
 
         public override int SaveChanges()

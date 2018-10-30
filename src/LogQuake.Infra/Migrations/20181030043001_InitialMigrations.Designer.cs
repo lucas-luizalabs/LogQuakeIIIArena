@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogQuake.Infra.Migrations
 {
     [DbContext(typeof(LogQuakeContext))]
-    [Migration("20181029015400_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20181030043001_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,8 @@ namespace LogQuake.Infra.Migrations
                         .HasMaxLength(30);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdGame");
 
                     b.ToTable("Kill");
                 });
