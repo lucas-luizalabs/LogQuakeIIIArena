@@ -4,7 +4,8 @@
 
 Abaixo segue uma visão da estrutura de pastas criadas para a solution LogQuake:
 
-![estrutura de pastas](https://user-images.githubusercontent.com/44147082/47684066-53b68e00-dbb0-11e8-8468-1a0049a7ef51.PNG)
+![estrutura de pastas](https://user-images.githubusercontent.com/44147082/47693213-84f68480-dbd7-11e8-8938-ff4c3e5bc1e7.PNG)
+
 
 ## Projetos:
 1. **LogQuake.API.Test**
