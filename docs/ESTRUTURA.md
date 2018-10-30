@@ -2,10 +2,13 @@
 
 # Estrutura de pastas da Solution
 
+Foi criado uma separação de pastas por projetos de "fonte" e "test", seguindo o modelo proposto pela Microsoft https://docs.microsoft.com/en-us/dotnet/core/porting/project-structure
+
 Abaixo segue uma visão da estrutura de pastas criadas para a solution LogQuake:
+![estrutura de pastas 1 - 2](https://user-images.githubusercontent.com/44147082/47756338-6d270b00-dc80-11e8-8eef-008f1cbf8a86.PNG)
 
-![estrutura de pastas](https://user-images.githubusercontent.com/44147082/47693213-84f68480-dbd7-11e8-8938-ff4c3e5bc1e7.PNG)
-
+Abaixo segue uma visão expandida:
+![estrutura de pastas 2 - 2](https://user-images.githubusercontent.com/44147082/47756356-7ca65400-dc80-11e8-8b9c-203fbb7e83a6.PNG)
 
 ## Projetos:
 1. **LogQuake.API.Test**
