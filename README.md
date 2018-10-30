@@ -23,6 +23,12 @@ Você poderá rodar o projeto em Windows
 
 ## Referências:
 - https://docs.microsoft.com/en-us/dotnet/core/porting/project-structure
+- https://docs.microsoft.com/pt-br/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml
+- https://docs.microsoft.com/pt-br/dotnet/core/testing/unit-testing-with-mstest
+- https://docs.microsoft.com/pt-br/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/net-core-microservice-domain-model
+- https://docs.microsoft.com/pt-br/ef/core/get-started/aspnetcore/existing-db
+- https://docs.microsoft.com/en-us/dotnet/csharp/codedoc
+- https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1
 
 ## Manual do Desenvolvedor:
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
