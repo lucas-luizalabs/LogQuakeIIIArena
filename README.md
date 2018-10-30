@@ -21,6 +21,9 @@ Você poderá rodar o projeto em Windows
 ## Arquitetura:
 - Domain Driven Design 
 
+## Referências:
+- https://docs.microsoft.com/en-us/dotnet/core/porting/project-structure
+
 ## Manual do Desenvolvedor:
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
 - [Banco de Dados](docs/ESTRUTURABD.md)
