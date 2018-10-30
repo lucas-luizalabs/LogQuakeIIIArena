@@ -97,8 +97,8 @@ namespace LogQuake.Service.Test
 
             //assert
             Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 5);
-            Assert.IsTrue(result.Values.First().TotalKills == 1);
+            Assert.IsTrue(result.Count == 4);
+            Assert.IsTrue(result.Values.First().TotalKills == 6);
         }
 
         [TestMethod]

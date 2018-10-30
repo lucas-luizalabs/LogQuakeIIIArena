@@ -24,10 +24,13 @@ namespace LogQuake.Domain.Entities
         /// <param name="players">lista de jogadores</param>
         public void RegistraPlayers(List<string> players)
         {
-            players.Remove("<world>");
-            players.Remove(null);
+            if (players != null)
+            {
+                players.Remove("<world>");
+                players.Remove(null);
 
-            Players = players.ToArray();
+                Players = players.ToArray();
+            }
         }
 
         /// <summary>

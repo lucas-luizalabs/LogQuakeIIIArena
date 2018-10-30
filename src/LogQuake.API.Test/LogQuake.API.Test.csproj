@@ -13,10 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LogQuake.API\LogQuake.API.csproj" />
     <ProjectReference Include="..\LogQuake.CrossCutting\LogQuake.CrossCutting.csproj" />
     <ProjectReference Include="..\LogQuake.Domain\LogQuake.Domain.csproj" />
     <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
-    <ProjectReference Include="..\WebApplication1\LogQuake.API.csproj" />
   </ItemGroup>
 
 </Project>
