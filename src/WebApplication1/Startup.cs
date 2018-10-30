@@ -21,14 +21,14 @@ namespace WebApplication1
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+                
+        // This method gets called by the runtime. Use this method to add services to the container..
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IFileProvider>(
@@ -66,23 +66,24 @@ namespace WebApplication1
                 settings.PostProcess = document =>
                 {
                     document.Info.Version = "v1";
-                    document.Info.Title = "Log ";
-                    document.Info.Description = "API para retornar os logs";
+                    document.Info.Title = "Log - Quake III Arena";
+                    document.Info.Description = "API para retornar informações das partidas realizadas no jogo Quake III Arena como por exemplo, quantidades de participantes, total de mortes e quantidades de mortes por jogador. " + Environment.NewLine + "Essas informações são obtidas através do log gerado pelo próprio jogo.";
                     document.Info.TermsOfService = "Nenhum termo de serviço";
                     document.Info.Contact = new NSwag.SwaggerContact
                     {
                         Name = "Márcio de Souza Teixeira",
-                        Email = string.Empty,
-                        Url = "http://marciodesouzateixeira.com"
+                        Email = "marcio79.teixeira@gamil.com",
+                        Url = ""
                     };
-                    document.Info.License = new NSwag.SwaggerLicense
-                    {
-                        Name = "Use under LICX",
-                        Url = "https://example.com/license"
-                    };
+                    //document.Info.License = new NSwag.SwaggerLicense
+                    //{
+                    //    Name = "Use under LICX",
+                    //    Url = "https://example.com/license"
+                    //};
                 };
             });
 
         }
+
     }
 }

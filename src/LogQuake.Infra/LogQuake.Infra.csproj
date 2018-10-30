@@ -5,15 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20181018034919_segundomigration.cs" />
-    <Compile Remove="Migrations\20181019025459_Versao_2.cs" />
-    <Compile Remove="Migrations\20181019031103_Versao_2.cs" />
-    <Compile Remove="Migrations\20181019032915_Versao_2.cs" />
-    <Compile Remove="Migrations\20181019033313_Versao_2.cs" />
-    <Compile Remove="Migrations\20181023014706_Versao_2.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />

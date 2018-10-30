@@ -6,6 +6,7 @@ using LogQuake.Infra.CrossCuting;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,8 +38,19 @@ namespace LogQuake.API.Controllers
         /// Consultar log de todos os jogos, respeitando paginação
         /// </summary>
         /// <param name="pageRequest">controle de paginação</param>
+        /// <example>teste</example>
+        /// <remarks>
+        /// Consultar log de todos os jogos, respeitando paginação.
+        /// </remarks>        
+        /// <response code="200">Lista de jogos encontrados.<paramref name="pageRequest"/>.</response>
+        /// <response code="404">Nenhum jogo encontrado.<paramref name="pageRequest"/>.</response>
         // GET: api/<controller>
         [HttpGet]
+        [SwaggerResponse("200", typeof(Game))]
+        [SwaggerResponse("404", typeof(void))]
+        [SwaggerTags("Games/Consulta")]
+        [Produces("application/json", Type = typeof(Game))]
+        [SwaggerOperation(operationId: "getA")]
         public IActionResult Get([FromQuery]PageRequestBase pageRequest)
 
         {
@@ -67,6 +79,10 @@ namespace LogQuake.API.Controllers
         /// <param name="idGame">Código de identificação do jogo</param>
         // GET api/<controller>/5
         [HttpGet("{idGame}")]
+        [SwaggerResponse("200", typeof(Game))]
+        [SwaggerResponse("404", typeof(void))]
+        [SwaggerTags("Games/Consulta")]
+        [Produces("application/json", Type = typeof(Game))]
         public IActionResult Get(int idGame)
         {
             Dictionary<string, Game> game;
@@ -91,6 +107,10 @@ namespace LogQuake.API.Controllers
         /// <param name="file">arquivo a ser processado</param>
         // POST api/<controller>
         [HttpPost("Upload")]
+        [SwaggerTags("Games/Upload")]
+        [SwaggerResponse("200", typeof(void))]
+        [SwaggerResponse("400", typeof(void))]
+        //[SwaggerOperation("Upload", typeof(void))]
         public IActionResult Upload(IFormFile file)
         {
             string path;
