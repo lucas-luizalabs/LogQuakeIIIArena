@@ -2,7 +2,7 @@
 
 # Como utilizar a Solution LogQuake
 
-Após abrir a Solution LogQuake, e rodar a Solution no VS2017, será abeto o navegador no seguinte http://localhost:65080/swagger/index.html esta página contém os contratos Swagger utilizar na API.
+Após abrir a Solution LogQuake, e rodar a Solution no VS2017, será aberto o navegador no seguinte endereço  http://localhost:65080/swagger/index.html esta página contém os contratos Swagger utilizar na API.
 
 Abaixo segue um print a ser exibido:
 ![swagger](https://user-images.githubusercontent.com/44147082/47697932-fb9d7d00-dbeb-11e8-9882-7bb9796b755a.PNG)
