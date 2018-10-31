@@ -4,7 +4,7 @@
 
 Para o projeto apresentado foi criado somente uma tabela chamada Kill, nela contém informações suficientes para montar o retorno da API.
 
-1. Utilizado SqLite para facilitar utilização em ambientes Windows e Linux
+1. Utilizado SQLite para facilitar utilização em ambientes Windows e Linux
 2. Foi utilizado Migrations para criação do Banco de Dados
 
 Abaixo segue estrutura de criação do Banco de Dados:
