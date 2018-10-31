@@ -38,7 +38,7 @@ namespace LogQuake.Infra.Data.Contexto
             base.OnModelCreating(modelBuilder);
 
             //ou utiliza assim ou o jeito de baixo
-            //modelBuilder.Entity<Player>(new PlayerConfiguration().Configure);
+            //modelBuilder.Entity<Kill>(new KillConfiguration().Configure);
 
             modelBuilder.ApplyConfiguration(new KillConfiguration());
 
