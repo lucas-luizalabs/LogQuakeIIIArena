@@ -14,7 +14,7 @@ Abaixo segue uma visão expandida:
 
 ## Projetos:
 1. **LogQuake.API.Test**
-    - Projeto responsável por efetuar os testes da camada de API.
+    - Projeto responsável por efetuar os testes da camada de API, validando os recurso de Consultas e Upload.
 2. **LogQuake.API**
     - Projeto responsável por expor os recursos disponíveis para Consultar os logs do jogo e efetuar Upload de um novo log.
 3. **LogQuake.Domain.Test**
@@ -22,7 +22,7 @@ Abaixo segue uma visão expandida:
 4. **LogQuake.Domain**
     - Projeto responsável por armazenar o Domínio do projeto.
 5. **LogQuake.Service.Test**
-    - Projeto responsável por efetuar os testes da camada de Serviço, validando as Consultas e Leitura de arquios.
+    - Projeto responsável por efetuar os testes da camada de Serviço, validando as Consultas e Leitura de arquivos.
 6. **LogQuake.Service**
     - Projeto responsável por conter as regras de negócio do projeto.
 7. **LogQuake.Infra.Test**
