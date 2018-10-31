@@ -24,6 +24,12 @@ namespace WebApplication1
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            // Cria o Banco de Dados para SqLite
+            using (var client = new LogQuakeContext())
+            {
+                client.Database.EnsureCreated();
+            }
         }
                 
         // This method gets called by the runtime. Use this method to add services to the container..
@@ -65,7 +71,8 @@ namespace WebApplication1
 
 
             services.AddDbContext<LogQuakeContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LogQuakeDatabase"), b => b.UseRowNumberForPaging()));
+                //options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnectionString"), b => b.UseRowNumberForPaging()));
+                options.UseSqlite(Configuration.GetConnectionString("SqliteConnectionString")));
 
             services.AddScoped<ILogQuakeService, LogQuakeService>();
             services.AddScoped<IKillRepository, KillRepository>();

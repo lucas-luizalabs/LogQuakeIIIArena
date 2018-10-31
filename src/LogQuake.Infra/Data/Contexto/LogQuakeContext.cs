@@ -10,7 +10,8 @@ namespace LogQuake.Infra.Data.Contexto
 {
     public class LogQuakeContext: DbContext
     {
-        private const string stringConnection = "Server=(localdb)\\mssqllocaldb;Database=Quake3Arena;Trusted_Connection=True;";
+        //private const string SqlServerConnection = "Server=(localdb)\\mssqllocaldb;Database=Quake3Arena;Trusted_Connection=True;";
+        private const string SqLiteConnection = "Data Source=Quake3Arena.db";
 
         public LogQuakeContext()
         {
@@ -29,7 +30,8 @@ namespace LogQuake.Infra.Data.Contexto
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(stringConnection);
+                //optionsBuilder.UseSqlServer(SqlServerConnection);
+                optionsBuilder.UseSqlite(SqLiteConnection);
 
         }
 
