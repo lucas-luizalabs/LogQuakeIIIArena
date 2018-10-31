@@ -72,7 +72,7 @@ namespace WebApplication1
 
             services.AddDbContext<LogQuakeContext>(options =>
                 //options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnectionString"), b => b.UseRowNumberForPaging()));
-                options.UseSqlite(Configuration.GetConnectionString("SqliteConnectionString")));
+                options.UseSqlite(Configuration.GetConnectionString("SQLiteConnectionString")));
 
             services.AddScoped<ILogQuakeService, LogQuakeService>();
             services.AddScoped<IKillRepository, KillRepository>();
