@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogQuake.Domain.Service\LogQuake.Service.csproj" />
     <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
+    <ProjectReference Include="..\LogQuake.Service\LogQuake.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
