@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Service", "LogQuake.Domain.Service\LogQuake.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogQuake.Service", "LogQuake.Service\LogQuake.Service.csproj", "{D05E6EDA-2B97-46DD-ADAD-D8B380B288E5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{728E0C07-5509-4EA7-9B2B-49140700764F} = {728E0C07-5509-4EA7-9B2B-49140700764F}
 	EndProjectSection
