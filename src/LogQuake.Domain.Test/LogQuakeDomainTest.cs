@@ -41,7 +41,7 @@ namespace LogQuake.Domain.Test
             players.Add("Zeh");
 
             //action
-            _game.RegistraPlayers(players);
+            _game.RegisterPlayers(players);
 
             //assert
             Assert.IsTrue(_game.Players.Length == 2);
@@ -57,7 +57,7 @@ namespace LogQuake.Domain.Test
             players.Add("Zeh");
 
             //action
-            _game.RegistraPlayers(players);
+            _game.RegisterPlayers(players);
 
             //assert
             Assert.IsTrue(_game.Players.Length == 2);
@@ -73,7 +73,7 @@ namespace LogQuake.Domain.Test
             players.Add("Zeh");
 
             //action
-            _game.RegistraPlayers(players);
+            _game.RegisterPlayers(players);
 
             //assert
             Assert.IsTrue(_game.Players.Length == 2);
@@ -85,7 +85,7 @@ namespace LogQuake.Domain.Test
             //arrange
 
             //action
-            _game.RegistraPlayers(null);
+            _game.RegisterPlayers(null);
 
             //assert
             Assert.IsTrue(_game.Players == null);
@@ -97,7 +97,7 @@ namespace LogQuake.Domain.Test
             //arrange
 
             //action
-            _game.RegistraMorte("<world>","Zeh");
+            _game.RegisterDeath("<world>","Zeh");
 
             //assert
             Assert.IsTrue(_game.TotalKills == 1);
@@ -111,7 +111,7 @@ namespace LogQuake.Domain.Test
             //arrange
 
             //action
-            _game.RegistraMorte("Isgalamido", "Zeh");
+            _game.RegisterDeath("Isgalamido", "Zeh");
 
             //assert
             Assert.IsTrue(_game.TotalKills == 1);
@@ -126,8 +126,8 @@ namespace LogQuake.Domain.Test
             //arrange
 
             //action
-            _game.RegistraMorte("Isgalamido", "Zeh");
-            _game.RegistraMorte("Zeh", "Isgalamido");
+            _game.RegisterDeath("Isgalamido", "Zeh");
+            _game.RegisterDeath("Zeh", "Isgalamido");
 
             //assert
             Assert.IsTrue(_game.TotalKills == 2);
@@ -140,9 +140,9 @@ namespace LogQuake.Domain.Test
             //arrange
 
             //action
-            _game.RegistraMorte("Isgalamido", "Zeh");
-            _game.RegistraMorte("<world>", "Zeh");
-            _game.RegistraMorte("Zeh", "Docinho");
+            _game.RegisterDeath("Isgalamido", "Zeh");
+            _game.RegisterDeath("<world>", "Zeh");
+            _game.RegisterDeath("Zeh", "Docinho");
 
             //assert
             Assert.IsTrue(_game.TotalKills == 3);

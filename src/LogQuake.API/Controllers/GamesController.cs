@@ -137,13 +137,13 @@ namespace LogQuake.API.Controllers
             try
             {
                 List<Kill> Kills;
-                List<string> linhas = _logQuakeService.LerArquivoDeLog(path);
+                List<string> linhas = _logQuakeService.ReadLogFile(path);
 
                 if (linhas.Count > 0)
                 {
-                    Kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+                    Kills = _logQuakeService.ConvertLogFileInListKill(linhas);
 
-                    RegistrosInseridos = _logQuakeService.AdicionarEmBDListaDeKill(Kills);
+                    RegistrosInseridos = _logQuakeService.AddKillListInDB(Kills);
                 }
             }
             catch (Exception ex)

@@ -33,7 +33,7 @@ namespace LogQuake.Service.Services
         /// <returns>
         /// Retorna uma lista de string, contendo as linhas do arquivo de log lido.
         /// </returns>
-        public List<string> LerArquivoDeLog(string fileName)
+        public List<string> ReadLogFile(string fileName)
         {
             List<string> linhas;
 
@@ -52,7 +52,7 @@ namespace LogQuake.Service.Services
         /// <returns>
         /// Retorna uma lista de Kills.
         /// </returns>
-        public List<Kill> ConverterArquivoEmListaDeKill(List<string> linhas)
+        public List<Kill> ConvertLogFileInListKill(List<string> linhas)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace LogQuake.Service.Services
         /// <returns>
         /// Retorna a quantidade de registros inseridos no Banco de Dados.
         /// </returns>
-        public int AdicionarEmBDListaDeKill(List<Kill> Kills)
+        public int AddKillListInDB(List<Kill> Kills)
         {
             _killRepository.RemoveAll();
 
@@ -191,11 +191,11 @@ namespace LogQuake.Service.Services
                 var listKills = listKillers.Union(listKilleds).ToList();
 
                 //adiciona os players ao retorno
-                game.RegistraPlayers(listKills);
+                game.RegisterPlayers(listKills);
 
                 foreach (Kill item in listaKillFiltrada)
                 {
-                    game.RegistraMorte(item.PlayerKiller, item.PlayerKilled);
+                    game.RegisterDeath(item.PlayerKiller, item.PlayerKilled);
                 }
 
                 games.Add("game_" + (ContadorGame), game);

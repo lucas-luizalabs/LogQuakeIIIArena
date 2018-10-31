@@ -22,7 +22,7 @@ namespace LogQuake.Domain.Entities
         /// Adiciona na lista Players os jogadores informados, removendo Nulos e world
         /// </summary>
         /// <param name="players">lista de jogadores</param>
-        public void RegistraPlayers(List<string> players)
+        public void RegisterPlayers(List<string> players)
         {
             if (players != null)
             {
@@ -38,7 +38,7 @@ namespace LogQuake.Domain.Entities
         /// </summary>
         /// <param name="killer">nome do assassino</param>
         /// <param name="killed">nome do assassinado</param>
-        public void RegistraMorte(string killer, string killed)
+        public void RegisterDeath(string killer, string killed)
         {
             TotalKills++;
             //Assasino deve ganhar +1 kill

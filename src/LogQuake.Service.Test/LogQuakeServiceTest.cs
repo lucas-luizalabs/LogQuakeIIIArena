@@ -225,7 +225,7 @@ namespace LogQuake.Service.Test
             string path = Path.Combine(Directory.GetCurrentDirectory(), "log", "games.log");
 
             //action
-            List<string> linhas = _logQuakeService.LerArquivoDeLog(path);
+            List<string> linhas = _logQuakeService.ReadLogFile(path);
 
             //assert
             Assert.IsTrue(linhas.Count == 5210);
@@ -238,7 +238,7 @@ namespace LogQuake.Service.Test
             string path = Path.Combine(Directory.GetCurrentDirectory(), "log", "games.logx");
 
             //action
-            List<string> linhas = _logQuakeService.LerArquivoDeLog(path);
+            List<string> linhas = _logQuakeService.ReadLogFile(path);
 
             //assert
             Assert.IsTrue(linhas.Count == 0);
@@ -250,7 +250,7 @@ namespace LogQuake.Service.Test
             //arrange
 
             //action
-            List<string> linhas = _logQuakeService.LerArquivoDeLog(null);
+            List<string> linhas = _logQuakeService.ReadLogFile(null);
 
             //assert
             Assert.IsTrue(linhas.Count == 0);
@@ -262,7 +262,7 @@ namespace LogQuake.Service.Test
             //arrange
 
             //action
-            List<string> linhas = _logQuakeService.LerArquivoDeLog("");
+            List<string> linhas = _logQuakeService.ReadLogFile("");
 
             //assert
             Assert.IsTrue(linhas.Count == 0);
@@ -275,7 +275,7 @@ namespace LogQuake.Service.Test
             List<string> linhas = new List<string>();
 
             //action
-            List<Kill> kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+            List<Kill> kills = _logQuakeService.ConvertLogFileInListKill(linhas);
 
             //assert
             Assert.IsTrue(linhas.Count == 0);
@@ -306,7 +306,7 @@ namespace LogQuake.Service.Test
             linhas.Add(@"  0:59 ClientConnect: 3");
 
             //action
-            List<Kill> kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+            List<Kill> kills = _logQuakeService.ConvertLogFileInListKill(linhas);
 
             //assert
             Assert.IsTrue(kills.Count == 0);
@@ -381,7 +381,7 @@ namespace LogQuake.Service.Test
             #endregion
 
             //action
-            List<Kill> kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+            List<Kill> kills = _logQuakeService.ConvertLogFileInListKill(linhas);
 
             //assert
             Assert.IsTrue(kills.Count == 4);
@@ -799,7 +799,7 @@ namespace LogQuake.Service.Test
             #endregion
 
             //action
-            List<Kill> kills = _logQuakeService.ConverterArquivoEmListaDeKill(linhas);
+            List<Kill> kills = _logQuakeService.ConvertLogFileInListKill(linhas);
 
             //assert
             Assert.IsTrue(kills.Count == 109);
@@ -856,7 +856,7 @@ namespace LogQuake.Service.Test
             Kills.Add(new Kill { IdGame = 2, PlayerKiller = "<world>", PlayerKilled = "Zeh" });
 
             //action
-            int retornoServico = _logQuakeService.AdicionarEmBDListaDeKill(Kills);
+            int retornoServico = _logQuakeService.AddKillListInDB(Kills);
 
             Dictionary<string, Game> game1 = _logQuakeService.GetById(1);
             Dictionary<string, Game> game2 = _logQuakeService.GetById(2);

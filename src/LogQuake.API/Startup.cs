@@ -69,7 +69,6 @@ namespace WebApplication1
 
             services.AddScoped<ILogQuakeService, LogQuakeService>();
             services.AddScoped<IKillRepository, KillRepository>();
-            services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
 
         }
 
