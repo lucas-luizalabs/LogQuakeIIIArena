@@ -1,4 +1,6 @@
 using LogQuake.API.Controllers;
+using LogQuake.CrossCutting;
+using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
@@ -7,7 +9,11 @@ using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using System.Collections.Generic;
 
 namespace LogQuake.API.Test
@@ -16,23 +22,36 @@ namespace LogQuake.API.Test
     public class LogQuakeAPITest
     {
         #region Atributos
-        private LogQuakeContext _context;
+        private SQLiteLogQuakeContext _context;
         private ILogQuakeService _logQuakeService;
         private IKillRepository _killRepository;
         private GamesController controller;
+        private ILogger<GamesController> _loggerGamesController;
+        private ILogger<LogQuakeService> _loggerLogQuakeServices;
         #endregion
 
         #region Criação do Contexto
         [TestInitialize]
         public void InitContext()
         {
-            var builder = new DbContextOptionsBuilder<LogQuakeContext>()
+            var builder = new DbContextOptionsBuilder<SQLiteLogQuakeContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database");
 
-            _context = new LogQuakeContext(builder.Options);
+            _context = new SQLiteLogQuakeContext(builder.Options);
 
             _killRepository = new KillRepository(_context);
-            _logQuakeService = new LogQuakeService(_killRepository);
+
+            LoggerFactory loggerFactoryServices = new LoggerFactory();
+            loggerFactoryServices.AddConsole(LogLevel.None);
+            loggerFactoryServices.AddDebug(LogLevel.None);
+            _loggerLogQuakeServices = new Logger<LogQuakeService>(loggerFactoryServices);
+
+            _logQuakeService = new LogQuakeService(_killRepository, _loggerLogQuakeServices);
+
+            LoggerFactory loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole(LogLevel.None);
+            loggerFactory.AddDebug(LogLevel.None);
+            _loggerGamesController = new Logger<GamesController>(loggerFactory);
         }
 
         [TestCleanup]
@@ -70,7 +89,7 @@ namespace LogQuake.API.Test
             }
             _context.SaveChanges();
 
-            controller = new GamesController(_logQuakeService);
+            controller = new GamesController(_logQuakeService, _loggerGamesController);
         }
         #endregion
 
@@ -82,10 +101,10 @@ namespace LogQuake.API.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 1;
-            pageRequest.PageSize = 2;
-            var result = controller.Get(pageRequest) as OkObjectResult;
+            DtoGameRequest dto = new DtoGameRequest();
+            dto.PageNumber = 1;
+            dto.PageSize = 2;
+            var result = controller.Get(dto) as OkObjectResult;
             Dictionary<string, Game> game = (Dictionary<string, Game>)result.Value;
 
             //assert
@@ -118,16 +137,17 @@ namespace LogQuake.API.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
-            pageRequest.PageNumber = 99999;
-            pageRequest.PageSize = 99;
-            var result = controller.Get(pageRequest) as NotFoundObjectResult;
-            Dictionary<string, Game> game = (Dictionary<string, Game>)result.Value;
+            DtoGameRequest dto = new DtoGameRequest();
+            dto.PageNumber = 99999;
+            dto.PageSize = 99;
+            var result = controller.Get(dto) as NotFoundObjectResult;
+            DtoResponseBase notification = (DtoResponseBase)result.Value;
 
             //assert
             Assert.IsNotNull(result);
             Assert.AreEqual(404, result.StatusCode);
-            Assert.IsTrue(game.Count == 0);
+            Assert.IsTrue(notification.Notifications[0].ErrorCode == 2);
+            Assert.IsTrue(notification.Success == false);
         }
 
         [TestMethod]
@@ -160,12 +180,13 @@ namespace LogQuake.API.Test
 
             //action
             var result = controller.Get(-999999) as NotFoundObjectResult;
-            Dictionary<string, Game> game = (Dictionary<string, Game>)result.Value;
+            DtoResponseBase notification = (DtoResponseBase)result.Value;
 
             //assert
             Assert.IsNotNull(result);
             Assert.AreEqual(404, result.StatusCode);
-            Assert.IsTrue(game.Count == 0);
+            Assert.IsTrue(notification.Notifications[0].ErrorCode == 2);
+            Assert.IsTrue(notification.Success == false);
         }
         #endregion
     }

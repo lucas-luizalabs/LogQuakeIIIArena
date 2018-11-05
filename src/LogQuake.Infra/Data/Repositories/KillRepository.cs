@@ -1,4 +1,5 @@
-﻿using LogQuake.Domain.Entities;
+﻿using LogQuake.Domain.Context;
+using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Contexto;
@@ -15,6 +16,7 @@ namespace LogQuake.Infra.Data.Repositories
         /// <summary>
         /// Consutrtor da classe
         /// </summary>
+        //public KillRepository(SQLiteLogQuakeContext context) : base(context)
         public KillRepository(LogQuakeContext context) : base(context)
         {
         }
@@ -35,7 +37,7 @@ namespace LogQuake.Infra.Data.Repositories
         /// <returns>
         /// Retornar uma lista de registro da tabela Kill.
         /// </returns>
-        public new List<Kill> GetAll(PageRequestBase pageRequest)
+        public new List<Kill> GetAll(PagingRequest pageRequest)
         {
             if (pageRequest == null)
             {

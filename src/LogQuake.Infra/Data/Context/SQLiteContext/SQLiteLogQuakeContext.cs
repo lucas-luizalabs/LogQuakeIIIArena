@@ -1,4 +1,5 @@
-﻿using LogQuake.Domain.Entities;
+﻿using LogQuake.Domain.Context;
+using LogQuake.Domain.Entities;
 using LogQuake.Infra.Data.EntityConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,31 +9,21 @@ using System.Text;
 
 namespace LogQuake.Infra.Data.Contexto
 {
-    public class LogQuakeContext: DbContext
+    public class SQLiteLogQuakeContext: LogQuakeContext //DbContext
     {
-        //private const string SqlServerConnection = "Server=(localdb)\\mssqllocaldb;Database=Quake3Arena;Trusted_Connection=True;";
-        private const string SQLiteConnection = "Data Source=Quake3Arena.db";
+        //Add-Migration InitialCreate -Context SQLiteLogQuakeContext -OutputDir Migrations\SQLiteMigrations
+        //Update-Database -verbose -Context SQLiteLogQuakeContext
 
-        public LogQuakeContext()
+        private const string stringConnection = "Data Source=Quake3Arena.db";
+
+        public SQLiteLogQuakeContext(DbContextOptions options): base(options)
         {
         }
-
-        public LogQuakeContext(DbContextOptions<LogQuakeContext> options)
-          : base(options)
-        {
-        }
-
-        /// <summary>
-        /// Acesso aos dados da tabela Kill
-        /// </summary>
-        public DbSet<Kill> Kills { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                //optionsBuilder.UseSqlServer(SqlServerConnection);
-                optionsBuilder.UseSqlite(SQLiteConnection);
-
+                optionsBuilder.UseSqlite(stringConnection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,11 +37,6 @@ namespace LogQuake.Infra.Data.Contexto
 
             modelBuilder.Entity<Kill>()
                 .HasIndex(u => u.IdGame);
-        }
-
-        public override int SaveChanges()
-        {
-            return base.SaveChanges();
         }
     }
 }

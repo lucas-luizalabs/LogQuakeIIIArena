@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LogQuake.Infra.Migrations
+namespace LogQuake.Infra.Migrations.SQLiteMigrations
 {
-    [DbContext(typeof(LogQuakeContext))]
-    partial class LogQuakeContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SQLiteLogQuakeContext))]
+    partial class SQLiteLogQuakeContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

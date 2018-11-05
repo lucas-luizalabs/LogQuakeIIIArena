@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using LogQuake.CrossCutting;
+using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,6 +22,7 @@ namespace LogQuake.API.Controllers
     {
         #region Atributos
         private readonly ILogQuakeService _logQuakeService;
+        private readonly ILogger _logger;
         #endregion
 
         #region Construtor
@@ -26,9 +30,11 @@ namespace LogQuake.API.Controllers
         /// Constrututor da classe controladora de Games
         /// </summary>
         /// <param name="logQuakeService">objeto de Serviço do Jogo</param>
-        public GamesController(ILogQuakeService logQuakeService)
+        /// /// <param name="logger">objeto para controle de log</param>
+        public GamesController(ILogQuakeService logQuakeService, ILogger<GamesController> logger)
         {
             _logQuakeService = logQuakeService;
+            _logger = logger;
         }
         #endregion
 
@@ -45,26 +51,36 @@ namespace LogQuake.API.Controllers
         /// <response code="200">Lista de partidas encontradas.</response>
         /// <response code="404">Nenhuma partida encontrada.</response>
         [HttpGet]
-        [Produces("application/json", Type = typeof(Game))]
-        public IActionResult Get([FromQuery]PageRequestBase pageRequest)
+        [ProducesResponseType(typeof(Game), 200)]
+        [ProducesResponseType(typeof(List<Notification>), 400)]
+        [ProducesResponseType(typeof(List<Notification>), 404)]
+        public IActionResult Get([FromQuery]DtoGameRequest pageRequest)
 
         {
-            Dictionary<string, Game> games;
+            DtoGameResponse response = new DtoGameResponse();
 
             if (pageRequest == null)
-                pageRequest = new PageRequestBase { PageNumber = 1, PageSize = 5 };
+                pageRequest = new DtoGameRequest { PageNumber = 1, PageSize = 5 };
 
             try
             {
-                games = _logQuakeService.GetAll(pageRequest);
-                if (games.Count == 0)
-                    return NotFound(games);
+                response = _logQuakeService.GetAll(pageRequest);
+                if (response.Game == null || response.Game.Count == 0)
+                {
+                    _logger.LogWarning(LoggingEvents.Information, "Nada encontrado para a página {0} tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize);
+                    return NotFound(response);
+                }
                 else
-                    return Ok(games);
+                {
+                    _logger.LogInformation(LoggingEvents.Information, "Busca realizada com sucesso para a página {0} com tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize);
+                    return Ok(response.Game);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                _logger.LogCritical(LoggingEvents.Critial, ex, "Falha ao realizar a busca pela página {0} com tamnho {1}", pageRequest.PageNumber, pageRequest.PageSize);
+                response.AddNotification(Notifications.ErroInesperado, ex);
+                return BadRequest(response);
             }
         }
 
@@ -79,79 +95,83 @@ namespace LogQuake.API.Controllers
         /// <response code="200">Partida encontrada <paramref name="idGame"/>.</response>
         /// <response code="404">Nenhuma partida encontrada.</response>
         [HttpGet("{idGame}")]
-        [Produces("application/json", Type = typeof(Game))]
+        [ProducesResponseType(typeof(Game), 200)]
+        [ProducesResponseType(typeof(List<Notification>), 400)]
+        [ProducesResponseType(typeof(List<Notification>), 404)]
         public IActionResult Get(int idGame)
         {
-            Dictionary<string, Game> game;
+            DtoGameResponse response = new DtoGameResponse();
 
             try
             {
-                game = _logQuakeService.GetById(idGame);
-                if (game.Count == 0)
-                    return NotFound(game);
+                response = _logQuakeService.GetById(idGame);
+                if (response.Game == null || response.Game.Count == 0)
+                {
+                    _logger.LogWarning(LoggingEvents.Warning, "Não encontrado o item {ID}", idGame);
+                    return NotFound(response);
+                }
                 else
-                    return Ok(game);
+                {
+                    _logger.LogInformation(LoggingEvents.Information, "Busca realizada com sucesso para o item {ID}", idGame);
+                    return Ok(response.Game);
+                }
+
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                _logger.LogCritical(LoggingEvents.Critial, ex, "Getting item {ID}", idGame);
+                response.AddNotification(Notifications.ErroInesperado, ex);
+                return BadRequest(response);
             }
         }
 
         // POST api/<controller>
         /// <summary>
-        /// Método para efetuar o Upload do arquivo de Log do jogo Quake III Arena
+        /// Método para efetuar o Upload do arquivo de Log do jogo Quake III Arena.
         /// </summary>
         /// <remarks>
-        /// Selecione um arquivo texto.
+        /// Após a API receber o arquivo de log ele será processado e amazenado em Banco de Dados para posterior consulta de cada partida do jogos.
         /// </remarks>        
         /// <param name="file">arquivo a ser processado</param>
         /// <response code="200">Upload realizado com sucesso.</response>
         /// <response code="400">Bad Request.</response>
         [HttpPost("Upload")]
+        [ProducesResponseType(typeof(DtoUploadResponse), 200)]
+        [ProducesResponseType(typeof(List<Notification>), 400)]
         public IActionResult Upload(IFormFile file)
         {
-            string path;
-            int RegistrosInseridos = 0;
+            string path = "";
+            DtoUploadResponse response = new DtoUploadResponse();
 
             if (file == null || file.Length == 0)
-                return BadRequest("Arquivo não selecionado.");
-
-            try
             {
-                var stream = file.OpenReadStream();
-                var name = file.FileName;
-
-                path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/log", file.FileName);
-
-                using (var stream2 = new FileStream(path, FileMode.Create))
-                {
-                    file.CopyTo(stream2);
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Falha ao ler o arquivo " + file.FileName + Environment.NewLine + ex.InnerException);
+                _logger.LogError(LoggingEvents.Critial, "Arquivo não selecionado.");
+                response.AddNotification(Notifications.ErroInesperado, "Arquivo não selecionado.");
+                return BadRequest(response);
             }
 
             try
             {
-                List<Kill> Kills;
-                List<string> linhas = _logQuakeService.ReadLogFile(path);
+                path = Directory.GetCurrentDirectory() + "\\wwwroot\\Log";
+                response = _logQuakeService.UploadFile(path, file.FileName, file.OpenReadStream());
 
-                if (linhas.Count > 0)
+                if (response.Notifications != null)
                 {
-                    Kills = _logQuakeService.ConvertLogFileInListKill(linhas);
-
-                    RegistrosInseridos = _logQuakeService.AddKillListInDB(Kills);
+                    _logger.LogWarning(LoggingEvents.Information, "Falha ao realizar o Upload do arquivo {0}", file.FileName);
+                    return BadRequest(response);
+                }
+                else
+                {
+                    _logger.LogInformation(LoggingEvents.Information, "Upload realizado com sucesso do arquivo {0}", file.FileName);
+                    return Ok(response);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest("Falha ao processar o arquivo " + file.FileName + Environment.NewLine + ex.InnerException);
+                _logger.LogCritical(LoggingEvents.Critial, ex, "Upload do log {0}", file.FileName);
+                response.AddNotification(Notifications.ErroInesperado, ex);
+                return BadRequest(response);
             }
-
-            return Ok(new { length = file.Length, name = file.Name, Registros = RegistrosInseridos });
         }
         #endregion
     }

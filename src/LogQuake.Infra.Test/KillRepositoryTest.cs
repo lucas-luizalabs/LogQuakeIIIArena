@@ -12,7 +12,7 @@ namespace LogQuake.Infra.Test
     public class KillRepositoryTest
     {
         #region Atributos
-        private LogQuakeContext _context;
+        private SQLiteLogQuakeContext _context;
         private KillRepository _killRepository;
         #endregion
 
@@ -27,10 +27,10 @@ namespace LogQuake.Infra.Test
         [TestInitialize]
         public void InitContext()
         {
-            var builder = new DbContextOptionsBuilder<LogQuakeContext>()
+            var builder = new DbContextOptionsBuilder<SQLiteLogQuakeContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database");
 
-            _context = new LogQuakeContext(builder.Options);
+            _context = new SQLiteLogQuakeContext(builder.Options);
 
             _killRepository = new KillRepository(_context);
         }

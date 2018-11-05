@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
+using LogQuake.CrossCutting;
+using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
-using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Validators;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 namespace LogQuake.Service.Services
 {
@@ -16,12 +18,14 @@ namespace LogQuake.Service.Services
     {
         #region Atributos
         private readonly IKillRepository _killRepository;
+        private readonly ILogger _logger;
         #endregion
 
         #region Construtor
-        public LogQuakeService(IKillRepository killRepository)
+        public LogQuakeService(IKillRepository killRepository, ILogger<LogQuakeService> logger)
         {
             _killRepository = killRepository;
+            _logger = logger;
         }
         #endregion
 
@@ -43,6 +47,80 @@ namespace LogQuake.Service.Services
                 linhas = new List<string>();
 
             return linhas;
+        }
+
+        /// <summary>
+        /// Método responsável receber o Upload do arquivo de log.
+        /// </summary>
+        /// <param name="folder">local de destino do arquivo de log</param>
+        /// <param name="filename">arquivo a ser lido</param>
+        /// <param name="stream">arquivo propriamente dito no formato Stream</param>
+        /// <returns>
+        /// Retorna um objeto contendo nome do arquivo, quantidade de registro inseridos, se ouve sucesso Sim ou Não.
+        /// </returns>
+        public DtoUploadResponse UploadFile(string folder, string fileName, Stream file)
+        {
+            DtoUploadResponse response = new DtoUploadResponse();
+            string path = folder;
+            int RegistrosInseridos = 0;
+
+            //caso não exista o destino, deve-se criar as pastas
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                path += "\\" + fileName;
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, string.Format("Falha ao criar o diretório {0}", path), ex);
+                return response;
+            }
+
+            //criando o arquivo de log em seu destino
+            try
+            {
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, string.Format("Falha ao copiar o arquivo {0} para o diretório {1}", fileName, path), ex);
+                return response;
+            }
+
+            //Processando o arquivo de log:
+            //1 - Efetua a leitura do arquivo de log
+            //2 - Converte arquivo de log em lista de objetos Kill
+            //3 - Inserindo no Banco de Dados a lista de Kill
+            //4 - Retorna o objeto para o método que solicitou o Upload
+            try
+            {
+                List<Kill> Kills;
+                List<string> linhas = ReadLogFile(path);
+
+                if (linhas.Count > 0)
+                {
+                    Kills = ConvertLogFileInListKill(linhas);
+
+                    RegistrosInseridos = AddKillListInDB(Kills);
+                }
+
+                response.FileName = fileName;
+                response.Length = file.Length;
+                response.RegistrosInseridos = RegistrosInseridos;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao processar o arquivo " + fileName, ex);
+                return response;
+            }
         }
 
         /// <summary>
@@ -104,7 +182,6 @@ namespace LogQuake.Service.Services
         public int AddKillListInDB(List<Kill> Kills)
         {
             _killRepository.RemoveAll();
-
             foreach (Kill item in Kills)
             {
                 Validate(item, Activator.CreateInstance<KillValidator>());
@@ -127,36 +204,73 @@ namespace LogQuake.Service.Services
         /// Busca no Banco de Dados os dados de um determinado Jogo.
         /// </summary>
         /// <param name="Id">Identificador do Jogo</param>
-        public Dictionary<string, Game> GetById(int Id)
+        public DtoGameResponse GetById(int Id)
         {
-            List<Kill> listaKill = _killRepository.GetByIdList(Id).ToList();
-
             Dictionary<string, Game> games = new Dictionary<string, Game>();
+            DtoGameResponse response = new DtoGameResponse();
+            List<Kill> listaKill;
+
+            try
+            {
+                _logger.LogError(LoggingEvents.Information, "Buscando o registro da partida {0}", Id);
+                listaKill = _killRepository.GetByIdList(Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(LoggingEvents.Critial, "Falha ao acessar o banco de dados das partidas.");
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao acessar o banco de dados das partidas.", ex);
+                return response;
+            }
 
             if (listaKill.Count == 0)
-                return games;
+            {
+                _logger.LogError(LoggingEvents.Error, "Getting item {ID}", Id);
+                response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game com o Id {0}", Id), MethodBase.GetCurrentMethod().ToString());
+                return response;
+            }
 
-            ConverteListKillParaGame(listaKill, games, Id);
+            try
+            {
+                ConvertKillListToGame(listaKill, games, Id);
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao converter lista de jogos.", ex);
+                return response;
+            }
 
-            return games;
+            response.Game = games;
+
+            return response;
         }
 
         /// <summary>
         /// Busca no Banco de Dados os dados de todos os jogos, respeitando a paginação informada.
         /// </summary>
         /// <param name="pageRequest">parâmetros de paginação para buscar no Banco de Dados</param>
-        public Dictionary<string, Game> GetAll(PageRequestBase pageRequest)
+        public DtoGameResponse GetAll(PagingRequest pageRequest)
         {
             List<Kill> listaKill = _killRepository.GetAll(pageRequest).ToList();
-
             Dictionary<string, Game> games = new Dictionary<string, Game>();
+            DtoGameResponse response = new DtoGameResponse();
 
             if (listaKill.Count == 0)
-                return games;
+            {
+                response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game para a página {0} com tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize), MethodBase.GetCurrentMethod().ToString());
+                return response;
+            }
 
-            ConverteListKillParaGame(listaKill, games, ((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1);
+            try
+            {
+                ConvertKillListToGame(listaKill, games, ((pageRequest.PageNumber - 1) * pageRequest.PageSize) + 1);
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao converter lista de jogos.", ex);
+            }
+            response.Game = games;
 
-            return games;
+            return response;
         }
 
         /// <summary>
@@ -165,7 +279,7 @@ namespace LogQuake.Service.Services
         /// <param name="listaKill">lista Kill de entrada</param>
         /// <param name="games">retorna uma lista preenchida com os Jogos encontrados de acordo com a listaKill</param>
         /// <param name="ContadorGame">variável de controle para indicar o número do Jogo "game_x" dentro da lista games</param>
-        private static void ConverteListKillParaGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
+        private static void ConvertKillListToGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
         {
             Game game;
             int idgame = 0;

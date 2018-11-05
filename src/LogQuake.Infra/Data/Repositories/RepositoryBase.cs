@@ -1,4 +1,5 @@
-﻿using LogQuake.Domain.Interfaces;
+﻿using LogQuake.Domain.Context;
+using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Contexto;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace LogQuake.Infra.Data.Repositories
     public class RepositoryBase<TEntity> : IDisposable, IRepositoryBase<TEntity> where TEntity : class
     {
         #region Atributos
+        //protected SQLiteLogQuakeContext context;
         protected LogQuakeContext context;
         private bool _disposed = false;
         #endregion
 
         #region Construtor da classe
+        //public RepositoryBase(SQLiteLogQuakeContext context)
         public RepositoryBase(LogQuakeContext context)
         {
             this.context = context;
@@ -40,7 +43,7 @@ namespace LogQuake.Infra.Data.Repositories
         /// <returns>
         /// Retornar uma lista de objetos de acordo com a entidade.
         /// </returns>
-        public List<TEntity> GetAll(PageRequestBase pageRequest)
+        public List<TEntity> GetAll(PagingRequest pageRequest)
         {
             return context.Set<TEntity>().AsNoTracking().ToList();
         }

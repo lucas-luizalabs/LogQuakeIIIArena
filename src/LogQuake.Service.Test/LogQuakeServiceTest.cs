@@ -1,3 +1,4 @@
+using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
@@ -5,6 +6,7 @@ using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -18,9 +20,10 @@ namespace LogQuake.Service.Test
     public class LogQuakeServiceTest
     {
         #region Atributos
-        private LogQuakeContext _context;
+        private SQLiteLogQuakeContext _context;
         private KillRepository _killRepository;
         private LogQuakeService _logQuakeService;
+        private ILogger<LogQuakeService> _logger;
         #endregion
 
         #region Construtor
@@ -34,13 +37,19 @@ namespace LogQuake.Service.Test
         [TestInitialize]
         public void InitContext()
         {
-            var builder = new DbContextOptionsBuilder<LogQuakeContext>()
+            var builder = new DbContextOptionsBuilder<SQLiteLogQuakeContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database");
 
-            _context = new LogQuakeContext(builder.Options);
+            _context = new SQLiteLogQuakeContext(builder.Options);
 
             _killRepository = new KillRepository(_context);
-            _logQuakeService = new LogQuakeService(_killRepository);
+
+            LoggerFactory loggerFactory = new LoggerFactory();
+            loggerFactory.AddConsole(LogLevel.None);
+            loggerFactory.AddDebug(LogLevel.None);
+            _logger = new Logger<LogQuakeService>(loggerFactory);
+
+            _logQuakeService = new LogQuakeService(_killRepository, _logger);
         }
 
         [TestCleanup]
@@ -89,10 +98,11 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
+            PagingRequest pageRequest = new PagingRequest();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+            DtoGameResponse retorno = _logQuakeService.GetAll(pageRequest);
+            Dictionary<string, Game> result = retorno.Game;
 
             //assert
             Assert.IsTrue(result != null);
@@ -107,10 +117,12 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
+            PagingRequest pageRequest = new PagingRequest();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+            DtoGameResponse retorno = _logQuakeService.GetAll(pageRequest);
+            Dictionary<string, Game> result = retorno.Game;
+
 
             //assert
             Assert.IsTrue(result != null);
@@ -128,10 +140,11 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
+            PagingRequest pageRequest = new PagingRequest();
             pageRequest.PageNumber = 2;
             pageRequest.PageSize = 3;
-            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+            DtoGameResponse retorno = _logQuakeService.GetAll(pageRequest);
+            Dictionary<string, Game> result = retorno.Game;
 
             //assert
             Assert.IsTrue(result != null);
@@ -149,14 +162,14 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
+            PagingRequest pageRequest = new PagingRequest();
             pageRequest.PageNumber = 200;
             pageRequest.PageSize = 3;
-            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+            DtoGameResponse retorno = _logQuakeService.GetAll(pageRequest);
 
             //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Count == 0);
+            Assert.IsTrue(retorno.Game == null);
+            Assert.IsTrue(retorno.Notifications[0].ErrorCode == 2);
         }
 
 
@@ -167,13 +180,14 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados(false);
 
             //action
-            PageRequestBase pageRequest = new PageRequestBase();
+            PagingRequest pageRequest = new PagingRequest();
             pageRequest.PageNumber = 1;
             pageRequest.PageSize = 5;
-            Dictionary<string, Game> result = _logQuakeService.GetAll(pageRequest);
+            DtoGameResponse retorno = _logQuakeService.GetAll(pageRequest);
 
             //assert
-            Assert.IsTrue(result.Count == 0, "Erro");
+            Assert.IsTrue(retorno.Game == null);
+            Assert.IsTrue(retorno.Notifications[0].ErrorCode == 2);
         }
 
         [TestMethod]
@@ -183,7 +197,7 @@ namespace LogQuake.Service.Test
             //arrange
 
             //action
-            Dictionary<string, Game> result = _logQuakeService.GetAll(null);
+            DtoGameResponse retorno = _logQuakeService.GetAll(null);
 
             //assert
         }
@@ -195,7 +209,8 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            Dictionary<string, Game> result = _logQuakeService.GetById(2);
+            DtoGameResponse retorno = _logQuakeService.GetById(2);
+            Dictionary<string, Game> result = retorno.Game;
 
             //assert
             Assert.IsTrue(result != null);
@@ -211,11 +226,11 @@ namespace LogQuake.Service.Test
             PreparaBaseDeDados();
 
             //action
-            Dictionary<string, Game> result = _logQuakeService.GetById(22);
+            DtoGameResponse result = _logQuakeService.GetById(22);
 
             //assert
-            Assert.IsTrue(result != null);
-            Assert.IsTrue(result.Values.Count == 0);
+            Assert.IsTrue(result.Game == null);
+            Assert.IsTrue(result.Notifications[0].ErrorCode == 2);
         }
 
         [TestMethod]
@@ -858,8 +873,14 @@ namespace LogQuake.Service.Test
             //action
             int retornoServico = _logQuakeService.AddKillListInDB(Kills);
 
-            Dictionary<string, Game> game1 = _logQuakeService.GetById(1);
-            Dictionary<string, Game> game2 = _logQuakeService.GetById(2);
+            DtoGameResponse retorno;
+            retorno = _logQuakeService.GetById(1);
+            Dictionary<string, Game> game1 = retorno.Game;
+            retorno = _logQuakeService.GetById(2);
+            Dictionary<string, Game> game2 = retorno.Game;
+
+            //Dictionary<string, Game> game1 = _logQuakeService.GetById(1);
+            //Dictionary<string, Game> game2 = _logQuakeService.GetById(2);
 
             int QuantidadeRegistroKillRepository = _killRepository.Count();
 

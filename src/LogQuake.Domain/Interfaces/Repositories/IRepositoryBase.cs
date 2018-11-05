@@ -11,7 +11,7 @@ namespace LogQuake.Domain.Interfaces
 
         TEntity GetById(int Id);
 
-        List<TEntity> GetAll(PageRequestBase pageRequest);
+        List<TEntity> GetAll(PagingRequest pageRequest);
 
         void Update(TEntity obj);
 
