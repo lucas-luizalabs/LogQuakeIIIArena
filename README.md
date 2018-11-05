@@ -45,7 +45,7 @@ Você poderá rodar o projeto em Windows
 - [Como utilizar a Solution LogQuake](docs/UTILIZAR.md)
 
 
-## News
+## News:
 
 **v1.1 - 2018/11/05**
 - Banco de Dados com múltiplos Providers (SQLite e SqlServer)
