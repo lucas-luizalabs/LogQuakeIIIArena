@@ -16,3 +16,7 @@ Abaixo segue estrutura de criação do Banco de Dados em SQLite:
 Abaixo segue a mesma estrutura para criação do Banco de Dados Sql Server:
 
 ![bd sql server](https://user-images.githubusercontent.com/44147082/47976967-98ed2b00-e09c-11e8-9a70-7d62c0cc658d.PNG)
+
+Abaixo  segue o arquivo de configurações appsettings, onde é possível visualizar as opções de Banco de Dados disponíveis e suas respectivas Strings de Conexões.
+
+![appsettings](https://user-images.githubusercontent.com/44147082/47977154-b5d62e00-e09d-11e8-8f81-0c4c23cf0f87.PNG)
