@@ -19,6 +19,8 @@ Você poderá rodar o projeto em Windows
 - .NET Core Native DI
 - FluentValidator
 - Swagger UI
+- Logging
+- Multiplos providers de Banco de Dados (SQLite, Sql Server)
 
 ## Arquitetura:
 - Domain Driven Design 
