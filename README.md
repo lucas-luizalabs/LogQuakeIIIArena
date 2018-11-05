@@ -48,5 +48,5 @@ Você poderá rodar o projeto em Windows
 **v1.1 - 2018/11/05**
 - Banco de Dados com múltiplos Providers (SQLite e SqlServer)
 - Gravação de log através do provider Microsoft Logging
-- Criação de ResponseBase com lista de notificações para devolver ao usuário e sistema, mensagens retornadas da API
+- Criação de ResponseBase com lista de notificações/erros para devolver ao usuário e sistema, mensagens retornadas da API
 - Melhorias no contrato Swagger, criação de exemplos json para retorno e melhor detalhamento dos parâmetros de request.
