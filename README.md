@@ -33,6 +33,8 @@ Você poderá rodar o projeto em Windows
 - https://docs.microsoft.com/pt-br/ef/core/get-started/aspnetcore/existing-db
 - https://docs.microsoft.com/en-us/dotnet/csharp/codedoc
 - https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1
+- https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1
+- https://docs.microsoft.com/pt-br/ef/core/managing-schemas/migrations/providers
 
 ## Manual do Desenvolvedor:
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
