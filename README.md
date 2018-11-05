@@ -24,6 +24,8 @@ Você poderá rodar o projeto em Windows
 
 ## Arquitetura:
 - Domain Driven Design 
+- Repository and Generic Repository
+- Domain Notification
 
 ## Referências:
 - https://docs.microsoft.com/en-us/dotnet/core/porting/project-structure
