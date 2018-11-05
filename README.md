@@ -37,3 +37,12 @@ Você poderá rodar o projeto em Windows
 - [Banco de Dados](docs/ESTRUTURABD.md)
 - [Como abrir a Solution com Visusal Studio 2017](docs/VS2017.md)
 - [Como utilizar a Solution LogQuake](docs/UTILIZAR.md)
+
+
+## News
+
+**v1.1 - 2018/11/05**
+- Banco de Dados com multiplos Providers (SQLite e SqlServer)
+- Gravação de log através do provider Microsoft Logging
+- Criação de ResponseBase com lista de notificações para devolver ao usuário e sistema, mensagens retornadas da API
+- Melhorias no contrato Swagger, criação de exemplos json para retorno e melhor detalhamento dos parâmetros de request.
