@@ -56,6 +56,7 @@ Você poderá rodar o projeto em Windows
 - Criação de Unit Of Work
 - Implementação de Cache de Memória (IMemoryCache)
 
+
 **v1.1 - 2018/11/05**
 - Banco de Dados com múltiplos Providers (SQLite e SqlServer)
 - Gravação de log através do provider Microsoft Logging
