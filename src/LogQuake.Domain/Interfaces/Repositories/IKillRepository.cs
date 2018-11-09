@@ -9,6 +9,8 @@ namespace LogQuake.Domain.Interfaces
     {
         List<Kill> GetByIdList(int Id);
 
+        List<Kill> GetCacheByIdList(int Id);
+
         void RemoveAll();
     }
 }

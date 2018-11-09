@@ -9,12 +9,15 @@ using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
+using LogQuake.Infra.UoW;
 
 namespace LogQuake.API.Test
 {
@@ -24,10 +27,13 @@ namespace LogQuake.API.Test
         #region Atributos
         private SQLiteLogQuakeContext _context;
         private ILogQuakeService _logQuakeService;
-        private IKillRepository _killRepository;
+        //private IKillRepository _killRepository;
         private GamesController controller;
         private ILogger<GamesController> _loggerGamesController;
         private ILogger<LogQuakeService> _loggerLogQuakeServices;
+        private IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
+        private IConfiguration _configuration;
+        private UnitOfWork _unitOfWork;
         #endregion
 
         #region Criação do Contexto
@@ -39,19 +45,30 @@ namespace LogQuake.API.Test
 
             _context = new SQLiteLogQuakeContext(builder.Options);
 
-            _killRepository = new KillRepository(_context);
+            IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+
+            //_killRepository = new KillRepository(_context, cache);
 
             LoggerFactory loggerFactoryServices = new LoggerFactory();
             loggerFactoryServices.AddConsole(LogLevel.None);
             loggerFactoryServices.AddDebug(LogLevel.None);
             _loggerLogQuakeServices = new Logger<LogQuakeService>(loggerFactoryServices);
 
-            _logQuakeService = new LogQuakeService(_killRepository, _loggerLogQuakeServices);
+            //_logQuakeService = new LogQuakeService(_killRepository, _loggerLogQuakeServices);
+
+            _unitOfWork = new UnitOfWork(_context, cache);
+
+            _logQuakeService = new LogQuakeService(_unitOfWork, cache, _loggerLogQuakeServices, _configuration);
 
             LoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddConsole(LogLevel.None);
             loggerFactory.AddDebug(LogLevel.None);
             _loggerGamesController = new Logger<GamesController>(loggerFactory);
+
+            _configuration = new ConfigurationBuilder()
+                .SetBasePath(System.AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
         }
 
         [TestCleanup]
@@ -89,7 +106,7 @@ namespace LogQuake.API.Test
             }
             _context.SaveChanges();
 
-            controller = new GamesController(_logQuakeService, _loggerGamesController);
+            controller = new GamesController(_logQuakeService, _loggerGamesController, _cache, _configuration);
         }
         #endregion
 

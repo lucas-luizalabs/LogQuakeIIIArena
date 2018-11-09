@@ -1,13 +1,12 @@
-﻿using LogQuake.Domain.Context;
+﻿using LogQuake.CrossCutting.Cache;
+using LogQuake.Domain.Context;
 using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
-using LogQuake.Infra.Data.Contexto;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace LogQuake.Infra.Data.Repositories
 {
@@ -16,9 +15,9 @@ namespace LogQuake.Infra.Data.Repositories
         /// <summary>
         /// Consutrtor da classe
         /// </summary>
-        //public KillRepository(SQLiteLogQuakeContext context) : base(context)
-        public KillRepository(LogQuakeContext context) : base(context)
+        public KillRepository(LogQuakeContext context, IMemoryCache cache) : base(context, cache)
         {
+            
         }
 
         /// <summary>
@@ -27,7 +26,6 @@ namespace LogQuake.Infra.Data.Repositories
         public void RemoveAll()
         {
             context.Kills.RemoveRange(context.Kills);
-            //context.SaveChanges();
         }
 
         /// <summary>
@@ -85,5 +83,34 @@ namespace LogQuake.Infra.Data.Repositories
             return context.Set<Kill>().Where(x => x.IdGame == Id).ToList();
         }
 
+
+        /// <summary>
+        /// Buscar primeiramente no Cache de Repositório registros da tabela Kill por Id e depois no Banco de Dados
+        /// </summary>
+        /// <param name="Id">Identificador da tabela Kill</param>
+        /// <returns>
+        /// Retornar uma lista de registro da tabela Kill.
+        /// </returns>
+        public List<Kill> GetCacheByIdList(int Id)
+        {
+            //Exemplo de como utilizar Cache em um Repositório
+            var key = $"KillRepository.GetCacheByIdList{Id.ToString()}";
+            List<Kill> retorno;
+
+            if (!cache.TryGetValue(key, out retorno))
+            {
+                lock (Cache.lockCache) // ensure concurrent request won't access DB at the same time
+                {
+                    if (!cache.TryGetValue(key, out retorno)) // double-check
+                    {
+                        retorno = context.Set<Kill>().Where(x => x.IdGame == Id).ToList();
+                        cache.Set(key, retorno,
+                            new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes(10), Size = 500 });
+                    }
+                }
+            }
+
+            return retorno;
+        }
     }
 }

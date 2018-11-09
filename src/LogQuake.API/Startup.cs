@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using LogQuake.Domain.Context;
 using LogQuake.Domain.Interfaces;
+using LogQuake.Domain.Interfaces.Repositories;
 using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
 using LogQuake.Infra.Data.SqlServerContext;
+using LogQuake.Infra.UoW;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,6 +51,10 @@ namespace LogQuake.API
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
             );
+
+            services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddMemoryCache();
 
             services.AddMvc();
 
@@ -97,6 +102,7 @@ namespace LogQuake.API
 
             services.AddScoped<ILogQuakeService, LogQuakeService>();
             services.AddScoped<IKillRepository, KillRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             _logger.LogInformation("Adicionado KillRepository ao services");
         }

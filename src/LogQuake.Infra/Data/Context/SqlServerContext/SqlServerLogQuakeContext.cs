@@ -2,21 +2,17 @@
 using LogQuake.Domain.Entities;
 using LogQuake.Infra.Data.EntityConfig;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LogQuake.Infra.Data.SqlServerContext
 {
-    public class SqlServerLogQuakeContext: LogQuakeContext //DbContext
+    public class SqlServerLogQuakeContext: LogQuakeContext
     {
         //Add-Migration InitialCreate -Context SqlServerLogQuakeContext -OutputDir Migrations\SqlServerMigrations
         //Update-Database -verbose -Context SqlServerLogQuakeContext
 
         private const string stringConnection = "Server=(localdb)\\mssqllocaldb;Database=Quake3Arena;Trusted_Connection=True;";
 
-        public SqlServerLogQuakeContext(DbContextOptions options)
-          : base(options)
+        public SqlServerLogQuakeContext(DbContextOptions options): base(options)
         {
         }
 

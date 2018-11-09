@@ -1,29 +1,27 @@
 ﻿using LogQuake.Domain.Context;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
-using LogQuake.Infra.Data.Contexto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 
 namespace LogQuake.Infra.Data.Repositories
 {
     public class RepositoryBase<TEntity> : IDisposable, IRepositoryBase<TEntity> where TEntity : class
     {
         #region Atributos
-        //protected SQLiteLogQuakeContext context;
         protected LogQuakeContext context;
         private bool _disposed = false;
+        protected readonly IMemoryCache cache;
         #endregion
 
         #region Construtor da classe
-        //public RepositoryBase(SQLiteLogQuakeContext context)
-        public RepositoryBase(LogQuakeContext context)
+        public RepositoryBase(LogQuakeContext context, IMemoryCache cache)
         {
             this.context = context;
+            this.cache = cache;
         }
         #endregion
 
@@ -76,14 +74,6 @@ namespace LogQuake.Infra.Data.Repositories
         public void Update(TEntity obj)
         {
             context.Entry(obj).State = EntityState.Modified;
-        }
-
-        /// <summary>
-        /// Método Base para efetivar/commitar as alterações no Banco de Dados
-        /// </summary>
-        public void SaveChanges()
-        {
-            context.SaveChanges();
         }
 
         /// <summary>

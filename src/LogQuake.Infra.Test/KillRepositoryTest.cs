@@ -2,6 +2,7 @@ using LogQuake.Domain.Entities;
 using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,9 @@ namespace LogQuake.Infra.Test
 
             _context = new SQLiteLogQuakeContext(builder.Options);
 
-            _killRepository = new KillRepository(_context);
+            IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+
+            _killRepository = new KillRepository(_context, cache);
         }
 
         [TestCleanup]
@@ -72,7 +75,7 @@ namespace LogQuake.Infra.Test
 
             //action
             _killRepository.Add(null);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
 
             //assert
         }
@@ -89,7 +92,7 @@ namespace LogQuake.Infra.Test
             kill.PlayerKilled = "Zeh";
             kill.PlayerKiller = "<world>";
             _killRepository.Add(kill);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
 
             //assert
             Assert.IsTrue(_killRepository.Count() == 1);
@@ -111,7 +114,7 @@ namespace LogQuake.Infra.Test
                 kill.PlayerKiller = "<world>";
                 _killRepository.Add(kill);
             }
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
 
             //assert
             Assert.IsTrue(_killRepository.Count() == 2);
@@ -129,7 +132,7 @@ namespace LogQuake.Infra.Test
             kill.IdGame = 1;
             kill.PlayerKiller = "<world>";
             _killRepository.Add(kill);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
 
             //assert
             Assert.IsTrue(_killRepository.Count() == 1);
@@ -147,7 +150,7 @@ namespace LogQuake.Infra.Test
             retorno.PlayerKilled = "Morto";
 
             _killRepository.Update(retorno);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
             retorno = _killRepository.GetById(3);
 
             //assert
@@ -168,7 +171,7 @@ namespace LogQuake.Infra.Test
             retorno.IdGame = 9999;
 
             _killRepository.Update(retorno);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
             retorno = _killRepository.GetById(3);
 
             //assert
@@ -187,7 +190,7 @@ namespace LogQuake.Infra.Test
             //action
             Kill retorno = _killRepository.GetById(3);
             _killRepository.Remove(retorno);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
             retorno = _killRepository.GetById(3);
 
             //assert
@@ -203,7 +206,7 @@ namespace LogQuake.Infra.Test
 
             //action
             _killRepository.Remove(null);
-            _killRepository.SaveChanges();
+            _context.SaveChanges();
 
             //assert
             //Assert.IsNull(null);

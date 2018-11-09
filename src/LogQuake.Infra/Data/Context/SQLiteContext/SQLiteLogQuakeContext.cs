@@ -2,14 +2,10 @@
 using LogQuake.Domain.Entities;
 using LogQuake.Infra.Data.EntityConfig;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LogQuake.Infra.Data.Contexto
 {
-    public class SQLiteLogQuakeContext: LogQuakeContext //DbContext
+    public class SQLiteLogQuakeContext: LogQuakeContext
     {
         //Add-Migration InitialCreate -Context SQLiteLogQuakeContext -OutputDir Migrations\SQLiteMigrations
         //Update-Database -verbose -Context SQLiteLogQuakeContext

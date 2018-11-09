@@ -4,8 +4,11 @@ using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
+using LogQuake.Infra.UoW;
 using LogQuake.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -21,9 +24,10 @@ namespace LogQuake.Service.Test
     {
         #region Atributos
         private SQLiteLogQuakeContext _context;
-        private KillRepository _killRepository;
         private LogQuakeService _logQuakeService;
         private ILogger<LogQuakeService> _logger;
+        private UnitOfWork _unitOfWork;
+        private IConfiguration _configuration;
         #endregion
 
         #region Construtor
@@ -42,14 +46,22 @@ namespace LogQuake.Service.Test
 
             _context = new SQLiteLogQuakeContext(builder.Options);
 
-            _killRepository = new KillRepository(_context);
+            IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
             LoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddConsole(LogLevel.None);
             loggerFactory.AddDebug(LogLevel.None);
             _logger = new Logger<LogQuakeService>(loggerFactory);
 
-            _logQuakeService = new LogQuakeService(_killRepository, _logger);
+            _unitOfWork = new UnitOfWork(_context, cache);
+
+            _logQuakeService = new LogQuakeService(_unitOfWork, cache, _logger, _configuration);
+
+            _configuration = new ConfigurationBuilder()
+                .SetBasePath(System.AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+
         }
 
         [TestCleanup]
@@ -874,15 +886,14 @@ namespace LogQuake.Service.Test
             int retornoServico = _logQuakeService.AddKillListInDB(Kills);
 
             DtoGameResponse retorno;
+
             retorno = _logQuakeService.GetById(1);
             Dictionary<string, Game> game1 = retorno.Game;
+
             retorno = _logQuakeService.GetById(2);
             Dictionary<string, Game> game2 = retorno.Game;
 
-            //Dictionary<string, Game> game1 = _logQuakeService.GetById(1);
-            //Dictionary<string, Game> game2 = _logQuakeService.GetById(2);
-
-            int QuantidadeRegistroKillRepository = _killRepository.Count();
+            int QuantidadeRegistroKillRepository = _unitOfWork.Kills.Count();
 
             //assert
             Assert.IsTrue(retornoServico == 7);

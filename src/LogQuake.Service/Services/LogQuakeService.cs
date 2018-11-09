@@ -1,10 +1,13 @@
 ﻿using FluentValidation;
 using LogQuake.CrossCutting;
+using LogQuake.CrossCutting.Cache;
 using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
-using LogQuake.Domain.Interfaces;
+using LogQuake.Domain.Interfaces.Repositories;
 using LogQuake.Infra.CrossCuting;
 using LogQuake.Service.Validators;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,19 +20,23 @@ namespace LogQuake.Service.Services
     public class LogQuakeService :  ILogQuakeService
     {
         #region Atributos
-        private readonly IKillRepository _killRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        protected readonly IMemoryCache _cache;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
         #endregion
 
         #region Construtor
-        public LogQuakeService(IKillRepository killRepository, ILogger<LogQuakeService> logger)
+        public LogQuakeService(IUnitOfWork unitOfWork, IMemoryCache cache, ILogger<LogQuakeService> logger, IConfiguration configuration)
         {
-            _killRepository = killRepository;
+            _unitOfWork = unitOfWork;
+            _cache = cache;
             _logger = logger;
+            _configuration = configuration;
         }
         #endregion
 
-
+        #region Métodos Públicos
         /// <summary>
         /// Método responsável por ler o arquivo de log do jogo Quake 3 Arena e criar uma lista de string, contendo as linhas do log.
         /// </summary>
@@ -181,24 +188,16 @@ namespace LogQuake.Service.Services
         /// </returns>
         public int AddKillListInDB(List<Kill> Kills)
         {
-            _killRepository.RemoveAll();
+            _unitOfWork.Kills.RemoveAll();
             foreach (Kill item in Kills)
             {
                 Validate(item, Activator.CreateInstance<KillValidator>());
-                _killRepository.Add(item);
+                _unitOfWork.Kills.Add(item);
             }
-            _killRepository.SaveChanges();
-
-            return Kills.Count;
+            _unitOfWork.Complete();
+            return _unitOfWork.Kills.Count();
         }
 
-        private void Validate(Kill obj, AbstractValidator<Kill> validator)
-        {
-            if (obj == null)
-                throw new Exception("Registros não detectados!");
-
-            validator.ValidateAndThrow(obj);
-        }
 
         /// <summary>
         /// Busca no Banco de Dados os dados de um determinado Jogo.
@@ -212,19 +211,64 @@ namespace LogQuake.Service.Services
 
             try
             {
-                _logger.LogError(LoggingEvents.Information, "Buscando o registro da partida {0}", Id);
-                listaKill = _killRepository.GetByIdList(Id).ToList();
+                _logger.LogInformation(LoggingEvents.Information, "Buscando o registro da partida {0}", Id);
+                listaKill = _unitOfWork.Kills.GetByIdList(Id).ToList();
             }
             catch (Exception ex)
             {
-                _logger.LogError(LoggingEvents.Critial, "Falha ao acessar o banco de dados das partidas.");
+                _logger.LogCritical(LoggingEvents.Critial, "Falha ao acessar o banco de dados das partidas.");
                 response.AddNotification(Notifications.ErroInesperado, "Falha ao acessar o banco de dados das partidas.", ex);
                 return response;
             }
 
             if (listaKill.Count == 0)
             {
-                _logger.LogError(LoggingEvents.Error, "Getting item {ID}", Id);
+                _logger.LogWarning(LoggingEvents.Error, "Getting item {ID}", Id);
+                response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game com o Id {0}", Id), MethodBase.GetCurrentMethod().ToString());
+                return response;
+            }
+
+            try
+            {
+                ConvertKillListToGame(listaKill, games, Id);
+            }
+            catch (Exception ex)
+            {
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao converter lista de jogos.", ex);
+                return response;
+            }
+
+            response.Game = games;
+
+            return response;
+        }
+
+
+        /// <summary>
+        /// Busca primeiramente no Cache de Repositório e depois no Banco de Dados os dados de um determinado Jogo.
+        /// </summary>
+        /// <param name="Id">Identificador do Jogo</param>
+        public DtoGameResponse GetCacheRepositoryById(int Id)
+        {
+            Dictionary<string, Game> games = new Dictionary<string, Game>();
+            DtoGameResponse response = new DtoGameResponse();
+            List<Kill> listaKill;
+
+            try
+            {
+                _logger.LogInformation(LoggingEvents.Information, "Buscando o registro da partida {0}", Id);
+                listaKill = _unitOfWork.Kills.GetCacheByIdList(Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(LoggingEvents.Critial, "Falha ao acessar o banco de dados das partidas.");
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao acessar o banco de dados das partidas.", ex);
+                return response;
+            }
+
+            if (listaKill.Count == 0)
+            {
+                _logger.LogWarning(LoggingEvents.Error, "Getting item {ID}", Id);
                 response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game com o Id {0}", Id), MethodBase.GetCurrentMethod().ToString());
                 return response;
             }
@@ -245,17 +289,79 @@ namespace LogQuake.Service.Services
         }
 
         /// <summary>
+        /// Busca primeiramente no Cache de Serviço e depois no Banco de Dados os dados de um determinado Jogo.
+        /// </summary>
+        /// <param name="Id">Identificador do Jogo</param>
+        public DtoGameResponse GetCacheById(int Id)
+        {
+            Dictionary<string, Game> games = new Dictionary<string, Game>();
+            DtoGameResponse response = new DtoGameResponse();
+            List<Kill> listaKill;
+
+            try
+            {
+                _logger.LogInformation(LoggingEvents.Information, "Buscando no cache de Service o registro da partida {0}", Id);
+
+                var key = $"LogQuakeService.GetCacheById{Id.ToString()}";
+
+                if (!_cache.TryGetValue(key, out listaKill))
+                {
+                    lock (Cache.lockCache) // ensure concurrent request won't access DB at the same time
+                    {
+                        if (!_cache.TryGetValue(key, out listaKill)) // double-check
+                        {
+                            listaKill = _unitOfWork.Kills.GetByIdList(Id).ToList();
+                            var minutes = _configuration.GetValue<int>("Cache:GamesController:SlidingExpiration");
+                            var size = _configuration.GetValue<int>("Cache:GamesController:Size");
+                            _cache.Set(key, listaKill,
+                                new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes(minutes), Size = size });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(LoggingEvents.Critial, "Falha ao acessar o cache de service/banco de dados das partidas.");
+                response.AddNotification(Notifications.ErroInesperado, "Falha ao acessar o banco de dados das partidas.", ex);
+                return response;
+            }
+
+            if (listaKill.Count == 0)
+            {
+                _logger.LogWarning(LoggingEvents.Error, "GetCacheById item {ID}", Id);
+                response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game com o Id {0}", Id), MethodBase.GetCurrentMethod().ToString());
+                return response;
+            }
+
+            try
+            {
+                ConvertKillListToGame(listaKill, games, Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(LoggingEvents.Critial, ex, "GetCacheById item {ID}", Id);
+                response.AddNotification(Notifications.ErroInesperado, "GetCacheById - Falha ao converter lista de jogos.", ex);
+                return response;
+            }
+
+            response.Game = games;
+
+            return response;
+        }
+
+        /// <summary>
         /// Busca no Banco de Dados os dados de todos os jogos, respeitando a paginação informada.
         /// </summary>
         /// <param name="pageRequest">parâmetros de paginação para buscar no Banco de Dados</param>
         public DtoGameResponse GetAll(PagingRequest pageRequest)
         {
-            List<Kill> listaKill = _killRepository.GetAll(pageRequest).ToList();
+            List<Kill> listaKill = _unitOfWork.Kills.GetAll(pageRequest).ToList();
             Dictionary<string, Game> games = new Dictionary<string, Game>();
             DtoGameResponse response = new DtoGameResponse();
 
             if (listaKill.Count == 0)
             {
+                _logger.LogWarning(LoggingEvents.Error, "GetAll página {0} com tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize);
                 response.AddNotification(Notifications.ItemNaoEncontrado, string.Format("Nenhum item encontrado ao buscar Game para a página {0} com tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize), MethodBase.GetCurrentMethod().ToString());
                 return response;
             }
@@ -266,11 +372,23 @@ namespace LogQuake.Service.Services
             }
             catch (Exception ex)
             {
+                _logger.LogCritical(LoggingEvents.Critial, "Falha ao converter lista de jogos.");
                 response.AddNotification(Notifications.ErroInesperado, "Falha ao converter lista de jogos.", ex);
             }
             response.Game = games;
 
             return response;
+        }
+
+        #endregion
+
+        #region Métodos Privados
+        private void Validate(Kill obj, AbstractValidator<Kill> validator)
+        {
+            if (obj == null)
+                throw new Exception("Registros não detectados!");
+
+            validator.ValidateAndThrow(obj);
         }
 
         /// <summary>
@@ -279,18 +397,19 @@ namespace LogQuake.Service.Services
         /// <param name="listaKill">lista Kill de entrada</param>
         /// <param name="games">retorna uma lista preenchida com os Jogos encontrados de acordo com a listaKill</param>
         /// <param name="ContadorGame">variável de controle para indicar o número do Jogo "game_x" dentro da lista games</param>
-        private static void ConvertKillListToGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
+        private void ConvertKillListToGame(List<Kill> listaKill, Dictionary<string, Game> games, int ContadorGame)
         {
             Game game;
             int idgame = 0;
             List<Kill> listaKillFiltrada;
+            List<Kill> listaKillClone = new List<Kill>(listaKill);
             do
             {
 
                 try
                 {
-                    idgame = listaKill[0].IdGame;
-                    listaKillFiltrada = listaKill.Where(x => x.IdGame == idgame).ToList();
+                    idgame = listaKillClone[0].IdGame;
+                    listaKillFiltrada = listaKillClone.Where(x => x.IdGame == idgame).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -316,8 +435,11 @@ namespace LogQuake.Service.Services
                 ContadorGame++;
 
                 //remove os jogos da lista original até zerar a lista
-                listaKill.RemoveAll(x => x.IdGame == idgame);
-            } while (listaKill.Count() > 0);
+                listaKillClone.RemoveAll(x => x.IdGame == idgame);
+            } while (listaKillClone.Count() > 0);
         }
+
+        #endregion
+
     }
 }

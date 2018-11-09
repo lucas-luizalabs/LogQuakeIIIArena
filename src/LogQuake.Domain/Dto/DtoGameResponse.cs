@@ -1,9 +1,7 @@
 ﻿using LogQuake.CrossCutting;
 using LogQuake.Domain.Entities;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LogQuake.Domain.Dto
 {

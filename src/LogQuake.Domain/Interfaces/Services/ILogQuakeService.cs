@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using FluentValidation;
 using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Infra.CrossCuting;
@@ -37,8 +36,20 @@ namespace LogQuake.Service.Services
         /// Busca no Banco de Dados os dados de um determinado Jogo.
         /// </summary>
         /// <param name="Id">Identificador do Jogo</param>
-        //Dictionary<string, Game> GetById(int Id);
         DtoGameResponse GetById(int Id);
+
+        /// <summary>
+        /// Busca primeiramente em Cache de Repositório e depois no Banco de Dados os dados de um determinado Jogo.
+        /// </summary>
+        /// <param name="Id">Identificador do Jogo</param>
+        DtoGameResponse GetCacheRepositoryById(int Id);
+
+        /// <summary>
+        /// Busca primeiramente em Cache de Service e depois no Banco de Dados os dados de um determinado Jogo.
+        /// </summary>
+        /// <param name="Id">Identificador do Jogo</param>
+        DtoGameResponse GetCacheById(int Id);
+
 
         /// <summary>
         /// Método responsável por ler o arquivo de log do jogo Quake 3 Arena e criar uma lista de string, contendo as linhas do log.
