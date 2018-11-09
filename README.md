@@ -21,11 +21,13 @@ Você poderá rodar o projeto em Windows
 - Swagger UI
 - Logging
 - Multiplos providers de Banco de Dados (SQLite, Sql Server)
+- Cache de Memória
 
 ## Arquitetura:
 - Domain Driven Design 
 - Repository and Generic Repository
 - Domain Notification
+- Unit Of Work
 
 ## Referências:
 - https://docs.microsoft.com/en-us/dotnet/core/porting/project-structure
@@ -37,6 +39,9 @@ Você poderá rodar o projeto em Windows
 - https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1
 - https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1
 - https://docs.microsoft.com/pt-br/ef/core/managing-schemas/migrations/providers
+- https://docs.microsoft.com/pt-br/aspnet/core/performance/caching/memory?view=aspnetcore-2.1
+- https://docs.microsoft.com/pt-br/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-implemenation-entity-framework-core
+
 
 ## Manual do Desenvolvedor:
 - [Estrutura de pastas da Solution](docs/ESTRUTURA.md)
@@ -46,6 +51,10 @@ Você poderá rodar o projeto em Windows
 
 
 ## News:
+
+**v1.2 - 2018/11/09**
+- Criação de Unit Of Work
+- Implementação de Cache de Memória (IMemoryCache)
 
 **v1.1 - 2018/11/05**
 - Banco de Dados com múltiplos Providers (SQLite e SqlServer)
