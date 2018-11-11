@@ -56,7 +56,7 @@ Você poderá rodar o projeto em Windows
 
 ## News:
 
-**v1.3 - 2018/11/1**
+**v1.3 - 2018/11/11**
 - Implementação de Testes utilizando conceito BDD, com SpecFlow.
 
 
