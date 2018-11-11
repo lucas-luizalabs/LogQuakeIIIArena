@@ -25,8 +25,8 @@ Você poderá rodar o projeto em Windows
 - SpecFlow (obs.: ainda não está compatível com .Net Core, foi utilizado o Framework 4.6.1)
 
 ## Arquitetura:
-- Domain Driven Design 
-- Behavior Driven Development
+- DDD - Domain Driven Design 
+- BDD - Behavior Driven Development
 - Repository and Generic Repository
 - Domain Notification
 - Unit Of Work
