@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace LogQuake.API.Controllers
 {
     /// <summary>
-    /// API controladora do jogo
+    /// API controladora do jogo.
     /// </summary>
     [Route("api/[controller]")]
     public class GamesController : Controller
