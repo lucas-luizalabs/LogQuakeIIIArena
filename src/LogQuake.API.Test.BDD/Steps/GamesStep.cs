@@ -1,18 +1,14 @@
 ﻿using LogQuake.CrossCutting;
-using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
 
 namespace API.Test.steps
 {
