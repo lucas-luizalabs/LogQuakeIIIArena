@@ -22,9 +22,11 @@ Você poderá rodar o projeto em Windows
 - Logging
 - Multiplos providers de Banco de Dados (SQLite, Sql Server)
 - Cache de Memória
+- SpecFlow
 
 ## Arquitetura:
 - Domain Driven Design 
+- Behavior Driven Development
 - Repository and Generic Repository
 - Domain Notification
 - Unit Of Work
@@ -41,6 +43,8 @@ Você poderá rodar o projeto em Windows
 - https://docs.microsoft.com/pt-br/ef/core/managing-schemas/migrations/providers
 - https://docs.microsoft.com/pt-br/aspnet/core/performance/caching/memory?view=aspnetcore-2.1
 - https://docs.microsoft.com/pt-br/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-implemenation-entity-framework-core
+- https://specflow.org/getting-started/
+- https://specflow.org/documentation/SpecFlow-Assist-Helpers/
 
 
 ## Manual do Desenvolvedor:
@@ -51,6 +55,10 @@ Você poderá rodar o projeto em Windows
 
 
 ## News:
+
+**v1.3 - 2018/11/1**
+- Implementação de Testes utilizando conceito BDD, com SpecFlow
+
 
 **v1.2 - 2018/11/09**
 - Criação de Unit Of Work
