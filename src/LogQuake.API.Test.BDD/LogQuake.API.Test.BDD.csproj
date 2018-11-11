@@ -68,6 +68,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Games.feature</DependentUpon>
     </Compile>
+    <Compile Include="Log\Class1.cs" />
     <Compile Include="Steps\GamesStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
