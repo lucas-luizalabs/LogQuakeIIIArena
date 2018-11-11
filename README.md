@@ -22,7 +22,7 @@ Você poderá rodar o projeto em Windows
 - Logging
 - Multiplos providers de Banco de Dados (SQLite, Sql Server)
 - Cache de Memória
-- SpecFlow
+- SpecFlow (obs.: ainda não está compatível com .Net Core, foi utilizado o Framework 4.6.1)
 
 ## Arquitetura:
 - Domain Driven Design 
@@ -57,7 +57,7 @@ Você poderá rodar o projeto em Windows
 ## News:
 
 **v1.3 - 2018/11/1**
-- Implementação de Testes utilizando conceito BDD, com SpecFlow
+- Implementação de Testes utilizando conceito BDD, com SpecFlow.
 
 
 **v1.2 - 2018/11/09**
