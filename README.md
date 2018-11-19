@@ -58,7 +58,7 @@ Você poderá rodar o projeto em Windows
 ## News:
 
 **v1.4 - 2018/11/19**
-- Criação de Servidor de Auttenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
+- Criação de Servidor de Autenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo, foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
 
 
 **v1.3 - 2018/11/11**
