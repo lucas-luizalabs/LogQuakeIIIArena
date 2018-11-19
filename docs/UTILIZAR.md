@@ -5,7 +5,7 @@
 Após abrir a Solution LogQuake, e rodar a Solution no VS2017, será aberto o navegador no seguinte endereço  http://localhost:65080/index.html esta página contém os contratos Swagger disponíveis na API.
 
 Abaixo segue um print a ser exibido:
-![swagger](https://user-images.githubusercontent.com/44147082/47697932-fb9d7d00-dbeb-11e8-9882-7bb9796b755a.PNG)
+![swagger v2](https://user-images.githubusercontent.com/44147082/48732774-ac190280-ec27-11e8-9c91-ccc35c5c6ed2.PNG)
 
 # Consumir a API
 Abaixo serão apresentados exemplos de como consumir a API.
