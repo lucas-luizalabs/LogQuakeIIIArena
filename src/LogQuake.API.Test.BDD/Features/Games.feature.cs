@@ -90,71 +90,106 @@ namespace LogQuake.API.Test.BDD.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("0 - efetuar upload de arquivo de log do jogo Quake III Arena")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("0 - obter Token para")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
-        public virtual void _0_EfetuarUploadDeArquivoDeLogDoJogoQuakeIIIArena()
+        public virtual void _0_ObterTokenPara()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("0 - efetuar upload de arquivo de log do jogo Quake III Arena", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("0 - obter Token para", null, ((string[])(null)));
 #line 9
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 10
- testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/upload\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
+ testRunner.Given("que a url do endpoint é \'http://localhost:59329/connect/token\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
 #line 11
  testRunner.And("o verbo http é \'POST\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line 12
- testRunner.And("o arquivo de log está na pasta corrente do projeto \'Log\\games.log\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+ testRunner.And("o GrantType \'client_credentials\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line 13
- testRunner.When("chamar o serviço de upload", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
+ testRunner.And("a senha do Client é \'secret2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line 14
- testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+ testRunner.And("o scope é \'LogQuake\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line 15
+ testRunner.And("o Id do Cliente \'client2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 16
+ testRunner.When("chamar o serviço de Servidor de Identidade", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
+#line 17
+ testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("1 - efetuar upload de arquivo de log do jogo Quake III Arena")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
+        public virtual void _1_EfetuarUploadDeArquivoDeLogDoJogoQuakeIIIArena()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("1 - efetuar upload de arquivo de log do jogo Quake III Arena", null, ((string[])(null)));
+#line 19
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 20
+ testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/upload\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
+#line 21
+ testRunner.And("o verbo http é \'POST\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 22
+ testRunner.And("o arquivo de log está na pasta corrente do projeto \'Log\\games.log\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 23
+ testRunner.And("obter o Token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 24
+ testRunner.When("chamar o serviço de upload", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
+#line 25
+ testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+#line 26
  testRunner.And("a quantidade de resgistro inseridos deve ser \'1058\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("1 - listar todas as partidas de forma paginada")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("2 - listar todas as partidas de forma paginada")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
-        public virtual void _1_ListarTodasAsPartidasDeFormaPaginada()
+        public virtual void _2_ListarTodasAsPartidasDeFormaPaginada()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("1 - listar todas as partidas de forma paginada", null, ((string[])(null)));
-#line 17
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("2 - listar todas as partidas de forma paginada", null, ((string[])(null)));
+#line 28
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 18
+#line 29
  testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
-#line 19
+#line 30
  testRunner.And("o verbo http é \'GET\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
-#line 20
+#line 31
+ testRunner.And("obter o Token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 32
  testRunner.When("chamar o serviço", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
-#line 21
+#line 33
  testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("2 - obter jogo através de um identificador")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("3 - obter jogo através de um identificador")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
-        public virtual void _2_ObterJogoAtravesDeUmIdentificador()
+        public virtual void _3_ObterJogoAtravesDeUmIdentificador()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("2 - obter jogo através de um identificador", null, ((string[])(null)));
-#line 23
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("3 - obter jogo através de um identificador", null, ((string[])(null)));
+#line 35
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 24
+#line 36
  testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
-#line 25
+#line 37
  testRunner.And("o verbo http é \'GET\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
-#line 26
+#line 38
  testRunner.And("o ID do jogo será \'5\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
-#line 27
+#line 39
+ testRunner.And("obter o Token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 40
  testRunner.When("chamar o serviço", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
-#line 28
+#line 41
  testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
-#line 29
+#line 42
  testRunner.And("um total de \'130\' kills:", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -173,7 +208,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "Dono da Bola"});
             table1.AddRow(new string[] {
                         "Chessus"});
-#line 30
+#line 43
  testRunner.And("conter a lista abaixo de players:", ((string)(null)), table1, "E ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -200,30 +235,32 @@ this.ScenarioInitialize(scenarioInfo);
             table2.AddRow(new string[] {
                         "Chessus",
                         "-2"});
-#line 39
+#line 52
  testRunner.And("conter a lista abaixo de kills:", ((string)(null)), table2, "E ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("3 - buscar uma partida inexistente através de um identificador")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("4 - buscar uma partida inexistente através de um identificador")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
-        public virtual void _3_BuscarUmaPartidaInexistenteAtravesDeUmIdentificador()
+        public virtual void _4_BuscarUmaPartidaInexistenteAtravesDeUmIdentificador()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("3 - buscar uma partida inexistente através de um identificador", null, ((string[])(null)));
-#line 49
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("4 - buscar uma partida inexistente através de um identificador", null, ((string[])(null)));
+#line 62
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 50
+#line 63
  testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
-#line 51
+#line 64
  testRunner.And("o verbo http é \'GET\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
-#line 52
+#line 65
  testRunner.And("o ID do jogo será \'999999\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
-#line 53
+#line 66
+ testRunner.And("obter o Token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 67
  testRunner.When("chamar o serviço", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
-#line 54
+#line 68
  testRunner.Then("o statuscode da resposta deverá ser \'NotFound\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
             this.ScenarioCleanup();

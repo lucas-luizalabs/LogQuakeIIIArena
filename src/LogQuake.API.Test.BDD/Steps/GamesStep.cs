@@ -149,7 +149,8 @@ namespace API.Test.steps
             string endpoint = (string)ScenarioContext.Current["Endpoint"];
             Method metodo = (Method)ScenarioContext.Current["HttpMethod"];
 
-            Token token = ObterToken();
+            //Token token = ObterToken();
+            Token token = (Token)ScenarioContext.Current["token"];
 
             var client = new RestClient(endpoint);
             var request = new RestRequest(metodo);
@@ -175,9 +176,60 @@ namespace API.Test.steps
             Assert.IsTrue(response.Content.Contains(registrosInseridos.ToString()));
         }
 
+        [When(@"chamar o serviço de Servidor de Identidade")]
+        public void QuandoChamarOServicoDeServidorDeIdentidade()
+        {
+            var client = new RestClient((string)ScenarioContext.Current["Endpoint"]);
+            var request = new RestRequest();
 
-        #region Métodos privados
-        private Token ObterToken()
+            request.Method = (Method)ScenarioContext.Current["HttpMethod"];
+
+            //add GetToken() API method parameters
+            //utilizando dados fixos a princípio, pois já está cadastrado o aplicativo abaixo
+            //com as permissões necessárias
+            request.Parameters.Clear();
+            request.AddParameter("grant_type", ScenarioContext.Current["grant_type"]);
+            request.AddParameter("client_secret", ScenarioContext.Current["client_secret"]);
+            request.AddParameter("scope", ScenarioContext.Current["scope"]);
+            request.AddParameter("client_id", ScenarioContext.Current["client_id"]);
+
+            //make the API request and get the response
+            IRestResponse response = client.Execute(request);
+
+            ScenarioContext.Current["Response"] = response;
+
+            //return an AccessToken
+            Token token = JsonConvert.DeserializeObject<Token>(response.Content);
+
+            ScenarioContext.Current["token"] = token;
+        }
+
+        [Given(@"o GrantType '(.*)'")]
+        public void DadoOGrantType(string p0)
+        {
+            ScenarioContext.Current["grant_type"] = p0;
+        }
+
+        [Given(@"a senha do Client é '(.*)'")]
+        public void DadoASenhaDoClientE(string p0)
+        {
+            ScenarioContext.Current["client_secret"] = p0;
+        }
+
+        [Given(@"o scope é '(.*)'")]
+        public void DadoOScopeE(string p0)
+        {
+            ScenarioContext.Current["scope"] = p0;
+        }
+
+        [Given(@"o Id do Cliente '(.*)'")]
+        public void DadoOIdDoCliente(string p0)
+        {
+            ScenarioContext.Current["client_id"] = p0;
+        }
+
+        [Given(@"obter o Token")]
+        public void DadoObterOToken()
         {
             var client = new RestClient("http://localhost:59329/connect/token");
             var request = new RestRequest(Method.POST);
@@ -196,9 +248,12 @@ namespace API.Test.steps
 
             //return an AccessToken
             Token token = JsonConvert.DeserializeObject<Token>(response2.Content);
-            return token;
+
+            ScenarioContext.Current["token"] = token;
         }
 
+
+        #region Métodos privados
         private void ExecutarRequest(string endpoint)
         {
             var url = endpoint;
@@ -221,7 +276,10 @@ namespace API.Test.steps
 
             var restClient = new RestClient(url);
 
-            Token token = ObterToken();
+            //Token token = ObterToken();
+
+            Token token = (Token)ScenarioContext.Current["token"];
+
             request.AddParameter("Authorization", "Bearer " + token.access_token, ParameterType.HttpHeader);
             var response = restClient.Execute(request);
 

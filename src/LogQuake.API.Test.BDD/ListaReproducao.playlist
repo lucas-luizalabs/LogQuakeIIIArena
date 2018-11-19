@@ -1,0 +1,4 @@
+<Playlist Version="1.0">
+<Add Test="LogQuake.API.Test.BDD.Features.DadoQueSouUmJogadorDeQuakeFeature._0_ObterTokenPara" />
+<Add Test="LogQuake.API.Test.BDD.Features.DadoQueSouUmJogadorDeQuakeFeature._1_EfetuarUploadDeArquivoDeLogDoJogoQuakeIIIArena" />
+</Playlist>

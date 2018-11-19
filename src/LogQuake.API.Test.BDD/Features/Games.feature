@@ -6,24 +6,37 @@ Funcionalidade: Dado que sou um jogador de Quake
 	Para eu possa analisar as informações de cada partida, e verificar os participantes, total de mortes, mortes para cada jogador.
 
 
-Cenário: 0 - efetuar upload de arquivo de log do jogo Quake III Arena
+Cenário: 0 - obter Token para 
+	Dado que a url do endpoint é 'http://localhost:59329/connect/token'
+	E o verbo http é 'POST'
+	E o GrantType 'client_credentials'
+	E a senha do Client é 'secret2'
+	E o scope é 'LogQuake'
+	E o Id do Cliente 'client2'
+	Quando chamar o serviço de Servidor de Identidade
+	Então o statuscode da resposta deverá ser 'OK'
+
+Cenário: 1 - efetuar upload de arquivo de log do jogo Quake III Arena
 	Dado que a url do endpoint é 'http://localhost:65080/api/games/upload'
 	E o verbo http é 'POST'
 	E o arquivo de log está na pasta corrente do projeto 'Log\games.log'
+	E obter o Token
 	Quando chamar o serviço de upload
 	Então o statuscode da resposta deverá ser 'OK'
 	E a quantidade de resgistro inseridos deve ser '1058'
 
-Cenário: 1 - listar todas as partidas de forma paginada
+Cenário: 2 - listar todas as partidas de forma paginada
 	Dado que a url do endpoint é 'http://localhost:65080/api/games/'
 	E o verbo http é 'GET'
+	E obter o Token
 	Quando chamar o serviço
 	Então o statuscode da resposta deverá ser 'OK'
 
-Cenário: 2 - obter jogo através de um identificador
+Cenário: 3 - obter jogo através de um identificador
 	Dado que a url do endpoint é 'http://localhost:65080/api/games/'
 	E o verbo http é 'GET'
 	E o ID do jogo será '5'
+	E obter o Token
 	Quando chamar o serviço
 	Então o statuscode da resposta deverá ser 'OK'
 	E um total de '130' kills:
@@ -46,9 +59,10 @@ Cenário: 2 - obter jogo através de um identificador
     | Mal            | -19       |
     | Chessus        | -2        |
 
-Cenário: 3 - buscar uma partida inexistente através de um identificador
+Cenário: 4 - buscar uma partida inexistente através de um identificador
 	Dado que a url do endpoint é 'http://localhost:65080/api/games/'
 	E o verbo http é 'GET'
 	E o ID do jogo será '999999'
+	E obter o Token
 	Quando chamar o serviço
 	Então o statuscode da resposta deverá ser 'NotFound'
