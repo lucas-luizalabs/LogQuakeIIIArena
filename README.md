@@ -46,6 +46,9 @@ Você poderá rodar o projeto em Windows
 - https://docs.microsoft.com/pt-br/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-implemenation-entity-framework-core
 - https://specflow.org/getting-started/
 - https://specflow.org/documentation/SpecFlow-Assist-Helpers/
+- http://docs.identityserver.io/en/latest/#
+- https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-2.1&tabs=visual-studio
+- https://docs.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-2.1
 
 
 ## Manual do Desenvolvedor:
@@ -59,6 +62,7 @@ Você poderá rodar o projeto em Windows
 
 **v1.4 - 2018/11/19**
 - Criação de Servidor de Autenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo, foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
+- Ajustes nos testes de BDD (LogQuake.API.Test.BDD) para poder consumir API de Token
 
 
 **v1.3 - 2018/11/11**
