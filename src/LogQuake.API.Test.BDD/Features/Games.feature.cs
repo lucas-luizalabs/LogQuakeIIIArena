@@ -90,11 +90,11 @@ namespace LogQuake.API.Test.BDD.Features
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("0 - obter Token para")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("0 - obter Token por Client_Credentials")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
-        public virtual void _0_ObterTokenPara()
+        public virtual void _0_ObterTokenPorClient_Credentials()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("0 - obter Token para", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("0 - obter Token por Client_Credentials", null, ((string[])(null)));
 #line 9
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
@@ -262,6 +262,64 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.When("chamar o serviço", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
 #line 68
  testRunner.Then("o statuscode da resposta deverá ser \'NotFound\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("5 - obter jogo através de um identificador, mas informando um Token inválido")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
+        public virtual void _5_ObterJogoAtravesDeUmIdentificadorMasInformandoUmTokenInvalido()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("5 - obter jogo através de um identificador, mas informando um Token inválido", null, ((string[])(null)));
+#line 70
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 71
+ testRunner.Given("que a url do endpoint é \'http://localhost:65080/api/games/\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
+#line 72
+ testRunner.And("o verbo http é \'GET\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 73
+ testRunner.And("o ID do jogo será \'5\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 74
+ testRunner.And("informar um Token inválido", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 75
+ testRunner.When("chamar o serviço", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
+#line 76
+ testRunner.Then("o statuscode da resposta deverá ser \'InternalServerError\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("6 - obter Token por Password")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Dado que sou um jogador de Quake")]
+        public virtual void _6_ObterTokenPorPassword()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("6 - obter Token por Password", null, ((string[])(null)));
+#line 78
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 79
+ testRunner.Given("que a url do endpoint é \'http://localhost:59329/connect/token\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Dado ");
+#line 80
+ testRunner.And("o verbo http é \'POST\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 81
+ testRunner.And("o GrantType \'password\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 82
+ testRunner.And("o Id do Cliente \'rop.client\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 83
+ testRunner.And("a senha do Client é \'secret\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 84
+ testRunner.And("o UserName é \'isgalamido\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 85
+ testRunner.And("a senha do UserName é \'password\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 86
+ testRunner.And("o scope é \'LogQuake\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+#line 87
+ testRunner.When("chamar o serviço de Servidor de Identidade", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Quando ");
+#line 88
+ testRunner.Then("o statuscode da resposta deverá ser \'OK\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
             this.ScenarioCleanup();
         }

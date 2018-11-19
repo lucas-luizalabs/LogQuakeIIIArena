@@ -94,12 +94,15 @@ namespace LogQuake.IdentityServer
                 {
                     ClientId = "rop.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
+                    AccessTokenLifetime = 120, //86400,
+                    IdentityTokenLifetime = 120, //86400, 
+                    AllowOfflineAccess = true,
+                    //AllowAccessTokensViaBrowser = true,
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = { "LogQuake" }
+                    AllowedScopes = { "LogQuake", IdentityServerConstants.StandardScopes.OfflineAccess }
                 }
             };
         }

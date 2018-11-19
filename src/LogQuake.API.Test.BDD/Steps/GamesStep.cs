@@ -89,6 +89,9 @@ namespace API.Test.steps
                 case HttpStatusCode.NotFound:
                     errorMessage = "ReponseURI:" + response.ResponseUri;
                     break;
+                case HttpStatusCode.Unauthorized:
+                    errorMessage = "ReponseURI:" + response.ResponseUri;
+                    break;
                 default:
                     errorMessage = response.Content;
                     break;
@@ -188,10 +191,22 @@ namespace API.Test.steps
             //utilizando dados fixos a princípio, pois já está cadastrado o aplicativo abaixo
             //com as permissões necessárias
             request.Parameters.Clear();
-            request.AddParameter("grant_type", ScenarioContext.Current["grant_type"]);
-            request.AddParameter("client_secret", ScenarioContext.Current["client_secret"]);
-            request.AddParameter("scope", ScenarioContext.Current["scope"]);
-            request.AddParameter("client_id", ScenarioContext.Current["client_id"]);
+            if (ScenarioContext.Current["grant_type"].Equals("client_credentials"))
+            {
+                request.AddParameter("grant_type", ScenarioContext.Current["grant_type"]);
+                request.AddParameter("client_secret", ScenarioContext.Current["client_secret"]);
+                request.AddParameter("scope", ScenarioContext.Current["scope"]);
+                request.AddParameter("client_id", ScenarioContext.Current["client_id"]);
+            }
+            else
+            {
+                request.AddParameter("grant_type", ScenarioContext.Current["grant_type"]);
+                request.AddParameter("client_id", ScenarioContext.Current["client_id"]);
+                request.AddParameter("client_secret", ScenarioContext.Current["client_secret"]);
+                request.AddParameter("username", ScenarioContext.Current["username"]);
+                request.AddParameter("password", ScenarioContext.Current["password"]);
+                request.AddParameter("scope", ScenarioContext.Current["scope"]);
+            }
 
             //make the API request and get the response
             IRestResponse response = client.Execute(request);
@@ -228,6 +243,18 @@ namespace API.Test.steps
             ScenarioContext.Current["client_id"] = p0;
         }
 
+        [Given(@"o UserName é '(.*)'")]
+        public void DadoOUserNameE(string p0)
+        {
+            ScenarioContext.Current["username"] = p0;
+        }
+
+        [Given(@"a senha do UserName é '(.*)'")]
+        public void DadoASenhaDoUserNameE(string p0)
+        {
+            ScenarioContext.Current["password"] = p0;
+        }
+
         [Given(@"obter o Token")]
         public void DadoObterOToken()
         {
@@ -249,6 +276,18 @@ namespace API.Test.steps
             //return an AccessToken
             Token token = JsonConvert.DeserializeObject<Token>(response2.Content);
 
+            ScenarioContext.Current["token"] = token;
+        }
+
+        [Given(@"informar um Token inválido")]
+        public void DadoInformarUmTokenInvalido()
+        {
+            Token token = new Token
+            {
+                access_token = "9347kdfgn938orwkfnow4893oi4hjoewriuf",
+                expires_in = 3600,
+                token_type = "Bearer"
+            };
             ScenarioContext.Current["token"] = token;
         }
 
@@ -278,9 +317,11 @@ namespace API.Test.steps
 
             //Token token = ObterToken();
 
-            Token token = (Token)ScenarioContext.Current["token"];
+            if (ScenarioContext.Current.ContainsKey("token")){
+                Token token = (Token)ScenarioContext.Current["token"];
 
-            request.AddParameter("Authorization", "Bearer " + token.access_token, ParameterType.HttpHeader);
+                request.AddParameter("Authorization", "Bearer " + token.access_token, ParameterType.HttpHeader);
+            }
             var response = restClient.Execute(request);
 
             ScenarioContext.Current["Response"] = response;

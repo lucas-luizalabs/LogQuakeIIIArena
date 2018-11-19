@@ -6,7 +6,7 @@ Funcionalidade: Dado que sou um jogador de Quake
 	Para eu possa analisar as informações de cada partida, e verificar os participantes, total de mortes, mortes para cada jogador.
 
 
-Cenário: 0 - obter Token para 
+Cenário: 0 - obter Token por Client_Credentials
 	Dado que a url do endpoint é 'http://localhost:59329/connect/token'
 	E o verbo http é 'POST'
 	E o GrantType 'client_credentials'
@@ -66,3 +66,23 @@ Cenário: 4 - buscar uma partida inexistente através de um identificador
 	E obter o Token
 	Quando chamar o serviço
 	Então o statuscode da resposta deverá ser 'NotFound'
+
+Cenário: 5 - obter jogo através de um identificador, mas informando um Token inválido
+	Dado que a url do endpoint é 'http://localhost:65080/api/games/'
+	E o verbo http é 'GET'
+	E o ID do jogo será '5'
+	E informar um Token inválido
+	Quando chamar o serviço
+	Então o statuscode da resposta deverá ser 'InternalServerError'
+
+Cenário: 6 - obter Token por Password
+	Dado que a url do endpoint é 'http://localhost:59329/connect/token'
+	E o verbo http é 'POST'
+	E o GrantType 'password'
+	E o Id do Cliente 'rop.client'
+	E a senha do Client é 'secret'
+	E o UserName é 'isgalamido'
+	E a senha do UserName é 'password'
+	E o scope é 'LogQuake'
+	Quando chamar o serviço de Servidor de Identidade
+	Então o statuscode da resposta deverá ser 'OK'
