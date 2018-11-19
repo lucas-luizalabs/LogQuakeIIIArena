@@ -50,6 +50,9 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 Segue exemplo abaixo:
 ![getbyid](https://user-images.githubusercontent.com/44147082/47686174-882e4800-dbb8-11e8-86fd-be8ca6487a6f.PNG)
 
+Informando o Token:
+![passando o token](https://user-images.githubusercontent.com/44147082/48733425-d10e7500-ec29-11e8-8f43-176c5001891d.PNG)
+
 
 ## Consultar todas as partidas de forma paginada
 Podemos consumir este recurso, por exemplo, com Postman seguindo os passos listados abaixo: 
