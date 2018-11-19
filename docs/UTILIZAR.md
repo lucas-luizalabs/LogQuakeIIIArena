@@ -18,13 +18,13 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 4. Informe o verbo POST
 5. Informe o local da API: http://localhost:59329/connect/token
 6. Informe os parâmetros abaixo:
-6.1 grant_type => password
-6.2 client_id => rop.client
-6.3 client_secret => secret
-6.4 username => isgalamido
-6.5 password => pasword
-6.6 scope => LogQuake offline_access
-7. Clique no botão Send
+7. grant_type => password
+8. client_id => rop.client
+9. client_secret => secret
+10. username => isgalamido
+11. password => pasword
+12. scope => LogQuake offline_access
+13. Clique no botão Send
 
 Segue exemplo abaixo:
 ![token 1-2](https://user-images.githubusercontent.com/44147082/48732953-4bd69080-ec28-11e8-9f89-dfe1d34fdda0.PNG)
