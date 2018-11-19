@@ -42,7 +42,10 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 3. Adicione esse Request em uma Collection
 4. Informe o verbo GET
 5. Informe o local da API: http://localhost:65080/api/games/5
-6. Clique no botão Send
+6. Selecione a opção "Authorization"
+7. Selecione na combo Type a opção "Bearer Token"
+8. Insira o Token recebido da API de Token no campo Token
+9. Clique no botão Send
 
 Segue exemplo abaixo:
 ![getbyid](https://user-images.githubusercontent.com/44147082/47686174-882e4800-dbb8-11e8-86fd-be8ca6487a6f.PNG)
