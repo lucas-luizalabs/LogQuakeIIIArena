@@ -44,7 +44,7 @@ Podemos consumir este recurso, por exemplo, com Postman seguindo os passos lista
 5. Informe o local da API: http://localhost:65080/api/games/5
 6. Selecione a opção "Authorization"
 7. Selecione na combo Type a opção "Bearer Token"
-8. Insira o Token recebido da API de Token no campo Token
+8. Insira o "access_token" recebido da API de Token no campo Token
 9. Clique no botão Send
 
 Segue exemplo abaixo:
