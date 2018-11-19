@@ -56,6 +56,33 @@ namespace LogQuake.API
 
             services.AddMemoryCache();
 
+
+            //definindo URL do servidor de Identity
+            var authUrl = "http://localhost:59329/";
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = authUrl;
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "LogQuake";
+                   
+                });
+
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireClaim("role", "admin");
+                });
+                options.AddPolicy("Consulta", policy =>
+                {
+                    policy.RequireClaim("role", "consulta");
+                });
+            }
+            );
+
             services.AddMvc();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -79,6 +106,14 @@ namespace LogQuake.API
                         Name = "Use under LICX",
                         Url = "https://example.com/license"
                     }
+                });
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "Authorization header usando o tipo Bearer, por exemplo: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
                 });
 
                 // Set the comments path for the Swagger JSON and UI.
@@ -116,6 +151,8 @@ namespace LogQuake.API
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc();
 

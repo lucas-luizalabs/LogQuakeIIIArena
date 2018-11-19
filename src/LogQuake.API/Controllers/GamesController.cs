@@ -6,6 +6,7 @@ using LogQuake.CrossCutting.Cache;
 using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -101,13 +102,27 @@ namespace LogQuake.API.Controllers
         /// Busca partida registrada em Banco de Dados por IdGame.
         /// </remarks>        
         /// <response code="200">Partida encontrada <paramref name="idGame"/>.</response>
+        /// <response code="400">Bad Request.</response>
+        /// <response code="401">Unauthorized.</response>
         /// <response code="404">Nenhuma partida encontrada.</response>
         [HttpGet("{idGame}")]
         [ProducesResponseType(typeof(Game), 200)]
         [ProducesResponseType(typeof(List<Notification>), 400)]
+        [ProducesResponseType(typeof(List<Notification>), 401)]
         [ProducesResponseType(typeof(List<Notification>), 404)]
+        [Authorize]
         public IActionResult Get(int idGame)
         {
+            ////conferindo se o scope é LogQuake
+            //bool userHasRightScope = User.HasClaim("scope", "LogQuake");
+            //if (userHasRightScope == false)
+            //{
+            //    throw new Exception("Invalid scope");
+            //}
+            ////obter as Claims associadas
+            //var identity = (ClaimsIdentity)User.Identity;
+            //IEnumerable<Claim> claims = identity.Claims;
+
             DtoGameResponse response = new DtoGameResponse();
 
             try
@@ -286,6 +301,9 @@ namespace LogQuake.API.Controllers
         [HttpPost("Upload")]
         [ProducesResponseType(typeof(DtoUploadResponse), 200)]
         [ProducesResponseType(typeof(List<Notification>), 400)]
+        [ProducesResponseType(typeof(List<Notification>), 401)]
+        [ProducesResponseType(typeof(List<Notification>), 404)]
+        [Authorize("Admin")]
         public IActionResult Upload(IFormFile file)
         {
             string path = "";

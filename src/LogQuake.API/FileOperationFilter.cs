@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace LogQuake.API
 {
+    /// <summary>
+    /// Classe utilizada em conjunto com Swagger para efetuar upload de arquivo
+    /// </summary>
     public class FileOperationFilter : IOperationFilter
     {
         public void Apply(Operation operation, OperationFilterContext context)
@@ -18,7 +21,7 @@ namespace LogQuake.API
                 operation.Parameters.Clear();
                 operation.Parameters.Add(new NonBodyParameter
                 {
-                    Name = "file", // must match parameter name from controller method
+                    Name = "file", // precisa ser o mesmo nome do parâmetro do método de Upload da GamesController
                     In = "formData",
                     Description = "Selecione o arquivo de log do jogo Quake III Arena.",
                     Required = true,

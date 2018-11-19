@@ -149,6 +149,8 @@ namespace API.Test.steps
             string endpoint = (string)ScenarioContext.Current["Endpoint"];
             Method metodo = (Method)ScenarioContext.Current["HttpMethod"];
 
+            Token token = ObterToken();
+
             var client = new RestClient(endpoint);
             var request = new RestRequest(metodo);
 
@@ -158,10 +160,12 @@ namespace API.Test.steps
             request.AlwaysMultipartFormData = true;
             request.AddParameter("key", "value", ParameterType.GetOrPost);
 
+            request.AddParameter("Authorization", "Bearer " + token.access_token, ParameterType.HttpHeader);
             IRestResponse response = client.Execute(request);
 
             ScenarioContext.Current["Response"] = response;
         }
+
 
         [Then(@"a quantidade de resgistro inseridos deve ser '(.*)'")]
         public void EntaoAQuantidadeDeResgistroInseridosDeveSer(int registrosInseridos)
@@ -173,6 +177,28 @@ namespace API.Test.steps
 
 
         #region Métodos privados
+        private Token ObterToken()
+        {
+            var client = new RestClient("http://localhost:59329/connect/token");
+            var request = new RestRequest(Method.POST);
+
+            //add GetToken() API method parameters
+            //utilizando dados fixos a princípio, pois já está cadastrado o aplicativo abaixo
+            //com as permissões necessárias
+            request.Parameters.Clear();
+            request.AddParameter("grant_type", "client_credentials");
+            request.AddParameter("client_secret", "secret2");
+            request.AddParameter("scope", "LogQuake");
+            request.AddParameter("client_id", "client2");
+
+            //make the API request and get the response
+            IRestResponse response2 = client.Execute(request);
+
+            //return an AccessToken
+            Token token = JsonConvert.DeserializeObject<Token>(response2.Content);
+            return token;
+        }
+
         private void ExecutarRequest(string endpoint)
         {
             var url = endpoint;
@@ -195,10 +221,22 @@ namespace API.Test.steps
 
             var restClient = new RestClient(url);
 
+            Token token = ObterToken();
+            request.AddParameter("Authorization", "Bearer " + token.access_token, ParameterType.HttpHeader);
             var response = restClient.Execute(request);
 
             ScenarioContext.Current["Response"] = response;
         }
         #endregion
     }
+
+    //Simula o objeto retornado quando efetua uma geração de Token
+    public class Token 
+    {
+        public string access_token { get; set; }
+        public int expires_in { get; set; }
+        public string token_type { get; set; }
+
+    }
+    
 }
