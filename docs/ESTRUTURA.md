@@ -10,7 +10,7 @@ Abaixo segue uma visão da estrutura de pastas criadas para a solution LogQuake:
 
 Abaixo segue uma visão expandida:
 
-![estrutura de pastas 2 - 2 novo](https://user-images.githubusercontent.com/44147082/48319133-0e06b600-e5f1-11e8-9299-b7bfdc1a48e9.PNG)
+![estrutura de pastas 2 - 2 v2](https://user-images.githubusercontent.com/44147082/48716337-46fce700-ebfe-11e8-8f0a-bb847b24663f.PNG)
 
 ## Projetos:
 1. src
