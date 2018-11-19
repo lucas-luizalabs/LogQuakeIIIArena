@@ -59,6 +59,7 @@ Você poderá rodar o projeto em Windows
 
 **v1.4 - 2018/11/19**
 - Criação de Servidor de Autenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo, foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
+- Ajustes nos testes de BDD (LogQuake.API.Test.BDD) para poder consumir API de Token
 
 
 **v1.3 - 2018/11/11**
