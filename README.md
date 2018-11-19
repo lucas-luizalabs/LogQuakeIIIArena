@@ -23,6 +23,7 @@ Você poderá rodar o projeto em Windows
 - Multiplos providers de Banco de Dados (SQLite, Sql Server)
 - Cache de Memória
 - SpecFlow (obs.: ainda não está compatível com .Net Core, foi utilizado o Framework 4.6.1)
+- IdentityServer4
 
 ## Arquitetura:
 - DDD - Domain Driven Design 
@@ -55,6 +56,10 @@ Você poderá rodar o projeto em Windows
 
 
 ## News:
+
+**v1.4 - 2018/11/19**
+- Criação de Servidor de Auttenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
+
 
 **v1.3 - 2018/11/11**
 - Implementação de Testes utilizando conceito BDD, com SpecFlow.
