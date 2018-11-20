@@ -3,6 +3,7 @@ using LogQuake.Domain.Interfaces;
 using LogQuake.Domain.Interfaces.Repositories;
 using LogQuake.Infra.Data.Repositories;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,10 +22,10 @@ namespace LogQuake.Infra.UoW
         /// </summary>
         /// <param name="context">Contexto a ser utilizado pelo Unit Of Work</param>
         /// <param name="cache">Objeto de Cache a ser utilizado pelo Unit Of Work</param>
-        public UnitOfWork(LogQuakeContext context, IMemoryCache cache)
+        public UnitOfWork(LogQuakeContext context, IMemoryCache cache, IConfiguration configuration)
         {
             _context = context;
-            Kills = new KillRepository(_context, cache);
+            Kills = new KillRepository(_context, cache, configuration);
         }
         #endregion
 

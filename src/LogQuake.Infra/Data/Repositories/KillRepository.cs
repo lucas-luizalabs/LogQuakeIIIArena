@@ -4,6 +4,7 @@ using LogQuake.Domain.Entities;
 using LogQuake.Domain.Interfaces;
 using LogQuake.Infra.CrossCuting;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace LogQuake.Infra.Data.Repositories
         /// <summary>
         /// Consutrtor da classe
         /// </summary>
-        public KillRepository(LogQuakeContext context, IMemoryCache cache) : base(context, cache)
+        public KillRepository(LogQuakeContext context, IMemoryCache cache, IConfiguration configuration) : base(context, cache, configuration)
         {
             
         }
@@ -81,36 +82,6 @@ namespace LogQuake.Infra.Data.Repositories
         public List<Kill> GetByIdList(int Id)
         {
             return context.Set<Kill>().Where(x => x.IdGame == Id).ToList();
-        }
-
-
-        /// <summary>
-        /// Buscar primeiramente no Cache de Repositório registros da tabela Kill por Id e depois no Banco de Dados
-        /// </summary>
-        /// <param name="Id">Identificador da tabela Kill</param>
-        /// <returns>
-        /// Retornar uma lista de registro da tabela Kill.
-        /// </returns>
-        public List<Kill> GetCacheByIdList(int Id)
-        {
-            //Exemplo de como utilizar Cache em um Repositório
-            var key = $"KillRepository.GetCacheByIdList{Id.ToString()}";
-            List<Kill> retorno;
-
-            if (!cache.TryGetValue(key, out retorno))
-            {
-                lock (Cache.lockCache) // ensure concurrent request won't access DB at the same time
-                {
-                    if (!cache.TryGetValue(key, out retorno)) // double-check
-                    {
-                        retorno = context.Set<Kill>().Where(x => x.IdGame == Id).ToList();
-                        cache.Set(key, retorno,
-                            new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes(10), Size = 500 });
-                    }
-                }
-            }
-
-            return retorno;
         }
     }
 }

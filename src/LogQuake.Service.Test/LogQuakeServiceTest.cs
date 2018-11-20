@@ -53,7 +53,7 @@ namespace LogQuake.Service.Test
             loggerFactory.AddDebug(LogLevel.None);
             _logger = new Logger<LogQuakeService>(loggerFactory);
 
-            _unitOfWork = new UnitOfWork(_context, cache);
+            _unitOfWork = new UnitOfWork(_context, cache, _configuration);
 
             _logQuakeService = new LogQuakeService(_unitOfWork, cache, _logger, _configuration);
 

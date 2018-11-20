@@ -2,21 +2,15 @@ using LogQuake.API.Controllers;
 using LogQuake.CrossCutting;
 using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
-using LogQuake.Domain.Interfaces;
-using LogQuake.Infra.CrossCuting;
 using LogQuake.Infra.Data.Contexto;
-using LogQuake.Infra.Data.Repositories;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.EventLog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using System.Collections.Generic;
-using Microsoft.Extensions.Options;
 using LogQuake.Infra.UoW;
 
 namespace LogQuake.API.Test
@@ -27,8 +21,7 @@ namespace LogQuake.API.Test
         #region Atributos
         private SQLiteLogQuakeContext _context;
         private ILogQuakeService _logQuakeService;
-        //private IKillRepository _killRepository;
-        private GamesController controller;
+        private GamesController _controller;
         private ILogger<GamesController> _loggerGamesController;
         private ILogger<LogQuakeService> _loggerLogQuakeServices;
         private IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
@@ -47,16 +40,12 @@ namespace LogQuake.API.Test
 
             IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-            //_killRepository = new KillRepository(_context, cache);
-
             LoggerFactory loggerFactoryServices = new LoggerFactory();
             loggerFactoryServices.AddConsole(LogLevel.None);
             loggerFactoryServices.AddDebug(LogLevel.None);
             _loggerLogQuakeServices = new Logger<LogQuakeService>(loggerFactoryServices);
 
-            //_logQuakeService = new LogQuakeService(_killRepository, _loggerLogQuakeServices);
-
-            _unitOfWork = new UnitOfWork(_context, cache);
+            _unitOfWork = new UnitOfWork(_context, cache, _configuration);
 
             _logQuakeService = new LogQuakeService(_unitOfWork, cache, _loggerLogQuakeServices, _configuration);
 
@@ -106,7 +95,7 @@ namespace LogQuake.API.Test
             }
             _context.SaveChanges();
 
-            controller = new GamesController(_logQuakeService, _loggerGamesController, _cache, _configuration);
+            _controller = new GamesController(_logQuakeService, _loggerGamesController, _cache, _configuration);
         }
         #endregion
 
@@ -121,7 +110,7 @@ namespace LogQuake.API.Test
             DtoGameRequest dto = new DtoGameRequest();
             dto.PageNumber = 1;
             dto.PageSize = 2;
-            var result = controller.Get(dto) as OkObjectResult;
+            var result = _controller.Get(dto) as OkObjectResult;
             Dictionary<string, Game> game = (Dictionary<string, Game>)result.Value;
 
             //assert
@@ -157,7 +146,7 @@ namespace LogQuake.API.Test
             DtoGameRequest dto = new DtoGameRequest();
             dto.PageNumber = 99999;
             dto.PageSize = 99;
-            var result = controller.Get(dto) as NotFoundObjectResult;
+            var result = _controller.Get(dto) as NotFoundObjectResult;
             DtoResponseBase notification = (DtoResponseBase)result.Value;
 
             //assert
@@ -174,7 +163,7 @@ namespace LogQuake.API.Test
             PreparaBaseDeDados();
 
             //action
-            var result = controller.Get(2) as OkObjectResult;
+            var result = _controller.Get(2) as OkObjectResult;
             Dictionary<string, Game> game = (Dictionary<string, Game>)result.Value;
 
             //assert
@@ -196,7 +185,7 @@ namespace LogQuake.API.Test
             PreparaBaseDeDados();
 
             //action
-            var result = controller.Get(-999999) as NotFoundObjectResult;
+            var result = _controller.Get(-999999) as NotFoundObjectResult;
             DtoResponseBase notification = (DtoResponseBase)result.Value;
 
             //assert

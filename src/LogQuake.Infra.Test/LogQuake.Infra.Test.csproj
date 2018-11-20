@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
@@ -16,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LogQuake.API\LogQuake.API.csproj" />
+    <ProjectReference Include="..\LogQuake.CrossCutting\LogQuake.CrossCutting.csproj" />
     <ProjectReference Include="..\LogQuake.Domain\LogQuake.Domain.csproj" />
     <ProjectReference Include="..\LogQuake.Infra\LogQuake.Infra.csproj" />
   </ItemGroup>

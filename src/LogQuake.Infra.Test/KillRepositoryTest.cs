@@ -3,6 +3,7 @@ using LogQuake.Infra.Data.Contexto;
 using LogQuake.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace LogQuake.Infra.Test
         #region Atributos
         private SQLiteLogQuakeContext _context;
         private KillRepository _killRepository;
+        private IConfiguration _configuration;
         #endregion
 
         #region Construtor
@@ -35,7 +37,13 @@ namespace LogQuake.Infra.Test
 
             IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-            _killRepository = new KillRepository(_context, cache);
+            _killRepository = new KillRepository(_context, cache, _configuration);
+
+            _configuration = new ConfigurationBuilder()
+                .SetBasePath(System.AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+
         }
 
         [TestCleanup]

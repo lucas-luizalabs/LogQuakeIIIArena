@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace LogQuake.Service.Services
@@ -257,7 +258,10 @@ namespace LogQuake.Service.Services
             try
             {
                 _logger.LogInformation(LoggingEvents.Information, "Buscando o registro da partida {0}", Id);
-                listaKill = _unitOfWork.Kills.GetCacheByIdList(Id).ToList();
+                var key = $"KillRepository.FindByCached{Id.ToString()}";
+                //Func<Kill, bool> predicate = item => item.IdGame == Id;
+                bool predicate(Kill item) => item.IdGame == Id;
+                listaKill = _unitOfWork.Kills.FindByCached(predicate, key);
             }
             catch (Exception ex)
             {
