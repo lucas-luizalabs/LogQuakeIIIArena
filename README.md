@@ -24,9 +24,13 @@ Você poderá rodar o projeto em Windows
 - Cache de Memória
 - SpecFlow (obs.: ainda não está compatível com .Net Core, foi utilizado o Framework 4.6.1)
 - IdentityServer4
+- Performance:
+  - Response Compression
+  - Response Caching Middleware
 
 ## Arquitetura:
 - DDD - Domain Driven Design 
+- SOLID
 - BDD - Behavior Driven Development
 - Repository and Generic Repository
 - Domain Notification
@@ -49,6 +53,8 @@ Você poderá rodar o projeto em Windows
 - http://docs.identityserver.io/en/latest/#
 - https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-2.1&tabs=visual-studio
 - https://docs.microsoft.com/en-us/aspnet/core/security/authorization/introduction?view=aspnetcore-2.1
+- https://docs.microsoft.com/pt-br/aspnet/core/performance/caching/middleware?view=aspnetcore-2.1
+- https://docs.microsoft.com/pt-br/aspnet/core/performance/response-compression?view=aspnetcore-2.1
 
 
 ## Manual do Desenvolvedor:
@@ -59,6 +65,11 @@ Você poderá rodar o projeto em Windows
 
 
 ## News:
+
+**v1.5 - 2018/11/25**
+- Compressão de Response API
+- Utilização de Middleware de Cache em Response API
+
 
 **v1.4 - 2018/11/19**
 - Criação de Servidor de Autenticação e incluído proteção na API LogQuake para solicitar autenticação. Como exmeplo, foi solicitado autenticação nos recursos de Upload e Consulta de partidas por Id.
