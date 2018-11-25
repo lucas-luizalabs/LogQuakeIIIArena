@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using LogQuake.Domain.Context;
 using LogQuake.Domain.Interfaces;
@@ -12,11 +13,14 @@ using LogQuake.Infra.UoW;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace LogQuake.API
@@ -53,9 +57,36 @@ namespace LogQuake.API
                 new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
             );
 
+            //Adicionando recurso de Cache em Controllers
+            services.AddResponseCaching();
+
+            services.AddMvc((options) => {
+                //criando perfil de Cache nas controllers
+                options.CacheProfiles.Add("default", new CacheProfile()
+                {
+                    Duration = 30//, tempo definido em segundos
+                    //Location = ResponseCacheLocation.None
+                });
+                options.CacheProfiles.Add("MyCache", new CacheProfile()
+                {
+                    Duration = 60,
+                    Location = ResponseCacheLocation.Any
+                });
+                // Definindo como PascalCase o retorno JSON do métodos das Controllers
+            }).AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddMemoryCache();
+
+            //Incluindo compressão nos retornos dos métodos as Controllers
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+            });
 
 
             //definindo URL do servidor de Identity
@@ -70,7 +101,9 @@ namespace LogQuake.API
                    
                 });
 
-
+            //Criando Perfis de Autorização
+            //Exemplo: Perfil Admin -> necessita da regra admin
+            //Exemplo: Perfil Consulta -> necessita da regra consulta
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy =>
@@ -83,8 +116,6 @@ namespace LogQuake.API
                 });
             }
             );
-
-            services.AddMvc();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -156,11 +187,20 @@ namespace LogQuake.API
                 app.UseDeveloperExceptionPage();
             }
 
+            //Adicionando compressão nos retornos dos métodos das Controllers.
+            //Para a compressão funcionar a linha baixo deve vir antes da app.UseStaticFiles();
+            app.UseResponseCompression();
+
             app.UseStaticFiles();
 
+            //Adicionando recurso de Autenticação em Controllers, esse recurso é utilizado em conjunto com IdentityServer
             app.UseAuthentication();
 
+            //Adicionando recurso de Cache em Controllers
+            app.UseResponseCaching();
+
             app.UseMvc();
+
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

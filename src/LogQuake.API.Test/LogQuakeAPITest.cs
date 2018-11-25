@@ -24,7 +24,6 @@ namespace LogQuake.API.Test
         private GamesController _controller;
         private ILogger<GamesController> _loggerGamesController;
         private ILogger<LogQuakeService> _loggerLogQuakeServices;
-        private IMemoryCache _cache = new MemoryCache(new MemoryCacheOptions());
         private IConfiguration _configuration;
         private UnitOfWork _unitOfWork;
         #endregion
@@ -95,7 +94,7 @@ namespace LogQuake.API.Test
             }
             _context.SaveChanges();
 
-            _controller = new GamesController(_logQuakeService, _loggerGamesController, _cache, _configuration);
+            _controller = new GamesController(_logQuakeService, _loggerGamesController,  _configuration);
         }
         #endregion
 

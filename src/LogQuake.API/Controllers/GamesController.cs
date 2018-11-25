@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using LogQuake.CrossCutting;
-using LogQuake.CrossCutting.Cache;
 using LogQuake.Domain.Dto;
 using LogQuake.Domain.Entities;
 using LogQuake.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace LogQuake.API.Controllers
 {
     /// <summary>
@@ -26,7 +23,6 @@ namespace LogQuake.API.Controllers
         #region Atributos
         private readonly ILogQuakeService _logQuakeService;
         private readonly ILogger _logger;
-        private readonly IMemoryCache _cache;
         private readonly IConfiguration _configuration;
         #endregion
 
@@ -36,13 +32,11 @@ namespace LogQuake.API.Controllers
         /// </summary>
         /// <param name="logQuakeService">objeto de Serviço do Jogo</param>
         /// <param name="logger">objeto para controle de log</param>
-        /// <param name="cache">representa um banco local in-memory para controle de cache de dados</param>
         /// <param name="configuration">carrega arquivo appsettings.json</param>
-        public GamesController(ILogQuakeService logQuakeService, ILogger<GamesController> logger, IMemoryCache cache, IConfiguration configuration)
+        public GamesController(ILogQuakeService logQuakeService, ILogger<GamesController> logger, IConfiguration configuration)
         {
             _logQuakeService = logQuakeService;
             _logger = logger;
-            _cache = cache;
             _configuration = configuration;
         }
         #endregion
@@ -81,7 +75,6 @@ namespace LogQuake.API.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation(LoggingEvents.Information, "Busca realizada com sucesso para a página {0} com tamanho {1}", pageRequest.PageNumber, pageRequest.PageSize);
                     return Ok(response.Game);
                 }
             }
@@ -108,7 +101,7 @@ namespace LogQuake.API.Controllers
         [HttpGet("{idGame}")]
         [ProducesResponseType(typeof(Game), 200)]
         [ProducesResponseType(typeof(List<Notification>), 400)]
-        [ProducesResponseType(typeof(List<Notification>), 401)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(typeof(List<Notification>), 404)]
         [Authorize]
         public IActionResult Get(int idGame)
@@ -162,29 +155,18 @@ namespace LogQuake.API.Controllers
         [ProducesResponseType(typeof(Game), 200)]
         [ProducesResponseType(typeof(List<Notification>), 400)]
         [ProducesResponseType(typeof(List<Notification>), 404)]
+        //Exemplos de utilização de ResponseCache
+        //CacheProfileName -> fica definido na classe Startup.cs, podendo haver vários tipos de Perfil
+        //[ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
+        //[ResponseCache(Duration = 30)]
+        [ResponseCache(CacheProfileName = "default")]
         public IActionResult GetWithCacheController(int idGame)
         {
             DtoGameResponse response = new DtoGameResponse();
 
             try
             {
-                var key = $"GamesController.GetWithCacheController{idGame.ToString()}";
-
-                if (!_cache.TryGetValue(key, out response))
-                {
-                    lock (Cache.lockCache) // ensure concurrent request won't access DB at the same time
-                    {
-                        if (!_cache.TryGetValue(key, out response)) // double-check
-                        {
-                            response = _logQuakeService.GetById(idGame);
-                            var minutes = _configuration.GetValue<int>("Cache:GamesController:SlidingExpiration");
-                            var size = _configuration.GetValue<int>("Cache:GamesController:Size");
-                            _cache.Set(key, response,
-                                new MemoryCacheEntryOptions() { SlidingExpiration = TimeSpan.FromMinutes(minutes), Size = size });
-                        }
-                    }
-                }
-
+                response = _logQuakeService.GetById(idGame);
                 if (response.Game == null || response.Game.Count == 0)
                 {
                     _logger.LogWarning(LoggingEvents.Warning, "Não encontrado o item {ID}, para Cache de Controller", idGame);
@@ -301,7 +283,7 @@ namespace LogQuake.API.Controllers
         [HttpPost("Upload")]
         [ProducesResponseType(typeof(DtoUploadResponse), 200)]
         [ProducesResponseType(typeof(List<Notification>), 400)]
-        [ProducesResponseType(typeof(List<Notification>), 401)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(typeof(List<Notification>), 404)]
         [Authorize("Admin")]
         public IActionResult Upload(IFormFile file)
