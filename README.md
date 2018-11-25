@@ -84,7 +84,6 @@ Você poderá rodar o projeto em Windows
 - Criação de Unit Of Work
 - Implementação de Cache de Memória (IMemoryCache)
   - Criados três novos recursos GET para a API LogQuake, todos apresentados em Swagger.
-    - http://localhost:65080/api/games/CacheController (efetuando Cache de memória na camada de API)
     - http://localhost:65080/api/games/CacheService (efetuando Cache de memória na camada de Services)
     - http://localhost:65080/api/games/CacheRepository (efetuando Cache de memória na camada de Repository)
 
